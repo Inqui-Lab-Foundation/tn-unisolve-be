@@ -26,6 +26,7 @@ import { func, invalid } from 'joi';
 import { mentor_topic_progress } from '../models/mentor_topic_progress.model';
 import { badRequest, internal, notAcceptable, notFound } from 'boom';
 import { notFoundError } from '../docs/errors';
+import { constents } from '../configs/constents.config';
 export default class authService {
 
     crudService: CRUDService = new CRUDService;
@@ -47,6 +48,7 @@ export default class authService {
                 include: {
                     model: mentor,
                     attributes: [
+                        "mentor_id",
                         'user_id',
                         'full_name',
                         'mobile',
@@ -125,9 +127,9 @@ export default class authService {
                 return response
             }
             const result = await this.crudService.create(user, requestBody);
-            console.log(result)
+            // console.log(result)
             let whereClass = { ...requestBody, user_id: result.dataValues.user_id };
-            console.log(whereClass);
+            // console.log(whereClass);
             switch (requestBody.role) {
                 case 'STUDENT': {
                     profile = await this.crudService.create(student, whereClass);
@@ -162,6 +164,7 @@ export default class authService {
         let errorResponse: any = {};
         let userProfile: any;
         for (let student in requestBody) {
+            requestBody[student].password = await bcrypt.hashSync(requestBody[student].password, process.env.SALT || baseConfig.SALT);
             let userExist = await this.crudService.findOne(user, {
                 attributes: ["user_id"],
                 where: { username: requestBody[student].username }
@@ -292,24 +295,25 @@ export default class authService {
                     ]
                 }
             });
-
+            // const passwordValidation = bcrypt.compareSync(requestBody.body.old_password, user_res.dataValues.password);
+            // console.log("test: ", passwordValidation)
             if (!user_res) {
                 result['user_res'] = user_res;
                 result['error'] = speeches.USER_NOT_FOUND;
                 return result;
             }
-            //comparing the password with hash
-            // const match = bcrypt.compareSync(requestBody.old_password, user_res.dataValues.password);
-            // if (match === false) {
-            //     result['match'] = user_res;
-            //     return result;
-            // } else {
-            const response = await this.crudService.update(user, {
-                password: await bcrypt.hashSync(requestBody.new_password, process.env.SALT || baseConfig.SALT)
-            }, { where: { user_id: user_res.dataValues.user_id } });
-            result['data'] = response;
-            return result;
-            // }
+            // comparing the password with hash
+            const match = bcrypt.compareSync(requestBody.old_password, user_res.dataValues.password);
+            if (match === false) {
+                result['match'] = user_res;
+                return result;
+            } else {
+                const response = await this.crudService.update(user, {
+                    password: await bcrypt.hashSync(requestBody.new_password, process.env.SALT || baseConfig.SALT)
+                }, { where: { user_id: user_res.dataValues.user_id } });
+                result['data'] = response;
+                return result;
+            }
         } catch (error) {
             result['error'] = error;
             return result;
@@ -773,6 +777,26 @@ export default class authService {
         } catch (error) {
             result['error'] = error;
             return result;
+        }
+    }
+
+    async checkIfTeamHasPlaceForNewMember(argTeamId: any) {
+        try {
+            let studentResult: any = await student.findAll({ where: { team_id: argTeamId } })
+            // console.log("studentResult",studentResult)
+            // console.log("studentResultLength",studentResult.length?"true":"false")
+            if (studentResult && studentResult instanceof Error) {
+                throw studentResult
+            }
+            if (studentResult &&
+                (studentResult.length == 0 ||
+                    studentResult.length < constents.TEAMS_MAX_STUDENTS_ALLOWED)
+            ) {
+                return true;
+            }
+            return false
+        } catch (err) {
+            return err
         }
     }
 }
