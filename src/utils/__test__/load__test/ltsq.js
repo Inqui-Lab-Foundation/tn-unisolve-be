@@ -16,7 +16,7 @@ export const options = {
       stages: [
         // { duration: '120s', target: 50 },
         // { duration: '600s', target: 500 },
-        { duration: '10s', target: 2 },
+        { duration: '5s', target: 2 },
         // { duration: '1500s', target: 500 },
       ],
       gracefulRampDown: '0s',
@@ -43,10 +43,10 @@ export const options = {
 
 const SLEEP_DURATION = 5;
 
-// let baseUrl = "http://127.0.0.1:3002/api/v1"
+let baseUrl = "http://127.0.0.1:3002/api/v1"
 // let baseUrl = "https://apidev.inquitech.in/api/v1"
 // let baseUrl = "https://apiprod.inquitech.in/api/v1"
-let baseUrl = "https://tnapi.unisolve.org/api/v1"
+// let baseUrl = "https://tnapi.unisolve.org/api/v1"
 // let baseUrl = "http://15.207.254.154:3002/api/v1"//dev
 // let baseUrl = "http://3.109.59.130:3002/api/v1"//prod
 
