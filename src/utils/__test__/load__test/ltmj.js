@@ -14,8 +14,9 @@ export const options = {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        { duration: '120s', target: 50 },
-        { duration: '600s', target: 500 },
+        // { duration: '5s', target: 2 },
+        { duration: '50s', target: 50 },
+        { duration: '300s', target: 10000 },
         // { duration: '1500s', target: 500 },
       ],
       gracefulRampDown: '0s',
@@ -44,7 +45,8 @@ const SLEEP_DURATION = 5;
 
 // let baseUrl = "http://127.0.0.1:3002/api/v1"
 // let baseUrl = "https://apidev.inquitech.in/api/v1"
-let baseUrl = "https://apiprod.inquitech.in/api/v1"
+// let baseUrl = "https://apiprod.inquitech.in/api/v1"
+let baseUrl =     "https://tnstageapi.inquitech.in/api/v1"
 // let baseUrl = "http://15.207.254.154:3002/api/v1"//dev
 // let baseUrl = "http://3.109.59.130:3002/api/v1"//prod
 
@@ -58,7 +60,7 @@ export default function () {
     username: 'prefUser' + id  + '@unisolve.org',
     "full_name": "mentor user",
     "password": "112233",
-    "mobile": "9619118917",
+    "mobile": "961911898"+ id,
     "role": "MENTOR",
     "team_id": 1,
     "date_of_birth": "1989-06-20",
@@ -68,6 +70,11 @@ export default function () {
     "district": "testingDistrict",
     "state": "testState",
     "country": "testCountry"
+  });
+  
+  let bodySubmitResponse = JSON.stringify({
+    "quiz_question_id":1,
+    "selected_option":"Problem Maker"
   });
   
   let bodyLogin = JSON.stringify({
@@ -158,6 +165,23 @@ export default function () {
       check(get_quiz_survey_response, {
         'is status quizSurvey 200': (r) => r.status === 200
       });
+
+      //quiz_survey
+      params.tags.name = 'quiNeextQuestion';
+      const get_quiz_nxtQsn_response = http.get(baseUrl+'/quiz/1/nextQuestion', params);
+      check(get_quiz_nxtQsn_response, {
+        'is status nxtQsnt 200': (r) => r.status === 200
+      });
+      console.log("get_quiz_nxtQstn_response",get_quiz_nxtQsn_response.json())
+      sleep(SLEEP_DURATION);
+      //quiz_survey
+      params.tags.name = 'quizSubmitResponse';
+      const post_quiz_response = http.post(baseUrl+'/quiz/1/response',bodySubmitResponse, params);
+      check(post_quiz_response, {
+        'is status quizResponse 200': (r) => r.status === 200
+      });
+      console.log("post_quiz_response",post_quiz_response.json())
+
       // console.log("get_quiz_survey_response",get_quiz_survey_response.json())
       // console.log(getTimeStamp()+" get_quiz_survey_response",get_quiz_survey_response.timings)
       // sleep(SLEEP_DURATION);
