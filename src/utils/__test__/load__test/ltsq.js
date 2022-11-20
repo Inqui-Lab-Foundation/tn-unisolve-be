@@ -16,7 +16,7 @@ export const options = {
       stages: [
         // { duration: '120s', target: 50 },
         // { duration: '600s', target: 500 },
-        { duration: '5s', target: 2 },
+        { duration: '120s', target: 100 },
         // { duration: '1500s', target: 500 },
       ],
       gracefulRampDown: '0s',
@@ -43,8 +43,9 @@ export const options = {
 
 const SLEEP_DURATION = 5;
 
-let baseUrl = "http://127.0.0.1:3002/api/v1"
+// let baseUrl = "http://127.0.0.1:3002/api/v1"
 // let baseUrl = "https://apidev.inquitech.in/api/v1"
+let baseUrl =     "https://tnstageapi.inquitech.in/api/v1"
 // let baseUrl = "https://apiprod.inquitech.in/api/v1"
 // let baseUrl = "https://tnapi.unisolve.org/api/v1"
 // let baseUrl = "http://15.207.254.154:3002/api/v1"//dev
@@ -72,9 +73,19 @@ export default function () {
     "country": "testCountry"
   });
   
+  // let bodyLogin = JSON.stringify({
+  //   username: 'Student@unisolve.org',
+  //   password: 'wHm6eGCL7uFOArs='
+  // });
+
   let bodyLogin = JSON.stringify({
-    username: 'Student@unisolve.org',
-    password: 'wHm6eGCL7uFOArs='
+    username: 'geetha1_2stu',
+    password: 'EHlAmcgFOic='
+  });
+  
+  let bodySubmitResponse = JSON.stringify({
+      "quiz_question_id":1,
+      "selected_option":"Problem Maker"
   });
 
   const params = {
@@ -130,7 +141,7 @@ export default function () {
       sleep(SLEEP_DURATION);
       //quiz_survey
       params.tags.name = 'quizSubmitResponse';
-      const post_quiz_response = http.get(baseUrl+'/quiz/1/nextQuestion', params);
+      const post_quiz_response = http.post(baseUrl+'/quiz/1/response',bodySubmitResponse, params);
       check(post_quiz_response, {
         'is status quizResponse 200': (r) => r.status === 200
       });
