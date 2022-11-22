@@ -49,7 +49,7 @@ export default class DashboardController extends BaseController {
         this.router.get(`${this.path}/studentStats/:student_user_id`, this.getStudentStats.bind(this))
         this.router.get(`${this.path}/studentStats/:student_user_id/challenges`, this.getStudentChallengeDetails.bind(this))
         this.router.get(`${this.path}/studentStats/:student_user_id/teamProgress`, this.getTeamProgress.bind(this))
-        
+
         //team stats..
         this.router.get(`${this.path}/teamStats/:team_id`, this.getTeamStats.bind(this));
 
@@ -393,6 +393,28 @@ export default class DashboardController extends BaseController {
                             )`),
                         "quiz_completed_count"
                     ],
+                    [
+                        db.literal(`(
+                            ${serviceDashboard.getDbLieralForPreSurveyStatus(addWhereClauseStatusPart,
+                            whereClauseStatusPartLiteral)}
+                            )`),
+                        "pre_survey_status"
+                    ],
+                    [
+                        db.literal(`(
+                            ${serviceDashboard.getDbLieralForPostSurveyStatus(addWhereClauseStatusPart,
+                            whereClauseStatusPartLiteral)}
+                            )`),
+                        "post_survey_status"
+                    ],
+                    [
+                        db.literal(`(
+                            ${serviceDashboard.getDbLieralIdeaSubmission(addWhereClauseStatusPart,
+                            whereClauseStatusPartLiteral)}
+                            )`),
+                        "idea_submission"
+                    ],
+                    "certificate",
                     "badges",
                     "created_at",
                     "full_name",

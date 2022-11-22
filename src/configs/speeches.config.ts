@@ -88,6 +88,9 @@ export const speeches = {
     COMMON_STATUS_INVALID: `Status is invalid, it should be one from ${Object.values(constents.common_status_flags.list).join(", ")}.`,
     COMMON_STATUS_REQUIRED: `Status is required, it should be one from ${Object.values(constents.common_status_flags.list).join(", ")}.`,
 
+    CHALLENGE_STATUS_INVALID: `Status is invalid, it should be one from ${Object.values(constents.challenges_flags.list).join(", ")}.`,
+    CHALLENGE_STATUS_REQUIRED: `Status is required, it should be one from ${Object.values(constents.challenges_flags.list).join(", ")}.`,
+
     CREATED_FILE: "successfully Created",
     FILE_EMPTY: "Unable to create a file, Please check the payload",
     FETCH_FILE: "file found",
@@ -98,6 +101,7 @@ export const speeches = {
     CSV_SEND_ERROR: "Failed to reading the file date",
     CSV_SEND_INTERNAL_ERROR: 'Something went wrong while create contact admin',
     CSV_DATA_EXIST: 'Data existing',
+    DATA_EXIST: 'Data existed',
     FAQ_CATEGORY: "Category is required.",
     FAQ_ANSWER: "Answer is required.",
     ORG_CODE_REQUIRED: "Organization code is required.",

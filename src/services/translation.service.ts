@@ -77,4 +77,13 @@ export default class TranslationService {
     async refreshDataFromDb(){
        await  TranslationsProvider.init()
     }
+
+    getTranslationKey(selected_option:any){
+        return TranslationsProvider.getTranslationKeyForValue(this.getCurrentLocale(),selected_option)
+    }
+
+    async translationRefresh(translateTable:any)
+    {
+        return TranslationsProvider.translateRefresh(translateTable)
+    }
 }
