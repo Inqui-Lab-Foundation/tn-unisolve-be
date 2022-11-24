@@ -14,9 +14,9 @@ export const options = {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        // { duration: '5s', target: 2 },
-        { duration: '50s', target: 50 },
-        { duration: '300s', target: 10000 },
+        { duration: '2s', target: 2 },
+        // { duration: '50s', target: 50 },
+        // { duration: '300s', target: 10000 },
         // { duration: '1500s', target: 500 },
       ],
       gracefulRampDown: '0s',
@@ -43,10 +43,10 @@ export const options = {
 
 const SLEEP_DURATION = 5;
 
-// let baseUrl = "http://127.0.0.1:3002/api/v1"
+let baseUrl = "http://127.0.0.1:3002/api/v1"
 // let baseUrl = "https://apidev.inquitech.in/api/v1"
 // let baseUrl = "https://apiprod.inquitech.in/api/v1"
-let baseUrl =     "https://tnstageapi.inquitech.in/api/v1"
+// let baseUrl =     "https://tnstageapi.inquitech.in/api/v1"
 // let baseUrl = "http://15.207.254.154:3002/api/v1"//dev
 // let baseUrl = "http://3.109.59.130:3002/api/v1"//prod
 
@@ -59,12 +59,12 @@ export default function () {
     let bodyRegister = JSON.stringify({
     username: 'prefUser' + id  + '@unisolve.org',
     "full_name": "mentor user",
-    "password": "112233",
-    "mobile": "961911898"+ id,
+    "password": "wHm6eGCL7uFOArs=",
+    "mobile": "961911891"+ id,
     "role": "MENTOR",
     "team_id": 1,
     "date_of_birth": "1989-06-20",
-    "organization_code": "33320501503",
+    "organization_code": "CHIREC1",
     "qualification": "Degree",
     "city": "testingCity",
     "district": "testingDistrict",
@@ -91,7 +91,15 @@ export default function () {
     }
   };
 
-    
+    //dashboardMapStats
+    params.tags.name = 'dashboardMapStats';
+    const get_dashboardMapStats = http.get(baseUrl+'/dashboard/mapStats', params);
+    check(get_dashboardMapStats, {
+      'is status get_dashboardMapStats 200': (r) => r.status === 200
+    });
+    console.log("get_dashboardMapStats",get_dashboardMapStats.json())
+    sleep(SLEEP_DURATION);
+
     // mentor register
     console.log(bodyRegister)
     const register_response = http.post(baseUrl+'/mentors/register', bodyRegister, params);
@@ -104,39 +112,39 @@ export default function () {
     console.log("user_id",user_id)
     sleep(SLEEP_DURATION);
     
-    // mentor verify 
+    // // mentor verify 
     
-    params.tags.name = 'validateOtp';
-    let bodyValidateOtp = JSON.stringify({
-      user_id: user_id,
-      otp: '112233'
-    });
-    console.log(getTimeStamp()+" bodyValidateOtp",bodyValidateOtp);
-    const verify_response = http.post(baseUrl+'/mentors/validateOtp', bodyValidateOtp, params);
-    check(verify_response, {
-      'is status otp 200': (r) => r.status === 200,
-      // 'is user_id key preset': (r) => r.json().hasOwnProperty('data'),
-    });
-    console.log(getTimeStamp()+" verify_response",verify_response.json())
-    // console.log(getTimeStamp()+" verify_response_timing",verify_response.timings)
-    sleep(SLEEP_DURATION);
+    // params.tags.name = 'validateOtp';
+    // let bodyValidateOtp = JSON.stringify({
+    //   user_id: user_id,
+    //   otp: '112233'
+    // });
+    // console.log(getTimeStamp()+" bodyValidateOtp",bodyValidateOtp);
+    // const verify_response = http.post(baseUrl+'/mentors/validateOtp', bodyValidateOtp, params);
+    // check(verify_response, {
+    //   'is status otp 200': (r) => r.status === 200,
+    //   // 'is user_id key preset': (r) => r.json().hasOwnProperty('data'),
+    // });
+    // console.log(getTimeStamp()+" verify_response",verify_response.json())
+    // // console.log(getTimeStamp()+" verify_response_timing",verify_response.timings)
+    // sleep(SLEEP_DURATION);
 
-    // mentor update password
-    params.tags.name = 'passwordUpdate';
-    let bodyPassword = JSON.stringify({
-      user_id: user_id,
-      old_password: '112233',
-      new_password: 'wHm6eGCL7uFOArs='
-    });
-    console.log(getTimeStamp()+" bodyPassword",bodyPassword);
-    const password_update_response = http.put(baseUrl+'/mentors/updatePassword', bodyPassword, params);
-    check(password_update_response, {
-      'is status password 202': (r) => r.status === 202
-    });
-    console.log(getTimeStamp()+" password_update_response",password_update_response.json());
-    // console.log(getTimeStamp()+" password_update_response_timings",password_update_response.timings);
-    // console.log("password_update_response",password_update_response.json())
-    sleep(SLEEP_DURATION);
+    // // mentor update password
+    // params.tags.name = 'passwordUpdate';
+    // let bodyPassword = JSON.stringify({
+    //   user_id: user_id,
+    //   old_password: '112233',
+    //   new_password: 'wHm6eGCL7uFOArs='
+    // });
+    // console.log(getTimeStamp()+" bodyPassword",bodyPassword);
+    // const password_update_response = http.put(baseUrl+'/mentors/updatePassword', bodyPassword, params);
+    // check(password_update_response, {
+    //   'is status password 202': (r) => r.status === 202
+    // });
+    // console.log(getTimeStamp()+" password_update_response",password_update_response.json());
+    // // console.log(getTimeStamp()+" password_update_response_timings",password_update_response.timings);
+    // // console.log("password_update_response",password_update_response.json())
+    // sleep(SLEEP_DURATION);
 
     // mentor login
     params.tags.name = 'login';
