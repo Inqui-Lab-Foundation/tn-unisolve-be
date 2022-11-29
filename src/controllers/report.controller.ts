@@ -39,6 +39,7 @@ export default class ReportController extends BaseController {
         this.router.get(this.path + "/notRegister", this.notRegistered.bind(this));
         this.router.get(this.path + "/userTopicProgress", this.userTopicProgressGroupByCourseTopicId.bind(this));
         this.router.get(this.path + "/mentorTeamsStudents", this.teamRegistered.bind(this));
+        this.router.get(this.path + "/studentProgress", this.studentProgress.bind(this));
         // super.initializeRoutes();
     }
 
@@ -539,6 +540,53 @@ export default class ReportController extends BaseController {
             }
 
             res.status(200).send(dispatcher(res, organisationsResult, 'success'));
+        } catch (err) {
+            next(err)
+        }
+    }
+    protected async studentProgress(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            
+        
+            
+            const orgResult:any = await db.query(`SELECT org.organization_code as 'UDISE CODE',org.district as 'DISTRICT',
+            org.organization_name as 'SCHOOL NAME' ,org.principal_name as 'HM NAME',
+            org.principal_mobile as 'HM MOBILE' , men.full_name as 'TEACHER NAME',
+            men.mobile as 'MOBILE' , men.mentor_id, men.user_id
+            from organizations org 
+            inner join mentors men on org.organization_code = men.organization_code
+            group by organization_id`, { type: QueryTypes.SELECT });
+            if (!orgResult) {
+                throw notFound(speeches.DATA_NOT_FOUND)
+            }
+            if (orgResult instanceof Error) {
+                throw orgResult
+            }
+
+        
+            for(let i=0;i<orgResult.length;i++)
+            {   
+                const teamsData:any = await db.query(`SELECT * from teams where mentor_id = ${orgResult[i]['mentor_id']}`, { type: QueryTypes.SELECT });
+                const teamIds = [];
+                for(let j=0;j<teamsData.length;j++)
+                {
+                    teamIds.push(teamsData[j]['team_id'])
+                }
+
+                let studentData:any = 0;
+                if(teamIds.length)
+                {
+                    studentData = await db.query(`SELECT count(student_id) as studentCount from students where team_id in (${teamIds.join()})`, { type: QueryTypes.SELECT });
+                }
+
+                let preServeyStatus:any = await db.query(`SELECT status from quiz_survey_responses where user_id = ${orgResult[i]['user_id']}`, { type: QueryTypes.SELECT });
+                
+                orgResult[i]['Number of SIDP Teams'] = teamsData.length;
+                orgResult[i]['Total Number of SIDP Students'] = studentData ? studentData[0]['studentCount'] : 0;
+                orgResult[i]['PRE SURVEY'] = preServeyStatus.length ? preServeyStatus[0]['status'] : '';
+            }
+
+            res.status(200).send(dispatcher(res, orgResult, "success"))
         } catch (err) {
             next(err)
         }
