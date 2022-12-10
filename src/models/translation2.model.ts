@@ -1,61 +1,62 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
-import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
+import { constents } from '../configs/constents.config';
 
-export class dashboard_map_stat extends Model<InferAttributes<dashboard_map_stat>, InferCreationAttributes<dashboard_map_stat>> {
-    declare dashboard_map_stat_id: CreationOptional<number>;
-    declare district_name: string;
-    declare overall_schools: string;
-    declare reg_schools: string;
-    declare schools_with_teams: string;
-    declare teams: string;
-    declare ideas: string;
-    declare students: string;
+
+export class translation2 extends Model<InferAttributes<translation2>, InferCreationAttributes<translation2>> {
+    
+    declare translation_id: CreationOptional<number>;
+    declare to_locale: string;
+    declare table_name: string;
+    declare coloumn_name: string;
+    declare index_no: number;
+    declare from_locale: string;
+    declare key: string;
+    declare value: string;
     declare status: Enumerator;
     declare created_by: number;
     declare created_at: Date;
     declare updated_by: number;
     declare updated_at: Date;
-}
-
-dashboard_map_stat.init(
-    {
-        dashboard_map_stat_id: {
+    
+    static modelTableName = "translations2";
+    static structrue:any =  {
+        translation_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        district_name: {
+        table_name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
-        overall_schools: {
+        coloumn_name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
-        reg_schools: {
-            type: DataTypes.STRING,
-            allowNull: false
+        index_no: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
-        schools_with_teams:{
+        from_locale: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            defaultValue: constents.translations_flags.default_locale
         },
-        teams: {
+        to_locale: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
-        ideas: {
-            type: DataTypes.STRING,
-            allowNull: false
+        key: {
+            type: DataTypes.TEXT('long'),
+            
         },
-        students: {
-            type: DataTypes.STRING,
-            allowNull: false
+        value: {
+            type: DataTypes.TEXT('long'),
+            
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
-            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {
@@ -79,12 +80,18 @@ dashboard_map_stat.init(
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-    },
+    };
+    
+
+}
+
+translation2.init(
+   translation2.structrue,
     {
         sequelize: db,
-        tableName: 'dashboard_map_stats',
+        tableName: translation2.modelTableName,
         timestamps: true,
+        updatedAt: 'updated_at',
         createdAt: 'created_at',
-        updatedAt: 'updated_at'
     }
 );
