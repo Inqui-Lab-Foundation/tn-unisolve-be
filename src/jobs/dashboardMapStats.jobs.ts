@@ -22,6 +22,6 @@ export default class DashboardMapStatsJob extends BaseJobs {
     public async executeJob() {
         super.executeJob();
         //TODO: write the logic to execute to badges Job...!!
-        return await this.service.resetMapStats()
+        return await this.service.resetMapStats("Job")
     }
 }
