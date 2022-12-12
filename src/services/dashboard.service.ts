@@ -8,21 +8,21 @@ import BaseService from "./base.service";
 
 export default class DashboardService extends BaseService {
 
-    async resetMapStats() {
-        try{
+    async resetMapStats(called_by: any) {
+        try {
             let uniqueDistricts: any;
             let bulkCreateArray: any = [];
             uniqueDistricts = await this.crudService.findAll(organization, { group: ["district"] });
-            if(!uniqueDistricts || uniqueDistricts.length<=0){
-                console.log("uniqueDistricts",uniqueDistricts)
-                return 
+            if (!uniqueDistricts || uniqueDistricts.length <= 0) {
+                console.log("uniqueDistricts", uniqueDistricts)
+                return
             }
-            if(uniqueDistricts instanceof Error){
-                console.log("uniqueDistricts",uniqueDistricts)
-                return 
+            if (uniqueDistricts instanceof Error) {
+                console.log("uniqueDistricts", uniqueDistricts)
+                return
             }
             for (const district of uniqueDistricts) {
-                try{
+                try {
                     if (district.district === null) {
                         continue
                     }
@@ -35,15 +35,19 @@ export default class DashboardService extends BaseService {
                         ideas: stats.challengeInDistrict.length,
                         district_name: district.district,
                         students: stats.studentsInDistric.length,
-                        schools_with_teams:stats.schoolIdsInDistrictWithTeams.length
+                        schools_with_teams: stats.schoolIdsInDistrictWithTeams.length,
+                        boys: stats.studentBoys.length,
+                        girls: stats.studentGirls.length,
+                        youth_center: stats.YouthCentersInDistric.length,
+                        created_by: called_by
                     })
-                }catch(err){
+                } catch (err) {
                     console.log(err)
                 }
             }
 
             const statsForAllDistrics: any = await this.getMapStatsForDistrict(null)
-
+            // console.log(statsForAllDistrics);
             bulkCreateArray.push({
                 overall_schools: statsForAllDistrics.schoolIdsInDistrict.length,
                 reg_schools: statsForAllDistrics.registeredSchoolIdsInDistrict.length,
@@ -51,40 +55,45 @@ export default class DashboardService extends BaseService {
                 ideas: statsForAllDistrics.challengeInDistrict.length,
                 district_name: "all",
                 students: statsForAllDistrics.studentsInDistric.length,
-                schools_with_teams:statsForAllDistrics.schoolIdsInDistrictWithTeams.length
+                schools_with_teams: statsForAllDistrics.schoolIdsInDistrictWithTeams.length,
+                boys: statsForAllDistrics.studentBoys.length,
+                girls: statsForAllDistrics.studentGirls.length,
+                youth_center: statsForAllDistrics.YouthCentersInDistric.length,
+                created_by: called_by
             })
-
             await this.crudService.delete(dashboard_map_stat, { where: {}, truncate: true });
             const result = await this.crudService.bulkCreate(dashboard_map_stat, bulkCreateArray);
-            // console.log(result)
             return result;
-        }catch(err){
+        } catch (err) {
             return err
         }
     }
 
     async getMapStatsForDistrict(argdistric: any = null) {
-        try{
+        try {
             let whereClause = {}
-            let schoolIdsInDistrict:any =[];
-            let mentorIdInDistrict:any =[];
-            let registeredSchoolIdsInDistrict:any =[];
-            let schoolIdsInDistrictWithTeams:any =[];
-            let teamIdInDistrict:any =[];
-            let challengeInDistrict:any =[];
-            let studentsInDistric:any =[];
+            let schoolIdsInDistrict: any = [];
+            let mentorIdInDistrict: any = [];
+            let registeredSchoolIdsInDistrict: any = [];
+            let schoolIdsInDistrictWithTeams: any = [];
+            let teamIdInDistrict: any = [];
+            let challengeInDistrict: any = [];
+            let studentsInDistric: any = [];
+            let studentBoys: any = [];
+            let studentGirls: any = [];
+            let YouthCentersInDistric: any = [];
 
             if (argdistric) {
                 whereClause = {
                     district: argdistric,
                 }
             }
-            
+
             whereClause = {
                 ...whereClause,
                 status: "ACTIVE"
             }
-            
+
             const overAllSchool = await this.crudService.findAll(organization, {
                 where: whereClause
             });
@@ -92,142 +101,167 @@ export default class DashboardService extends BaseService {
             //     console.log(argdistric)
             //     console.log(overAllSchool)
             // }
-            if(!overAllSchool || (!overAllSchool.length) || overAllSchool.length==0){
+            if (!overAllSchool || (!overAllSchool.length) || overAllSchool.length == 0) {
                 return {
                     schoolIdsInDistrict: schoolIdsInDistrict,
                     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
                     teamIdInDistrict: teamIdInDistrict,
                     challengeInDistrict: challengeInDistrict,
                     studentsInDistric: studentsInDistric,
-                    schoolIdsInDistrictWithTeams:schoolIdsInDistrictWithTeams
+                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                    studentBoys: studentBoys,
+                    studentGirls: studentGirls,
+                    YouthCentersInDistric: YouthCentersInDistric,
                 }
             }
             schoolIdsInDistrict = overAllSchool.map((Element: any) => Element.dataValues.organization_code);
-
+            YouthCentersInDistric = overAllSchool.filter((Element: any) => Element.dataValues.organization_type == "Youth Center");
+            // console.log("YouthCentersInDistric: ", YouthCentersInDistric);
             const mentorReg = await this.crudService.findAll(mentor, {
                 where: {
                     organization_code: schoolIdsInDistrict,
-                    status:'ACTIVE'
-                }
-            });
-            if(!mentorReg || (!mentorReg.length) || mentorReg.length==0){
-                return {
-                    schoolIdsInDistrict: schoolIdsInDistrict,
-                    registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
-                    teamIdInDistrict: teamIdInDistrict,
-                    challengeInDistrict: challengeInDistrict,
-                    studentsInDistric: studentsInDistric,
-                    schoolIdsInDistrictWithTeams:schoolIdsInDistrictWithTeams
-                }
-            }
-            mentorIdInDistrict = mentorReg.map((Element: any) => Element.dataValues.mentor_id);//changed this to  user_id from mentor_id, because teams has mentor linked with team via user_id as value in the mentor_id collumn of the teams table
-            
-            const schoolRegistered = await this.crudService.findAll(mentor, {
-                where: {
-                    mentor_id: mentorIdInDistrict,
-                    status:'ACTIVE'
-                },
-                group: ['organization_code']
-            });
-            if(!schoolRegistered || (!schoolRegistered.length) || schoolRegistered.length==0){
-                // return {
-                //     schoolIdsInDistrict: schoolIdsInDistrict,
-                //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
-                //     teamIdInDistrict: teamIdInDistrict,
-                //     challengeInDistrict: challengeInDistrict,
-                //     studentsInDistric: studentsInDistric
-                // }
-                registeredSchoolIdsInDistrict=[]
-            }else{
-                registeredSchoolIdsInDistrict = schoolRegistered.map((Element: any) => Element.dataValues.organization_code);
-            }
-            
-
-            const teamReg = await this.crudService.findAll(team, {
-                where: { 
-                    mentor_id: mentorIdInDistrict ,
                     status: 'ACTIVE'
                 }
             });
-            if(!teamReg || (!teamReg.length) || teamReg.length==0){
+            if (!mentorReg || (!mentorReg.length) || mentorReg.length == 0) {
                 return {
                     schoolIdsInDistrict: schoolIdsInDistrict,
                     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
                     teamIdInDistrict: teamIdInDistrict,
                     challengeInDistrict: challengeInDistrict,
                     studentsInDistric: studentsInDistric,
-                    schoolIdsInDistrictWithTeams:schoolIdsInDistrictWithTeams
+                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                    studentBoys: studentBoys,
+                    studentGirls: studentGirls,
+                    YouthCentersInDistric: YouthCentersInDistric
                 }
             }
-            teamIdInDistrict = teamReg.map((Element: any) => Element.dataValues.team_id);
-            
-            //u could call below as schools with teams since one school can have only one mentor 
-            const distinctMentorsWithTeams = await team.findAll({
-                attributes:[
-                    "mentor_id",
-                ],
-                where:{
-                    mentor_id:mentorIdInDistrict,
-                    status:'ACTIVE'
+            mentorIdInDistrict = mentorReg.map((Element: any) => Element.dataValues.mentor_id);//changed this to  user_id from mentor_id, because teams has mentor linked with team via user_id as value in the mentor_id collumn of the teams table
+
+            const schoolRegistered = await this.crudService.findAll(mentor, {
+                where: {
+                    mentor_id: mentorIdInDistrict,
+                    status: 'ACTIVE'
                 },
-                group: ['mentor_id'],
-            })
-            if(!distinctMentorsWithTeams || (!distinctMentorsWithTeams.length) || distinctMentorsWithTeams.length==0){
+                group: ['organization_code']
+            });
+            if (!schoolRegistered || (!schoolRegistered.length) || schoolRegistered.length == 0) {
                 // return {
                 //     schoolIdsInDistrict: schoolIdsInDistrict,
                 //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
                 //     teamIdInDistrict: teamIdInDistrict,
                 //     challengeInDistrict: challengeInDistrict,
-                //     studentsInDistric: studentsInDistric
+                //     studentsInDistric: studentsInDistric,
+                //      studentBoys: studentBoys,
+                //      studentGirls: studentGirls,
+                //      YouthCentersInDistric: YouthCentersInDistric
                 // }
-                schoolIdsInDistrictWithTeams=[]
-            }else{
+                registeredSchoolIdsInDistrict = []
+            } else {
+                registeredSchoolIdsInDistrict = schoolRegistered.map((Element: any) => Element.dataValues.organization_code);
+            }
+
+
+            const teamReg = await this.crudService.findAll(team, {
+                where: {
+                    mentor_id: mentorIdInDistrict,
+                    status: 'ACTIVE'
+                }
+            });
+            if (!teamReg || (!teamReg.length) || teamReg.length == 0) {
+                return {
+                    schoolIdsInDistrict: schoolIdsInDistrict,
+                    registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
+                    teamIdInDistrict: teamIdInDistrict,
+                    challengeInDistrict: challengeInDistrict,
+                    studentsInDistric: studentsInDistric,
+                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                    studentBoys: studentBoys,
+                    studentGirls: studentGirls,
+                    YouthCentersInDistric: YouthCentersInDistric
+                }
+            }
+            teamIdInDistrict = teamReg.map((Element: any) => Element.dataValues.team_id);
+
+            //u could call below as schools with teams since one school can have only one mentor 
+            const distinctMentorsWithTeams = await team.findAll({
+                attributes: [
+                    "mentor_id",
+                ],
+                where: {
+                    mentor_id: mentorIdInDistrict,
+                    status: 'ACTIVE'
+                },
+                group: ['mentor_id'],
+            })
+            if (!distinctMentorsWithTeams || (!distinctMentorsWithTeams.length) || distinctMentorsWithTeams.length == 0) {
+                // return {
+                //     schoolIdsInDistrict: schoolIdsInDistrict,
+                //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
+                //     teamIdInDistrict: teamIdInDistrict,
+                //     challengeInDistrict: challengeInDistrict,
+                //     studentsInDistric: studentsInDistric,
+                // studentBoys: studentBoys,
+                //     studentGirls: studentGirls,
+                //         YouthCentersInDistric: YouthCentersInDistric
+                // }
+                schoolIdsInDistrictWithTeams = []
+            } else {
                 schoolIdsInDistrictWithTeams = distinctMentorsWithTeams.map((Element: any) => Element.dataValues.mentor_id);
             }
 
 
             const challengeReg = await this.crudService.findAll(challenge_response, {
-                where: { 
+                where: {
                     team_id: teamIdInDistrict,
-                    status: 'ACTIVE'
+                    status: 'SUBMITTED'
                 }
             });
 
-            if(!challengeReg || (!challengeReg.length) || challengeReg.length==0){
+            if (!challengeReg || (!challengeReg.length) || challengeReg.length == 0) {
                 // return {
                 //     schoolIdsInDistrict: schoolIdsInDistrict,
                 //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
                 //     teamIdInDistrict: teamIdInDistrict,
                 //     challengeInDistrict: challengeInDistrict,
-                //     studentsInDistric: studentsInDistric
+                //     studentsInDistric: studentsInDistric,
+                // studentBoys: studentBoys,
+                //     studentGirls: studentGirls,
+                //         YouthCentersInDistric: YouthCentersInDistric
                 // }
-                challengeInDistrict=[]
-            }else{
+                challengeInDistrict = []
+            } else {
                 challengeInDistrict = challengeReg.map((Element: any) => Element.dataValues.challenge_response_id);
             }
-            
-            
+
+
             const studentsResult = await student.findAll({
                 attributes: [
                     "user_id",
-                    "student_id"
+                    "student_id",
+                    "Gender"
                 ],
                 where: {
                     team_id: teamIdInDistrict,
                     status: 'ACTIVE'
                 }
             })
-            if(!studentsResult || (!studentsResult.length) || studentsResult.length==0){
+            if (!studentsResult || (!studentsResult.length) || studentsResult.length == 0) {
                 // return {
                 //     schoolIdsInDistrict: schoolIdsInDistrict,
                 //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
                 //     teamIdInDistrict: teamIdInDistrict,
                 //     challengeInDistrict: challengeInDistrict,
-                //     studentsInDistric: studentsInDistric
+                //     studentsInDistric: studentsInDistric,
+                // studentBoys: studentBoys,
+                //     studentGirls: studentGirls,
+                //         YouthCentersInDistric: YouthCentersInDistric
                 // }
-                studentsInDistric=[]
-            }else{
+                studentsInDistric = []
+            } else {
                 studentsInDistric = studentsResult.map((Element: any) => Element.dataValues.student_id);
+                studentBoys = studentsResult.filter((Element: any) => Element.dataValues.Gender == "MALE");
+                studentGirls = studentsResult.filter((Element: any) => Element.dataValues.Gender == "FEMALE");
             }
             studentsInDistric = studentsResult.map((Element: any) => Element.dataValues.student_id);
 
@@ -237,9 +271,12 @@ export default class DashboardService extends BaseService {
                 teamIdInDistrict: teamIdInDistrict,
                 challengeInDistrict: challengeInDistrict,
                 studentsInDistric: studentsInDistric,
-                schoolIdsInDistrictWithTeams:schoolIdsInDistrictWithTeams
+                schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                studentBoys: studentBoys,
+                studentGirls: studentGirls,
+                YouthCentersInDistric: YouthCentersInDistric
             }
-        }catch(err){
+        } catch (err) {
             return err
         }
     }
