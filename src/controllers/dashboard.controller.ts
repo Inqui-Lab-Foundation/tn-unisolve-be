@@ -566,7 +566,6 @@ export default class DashboardController extends BaseController {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     private async refreshMapStats(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            const user_id = res.locals.user_id
             const service = new DashboardService()
             const result = await service.resetMapStats()
             res.status(200).json(dispatcher(res, result, "success"))
@@ -585,7 +584,6 @@ export default class DashboardController extends BaseController {
 
     private async getMapStatsLive(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            const user_id = res.locals.user_id
             const service = new DashboardService()
             await service.resetMapStats()
             this.model = dashboard_map_stat.name
