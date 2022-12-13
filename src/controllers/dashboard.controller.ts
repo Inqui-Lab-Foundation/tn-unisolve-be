@@ -568,7 +568,7 @@ export default class DashboardController extends BaseController {
         try {
             const user_id = res.locals.user_id
             const service = new DashboardService()
-            const result = await service.resetMapStats(user_id)
+            const result = await service.resetMapStats()
             res.status(200).json(dispatcher(res, result, "success"))
         } catch (err) {
             next(err);
@@ -587,7 +587,7 @@ export default class DashboardController extends BaseController {
         try {
             const user_id = res.locals.user_id
             const service = new DashboardService()
-            await service.resetMapStats(user_id)
+            await service.resetMapStats()
             this.model = dashboard_map_stat.name
             return await this.getData(req, res, next)
         } catch (error) {

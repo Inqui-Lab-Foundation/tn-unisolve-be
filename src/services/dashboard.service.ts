@@ -8,7 +8,7 @@ import BaseService from "./base.service";
 
 export default class DashboardService extends BaseService {
 
-    async resetMapStats(called_by: any) {
+    async resetMapStats() {
         try {
             let uniqueDistricts: any;
             let bulkCreateArray: any = [];
@@ -38,8 +38,7 @@ export default class DashboardService extends BaseService {
                         schools_with_teams: stats.schoolIdsInDistrictWithTeams.length,
                         boys: stats.studentBoys.length,
                         girls: stats.studentGirls.length,
-                        youth_center: stats.YouthCentersInDistric.length,
-                        created_by: called_by
+                        youth_center: stats.YouthCentersInDistric.length
                     })
                 } catch (err) {
                     console.log(err)
@@ -58,8 +57,7 @@ export default class DashboardService extends BaseService {
                 schools_with_teams: statsForAllDistrics.schoolIdsInDistrictWithTeams.length,
                 boys: statsForAllDistrics.studentBoys.length,
                 girls: statsForAllDistrics.studentGirls.length,
-                youth_center: statsForAllDistrics.YouthCentersInDistric.length,
-                created_by: called_by
+                youth_center: statsForAllDistrics.YouthCentersInDistric.length
             })
             await this.crudService.delete(dashboard_map_stat, { where: {}, truncate: true });
             const result = await this.crudService.bulkCreate(dashboard_map_stat, bulkCreateArray);
