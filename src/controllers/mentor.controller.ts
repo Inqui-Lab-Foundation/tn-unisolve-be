@@ -556,12 +556,13 @@ export default class MentorController extends BaseController {
     }
     private async resetPassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            const { mobile } = req.body;
-            if (!mobile) {
-                throw badRequest(speeches.MOBILE_NUMBER_REQUIRED);
+            const { email } = req.body;
+            if (!email) {
+                throw badRequest(speeches.USER_EMAIL_REQUIRED);
             }
             // req.body['otp'] = 
             const result = await this.authService.mentorResetPassword(req.body);
+            // console.log(result);
             if (!result) {
                 return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_NOT_FOUND));
             } else if (result.error) {
