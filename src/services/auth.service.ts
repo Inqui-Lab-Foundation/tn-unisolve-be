@@ -371,6 +371,55 @@ export default class authService {
         } catch (error: any) {
             return error
         }
+    };
+    async triggerEmail(email: any) {
+        AWS.config.update({
+            region: process.env.AWS_REGION,
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        });
+        const otp: any = Math.random().toFixed(6).substr(-6);
+        let params = {
+            Destination: { /* required */
+                CcAddresses: [
+                    ''
+                ],
+                ToAddresses: [
+                    email
+                ]
+            },
+            Message: { /* required */
+                Body: { /* required */
+                    Html: {
+                        Charset: "UTF-8",
+                        Data: "HTML_FORMAT_BODY"
+                    },
+                    Text: {
+                        Charset: "UTF-8",
+                        Data: `Your temporary password to log-in is ${otp} - UNISOLVE`
+                    }
+                },
+                Subject: {
+                    Charset: 'UTF-8',
+                    Data: 'UNISOLVE OTP SERVICES'
+                }
+            },
+            Source: 'srini.panyam@emefocus.com', /* required */
+            ReplyToAddresses: [
+                'srini.panyam@emefocus.com',
+            ],
+        };
+        // Create the promise and SES service object
+        let sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
+        // Handle promise's fulfilled/rejected states
+        sendPromise.then((data: any) => {
+            return {
+                response: data.MessageId,
+                otp: otp
+            }
+        }).catch((err: any) => {
+            return err.stack;
+        });
     }
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
@@ -456,11 +505,11 @@ export default class authService {
         let otp = requestBody.otp == undefined ? true : false;
         let passwordNeedToBeUpdated: any;
         try {
-            const mentor_res: any = await this.crudService.findOne(mentor, {
+            const mentor_res: any = await this.crudService.findOne(user, {
                 where: {
                     [Op.or]: [
                         {
-                            mobile: { [Op.like]: `%${requestBody.mobile}%` }
+                            username: requestBody.email
                         }
                     ]
                 }
@@ -473,18 +522,19 @@ export default class authService {
                 where: { user_id: mentor_res.dataValues.user_id }
             });
             if (!otp) {
-                passwordNeedToBeUpdated = requestBody.mobile;
+                passwordNeedToBeUpdated = requestBody.email;
             } else {
-                passwordNeedToBeUpdated = await this.triggerOtpMsg(requestBody.mobile);
+                passwordNeedToBeUpdated = await this.triggerEmail(requestBody.email);
                 if (passwordNeedToBeUpdated instanceof Error) {
                     throw passwordNeedToBeUpdated;
                 }
             }
+            // console.log(passwordNeedToBeUpdated);
             const findMentorDetailsAndUpdateOTP: any = await this.crudService.updateAndFind(mentor,
-                { otp: passwordNeedToBeUpdated },
+                { otp: passwordNeedToBeUpdated.otp },
                 { where: { user_id: mentor_res.dataValues.user_id } }
             );
-            passwordNeedToBeUpdated = String(passwordNeedToBeUpdated);
+            passwordNeedToBeUpdated = String(passwordNeedToBeUpdated.otp);
             let hashString = await this.generateCryptEncryption(passwordNeedToBeUpdated)
             const user_res: any = await this.crudService.updateAndFind(user, {
                 password: await bcrypt.hashSync(hashString, process.env.SALT || baseConfig.SALT)
@@ -492,6 +542,7 @@ export default class authService {
             result['data'] = {
                 username: user_res.dataValues.username,
                 user_id: user_res.dataValues.user_id,
+                awsResponseID: passwordNeedToBeUpdated.data
                 // mobile: mentor_res.dataValues.mobile,
                 // reg_status: mentor_res.dataValues.reg_status
             };
