@@ -373,16 +373,17 @@ export default class authService {
         }
     };
     async triggerEmail(email: any) {
+        const result: any = {}
+        const otp: any = Math.random().toFixed(6).substr(-6);
+
         AWS.config.update({
             region: process.env.AWS_REGION,
             accessKeyId: process.env.AWS_ACCESS_KEY_ID,
             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
         });
-        const otp: any = Math.random().toFixed(6).substr(-6);
         let params = {
             Destination: { /* required */
                 CcAddresses: [
-                    ''
                 ],
                 ToAddresses: [
                     email
@@ -392,11 +393,11 @@ export default class authService {
                 Body: { /* required */
                     Html: {
                         Charset: "UTF-8",
-                        Data: "HTML_FORMAT_BODY"
+                        Data: `Your temporary password to log-in is <B>${otp}</B> - UNISOLVE`
                     },
                     Text: {
                         Charset: "UTF-8",
-                        Data: `Your temporary password to log-in is ${otp} - UNISOLVE`
+                        Data: "TEXT_FOR MAT_BODY"
                     }
                 },
                 Subject: {
@@ -404,22 +405,23 @@ export default class authService {
                     Data: 'UNISOLVE OTP SERVICES'
                 }
             },
-            Source: 'srini.panyam@emefocus.com', /* required */
-            ReplyToAddresses: [
-                'srini.panyam@emefocus.com',
-            ],
+            Source: "sreeni@inqui-lab.org", /* required */
+            ReplyToAddresses: [],
         };
-        // Create the promise and SES service object
-        let sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
-        // Handle promise's fulfilled/rejected states
-        sendPromise.then((data: any) => {
-            return {
-                response: data.MessageId,
-                otp: otp
-            }
-        }).catch((err: any) => {
-            return err.stack;
-        });
+        try {
+            // Create the promise and SES service object
+            let sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
+            // Handle promise's fulfilled/rejected states
+            await sendPromise.then((data: any) => {
+                result['messageId'] = data.MessageId;
+                result['otp'] = otp;
+            }).catch((err: any) => {
+                throw err;
+            });
+            return result;
+        } catch (error) {
+            return error;
+        }
     }
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
@@ -529,20 +531,19 @@ export default class authService {
                     throw passwordNeedToBeUpdated;
                 }
             }
-            // console.log(passwordNeedToBeUpdated);
             const findMentorDetailsAndUpdateOTP: any = await this.crudService.updateAndFind(mentor,
                 { otp: passwordNeedToBeUpdated.otp },
                 { where: { user_id: mentor_res.dataValues.user_id } }
             );
-            passwordNeedToBeUpdated = String(passwordNeedToBeUpdated.otp);
-            let hashString = await this.generateCryptEncryption(passwordNeedToBeUpdated)
+            passwordNeedToBeUpdated.otp = String(passwordNeedToBeUpdated.otp);
+            let hashString = await this.generateCryptEncryption(passwordNeedToBeUpdated.otp)
             const user_res: any = await this.crudService.updateAndFind(user, {
                 password: await bcrypt.hashSync(hashString, process.env.SALT || baseConfig.SALT)
             }, { where: { user_id: user_data.dataValues.user_id } })
             result['data'] = {
                 username: user_res.dataValues.username,
                 user_id: user_res.dataValues.user_id,
-                awsResponseID: passwordNeedToBeUpdated.data
+                awsMessageId: passwordNeedToBeUpdated.messageId
                 // mobile: mentor_res.dataValues.mobile,
                 // reg_status: mentor_res.dataValues.reg_status
             };
