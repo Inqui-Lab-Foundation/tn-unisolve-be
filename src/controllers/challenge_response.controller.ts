@@ -1,6 +1,6 @@
 import Boom, { badData, badRequest, internal, notAcceptable, notFound, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import db from "../utils/dbconnection.util";
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
@@ -25,6 +25,8 @@ import StudentService from "../services/students.service";
 import { team } from "../models/team.model";
 import { mentor } from "../models/mentor.model";
 import { organization } from "../models/organization.model";
+import { evaluator_rating } from "../models/evaluator_rating.model";
+import { evaluation_process } from "../models/evaluation_process.model";
 
 export default class ChallengeResponsesController extends BaseController {
 
@@ -42,6 +44,7 @@ export default class ChallengeResponsesController extends BaseController {
         this.router.post(this.path + "/:id/initiate/", validationMiddleware(initiateIdeaSchema), this.initiateIdea.bind(this));
         this.router.post(this.path + "/fileUpload", this.handleAttachment.bind(this));
         this.router.get(this.path + '/submittedDetails', this.getResponse.bind(this));
+        this.router.get(this.path + "/updateSubmission", this.submission.bind(this));
         this.router.get(this.path + '/fetchRandomChallenge', this.getRandomChallenge.bind(this));
         this.router.put(this.path + '/updateEntry/:id', validationMiddleware(UpdateAnyFieldSchema), this.updateAnyFields.bind(this));
         this.router.get(`${this.path}/clearResponse`, this.clearResponse.bind(this))
@@ -61,6 +64,10 @@ export default class ChallengeResponsesController extends BaseController {
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
             const evaluation_status: any = req.query.evaluation_status;
+            const district: any = req.query.district;
+            const sdg: any = req.query.sdg;
+            const rejected_reason: any = req.query.rejected_reason;
+            const evaluator_id: any = req.query.evaluator_id;
             if (model) {
                 this.model = model;
             };
@@ -76,19 +83,21 @@ export default class ChallengeResponsesController extends BaseController {
             });
             const where: any = {};
             let whereClauseStatusPart: any = {}
-            let boolStatusWhereClauseRequired = false;
+            let additionalFilter: any = {};
+            let districtFilter: any = {};
+            let boolStatusWhereClauseEvaluationStatusRequired = false;
             //status filter
             if (paramStatus && (paramStatus in constents.challenges_flags.list)) {
                 if (paramStatus === 'ALL') {
                     whereClauseStatusPart = {};
-                    boolStatusWhereClauseRequired = false;
+                    boolStatusWhereClauseEvaluationStatusRequired = false;
                 } else {
                     whereClauseStatusPart = { "status": paramStatus };
-                    boolStatusWhereClauseRequired = true;
+                    boolStatusWhereClauseEvaluationStatusRequired = true;
                 }
             } else {
                 whereClauseStatusPart = { "status": "SUBMITTED" };
-                boolStatusWhereClauseRequired = true;
+                boolStatusWhereClauseEvaluationStatusRequired = true;
             };
             //evaluation status filter
             if (evaluation_status) {
@@ -98,7 +107,19 @@ export default class ChallengeResponsesController extends BaseController {
                     whereClauseStatusPart['evaluation_status'] = null;
                 }
             }
-            console.log(whereClauseStatusPart);
+            if (sdg) {
+                additionalFilter = sdg && typeof sdg == 'string' ? { sdg } : {}
+            }
+            if (rejected_reason) {
+                additionalFilter = rejected_reason && typeof rejected_reason == 'string' ? { rejected_reason } : {}
+            }
+            if (evaluator_id) {
+                additionalFilter = evaluator_id && typeof evaluator_id == 'string' ? { evaluated_by: evaluator_id } : {}
+            }
+            if (district) {
+                districtFilter['whereClauseForDistrict'] = district && typeof district == 'string' ? { district } : {}
+                districtFilter["liter"] = district ? db.literal('`team->mentor->organization`.`district` = ' + JSON.stringify(district)) : {}
+            }
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 // console.log(where)
@@ -164,12 +185,37 @@ export default class ChallengeResponsesController extends BaseController {
                         ],
                         where: {
                             [Op.and]: [
+                                condition,
                                 whereClauseStatusPart,
-                                condition
+                                additionalFilter,
+                                districtFilter.liter
                             ]
+                        },
+                        include: {
+                            model: team,
+                            attributes: [
+                                'team_id',
+                                'team_name',
+                            ],
+                            include: {
+                                model: mentor,
+                                attributes: [
+                                    'mentor_id',
+                                    'full_name'
+                                ],
+                                include: {
+                                    where: districtFilter.whereClauseForDistrict,
+                                    required: false,
+                                    model: organization,
+                                    attributes: [
+                                        "district"
+                                    ]
+                                }
+                            }
                         },
                         limit, offset,
                     })
+                    // console.log(responseOfFindAndCountAll);
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
@@ -196,8 +242,9 @@ export default class ChallengeResponsesController extends BaseController {
         try {
             let challengeResponse: any;
             let evaluator_id: any;
-            let where: any = {};
+            let whereClause: any = {};
             let whereClauseStatusPart: any = {}
+            let attributesNeedFetch: any;
 
             let user_id = res.locals.user_id;
             if (!user_id) throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
@@ -212,45 +259,82 @@ export default class ChallengeResponsesController extends BaseController {
                 whereClauseStatusPart = { "status": paramStatus };
                 boolStatusWhereClauseRequired = true;
             } else {
-                whereClauseStatusPart = { "status": "DRAFT" };
+                whereClauseStatusPart = { "status": "SUBMITTED" };
                 boolStatusWhereClauseRequired = true;
             };
+
             evaluator_id = { evaluated_by: evaluator_user_id }
-            challengeResponse = await this.crudService.findOne(challenge_response, {
-                attributes: [
-                    `challenge_response_id`,
-                    `challenge_id`,
-                    `others`,
-                    `sdg`,
-                    `team_id`,
-                    `response`,
-                    `initiated_by`,
-                    "created_at",
-                    "submitted_at",
-                    `status`,
-                    [
-                        db.literal(`( SELECT count(*) FROM challenge_responses as idea where idea.evaluation_status is null AND idea.status = 'SUBMITTED')`),
-                        'openIdeas'
-                    ],
-                    [
-                        db.literal(`(SELECT count(*) FROM challenge_responses as idea where idea.evaluated_by = ${evaluator_user_id.toString()})`), 'evaluatedIdeas'
-                    ],
-                ],
-                where: {
-                    [Op.and]: [
-                        whereClauseStatusPart,
-                        { evaluation_status: null }
-                    ]
-                },
-                order: db.literal('rand()'), limit: 1
-            });
-            if (challengeResponse instanceof Error) {
-                throw challengeResponse
+
+            let level = req.query.level;
+
+            if (level && typeof level == 'string') {
+                switch (level) {
+                    case 'L1':
+                        attributesNeedFetch = [
+                            `challenge_response_id`,
+                            `challenge_id`,
+                            `others`,
+                            `sdg`,
+                            `team_id`,
+                            `response`,
+                            `initiated_by`,
+                            "created_at",
+                            "submitted_at",
+                            `status`,
+                            [
+                                db.literal(`( SELECT count(*) FROM challenge_responses as idea where idea.status = 'SUBMITTED')`),
+                                'overAllIdeas'
+                            ],
+                            [
+                                db.literal(`( SELECT count(*) FROM challenge_responses as idea where idea.evaluation_status is null AND idea.status = 'SUBMITTED')`),
+                                'openIdeas'
+                            ],
+                            [
+                                db.literal(`(SELECT count(*) FROM challenge_responses as idea where idea.evaluated_by = ${evaluator_user_id.toString()})`), 'evaluatedIdeas'
+                            ],
+                        ],
+                            whereClause = {
+                                [Op.and]: [
+                                    whereClauseStatusPart,
+                                    { evaluation_status: { [Op.is]: null } }
+                                ]
+                            }
+                        challengeResponse = await this.crudService.findOne(challenge_response, {
+                            attributes: attributesNeedFetch,
+                            where: whereClause,
+                            order: db.literal('rand()'), limit: 1
+                        });
+                        if (challengeResponse instanceof Error) {
+                            throw challengeResponse
+                        }
+                        if (!challengeResponse) {
+                            throw notFound("All challenge has been accepted, no more challenge to display");
+                        };
+                        challengeResponse.dataValues.response = JSON.parse(challengeResponse.dataValues.response)
+                        break;
+                    case 'L2':
+                        let activeDistrict = await this.crudService.findOne(evaluation_process, {
+                            attributes: ['district'], where: { [Op.and]: [{ status: 'ACTIVE' }, { level_name: 'L2' }] }
+                        });
+                        let districts = activeDistrict.dataValues.district
+                        if (districts !== null) {
+                            let districtsArray = districts.replace(/,/g, "','")
+                            challengeResponse = await db.query("SELECT challenge_responses.challenge_response_id, challenge_responses.challenge_id, challenge_responses.sdg, challenge_responses.team_id, challenge_responses.response, challenge_responses.initiated_by,  challenge_responses.created_at, challenge_responses.submitted_at,    challenge_responses.status, (SELECT COUNT(*) FROM challenge_responses AS idea WHERE idea.evaluation_status = 'SELECTEDROUND1') AS 'overAllIdeas', (SELECT COUNT(*) FROM l1_accepted) AS 'openIdeas', (SELECT COUNT(*) FROM evaluator_ratings AS A WHERE A.evaluator_id = " + evaluator_user_id.toString() + ") AS 'evaluatedIdeas' FROM l1_accepted AS l1_accepted LEFT OUTER JOIN challenge_responses AS challenge_responses ON l1_accepted.challenge_response_id = challenge_responses.challenge_response_id WHERE l1_accepted.district IN ('" + districtsArray + "') AND NOT FIND_IN_SET(" + evaluator_user_id.toString() + ", l1_accepted.evals) ORDER BY RAND() LIMIT 1", { type: QueryTypes.SELECT });
+                        } else {
+                            challengeResponse = await db.query(`SELECT challenge_responses.challenge_response_id, challenge_responses.challenge_id, challenge_responses.sdg, challenge_responses.team_id, challenge_responses.response, challenge_responses.initiated_by,  challenge_responses.created_at, challenge_responses.submitted_at,    challenge_responses.status,    (SELECT COUNT(*) FROM challenge_responses AS idea WHERE idea.evaluation_status = 'SELECTEDROUND1') AS 'overAllIdeas', (SELECT COUNT(*) FROM l1_accepted) AS 'openIdeas', (SELECT COUNT(*) FROM evaluator_ratings AS A WHERE A.evaluator_id = ${evaluator_user_id.toString()}) AS 'evaluatedIdeas' FROM l1_accepted AS l1_accepted LEFT OUTER JOIN challenge_responses AS challenge_responses ON l1_accepted.challenge_response_id = challenge_responses.challenge_response_id WHERE NOT FIND_IN_SET(${evaluator_user_id.toString()}, l1_accepted.evals) ORDER BY RAND() LIMIT 1`, { type: QueryTypes.SELECT });
+                        }
+                        if (challengeResponse instanceof Error) {
+                            throw challengeResponse
+                        }
+                        if (challengeResponse.length == 0) {
+                            throw notFound("All challenge has been rated, no more challenge to display");
+                        };
+                        challengeResponse[0].response = JSON.parse(challengeResponse[0].response)
+                        break;
+                    default:
+                        break;
+                }
             }
-            if (!challengeResponse) {
-                throw notFound("All challenge has been accepted, no more challenge to display");
-            };
-            challengeResponse.dataValues.response = JSON.parse(challengeResponse.dataValues.response)
             return res.status(200).send(dispatcher(res, challengeResponse, 'success'));
         } catch (error) {
             next(error);
@@ -463,7 +547,7 @@ export default class ChallengeResponsesController extends BaseController {
             };
             const user_id = res.locals.user_id
             const where: any = {};
-            where[`${this.model}_id`] = req.params.id;
+            where[`${this.model} _id`] = req.params.id;
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded);
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
@@ -545,6 +629,7 @@ export default class ChallengeResponsesController extends BaseController {
             if (!req.files) {
                 return result;
             }
+            // console.log(process.env.DB_HOST)
             for (const file_name of Object.keys(files)) {
                 const file = files[file_name];
                 const readFile: any = await fs.readFileSync(file.path);
@@ -563,6 +648,24 @@ export default class ChallengeResponsesController extends BaseController {
                 result['attachments'] = attachments;
                 result['errors'] = errs;
             }
+            res.status(200).send(dispatcher(res, result));
+        } catch (err) {
+            next(err)
+        }
+    }
+    protected async submission(req: Request, res: Response, next: NextFunction) {
+        try {
+            let collectAllChallengeResponseIds: any = [];
+            const findChallengeIds = await this.crudService.findAll(challenge_response);
+            findChallengeIds.forEach((idea: any) => collectAllChallengeResponseIds.push(idea.dataValues.challenge_response_id));
+            let updateStatusToSubmitted = await this.crudService.update(challenge_response, { status: "SUBMITTED" }, {
+                where: {
+                    challenge_response_id: {
+                        [Op.in]: collectAllChallengeResponseIds
+                    }
+                }
+            });
+            let result: any = updateStatusToSubmitted;
             res.status(200).send(dispatcher(res, result));
         } catch (err) {
             next(err)
@@ -696,10 +799,37 @@ export default class ChallengeResponsesController extends BaseController {
     };
     private async getChallengesForEvaluator(req: Request, res: Response, next: NextFunction) {
         try {
-            const { evaluator_id } = req.params
+            let whereClauseEvaluationStatus: any = {};
+            let additionalFilter: any = {};
+            let districtFilter: any = {};
+            const evaluator_id: any = req.params.evaluator_id
+            const evaluation_status: any = req.query.evaluation_status;
+            const district: any = req.query.district;
+            const sdg: any = req.query.sdg;
+            const rejected_reason: any = req.query.rejected_reason;
             if (!evaluator_id) {
                 throw badRequest(speeches.TEAM_NAME_ID)
             };
+            if (evaluation_status) {
+                if (evaluation_status in constents.evaluation_status.list) {
+                    whereClauseEvaluationStatus = { 'evaluation_status': evaluation_status };
+                } else {
+                    whereClauseEvaluationStatus['evaluation_status'] = null;
+                }
+            }
+            if (sdg) {
+                additionalFilter = sdg && typeof sdg == 'string' ? { sdg } : {}
+            }
+            if (rejected_reason) {
+                additionalFilter = rejected_reason && typeof rejected_reason == 'string' ? { rejected_reason } : {}
+            }
+            if (district) {
+                districtFilter['whereClauseForDistrict'] = district && typeof district == 'string' ? { district } : {}
+                districtFilter["liter"] = district ? db.literal('`team->mentor->organization`.`district` = ' + JSON.stringify(district)) : {}
+            }
+            // districtFilter['district'] = district && typeof district == 'string' ? district : `%%`
+            // additionalFilter['sdg'] = { [Op.like]: sdg && typeof sdg == 'string' ? sdg : `%%` }
+            // additionalFilter['rejected_reason'] = { [Op.like]: rejected_reason && typeof rejected_reason == 'string' ? rejected_reason : `%%` }
             const data = await this.crudService.findAll(challenge_response, {
                 attributes: [
                     "challenge_response_id",
@@ -721,7 +851,34 @@ export default class ChallengeResponsesController extends BaseController {
                     ],
                 ],
                 where: {
-                    evaluated_by: evaluator_id
+                    [Op.and]: [
+                        { evaluated_by: evaluator_id },
+                        whereClauseEvaluationStatus,
+                        additionalFilter,
+                        districtFilter.liter
+                    ]
+                },
+                include: {
+                    model: team,
+                    attributes: [
+                        'team_id',
+                        'team_name',
+                    ],
+                    include: {
+                        model: mentor,
+                        attributes: [
+                            'mentor_id',
+                            'full_name'
+                        ],
+                        include: {
+                            where: districtFilter.whereClauseForDistrict,
+                            required: false,
+                            model: organization,
+                            attributes: [
+                                "district"
+                            ]
+                        }
+                    }
                 }
             });
             if (!data) {
@@ -740,8 +897,15 @@ export default class ChallengeResponsesController extends BaseController {
         try {
             const { district, sdg } = req.query
             let whereClauseOfDistrict: any = {}
-            whereClauseOfDistrict['district'] = district && typeof district == 'string' ? district : `%%`
-            whereClauseOfDistrict['sdg'] = sdg && typeof district == 'string' ? sdg : `%%`
+            let whereClauseOfSdg: any = {}
+            if (district) {
+                whereClauseOfDistrict['whereClause'] = district && typeof district == 'string' ? { district } : {}
+                whereClauseOfDistrict["liter"] = district ? db.literal('`team->mentor->organization`.`district` = ' + JSON.stringify(district)) : {}
+            }
+            if (sdg) {
+                whereClauseOfSdg = sdg && typeof sdg == 'string' ? { sdg } : {}
+            }
+            // whereClauseOfSdg['sdg'] = { [Op.like]: sdg && typeof district == 'string' ? sdg : `%%` }
             const data = await this.crudService.findAll(challenge_response, {
                 attributes: [
                     "challenge_response_id",
@@ -761,8 +925,8 @@ export default class ChallengeResponsesController extends BaseController {
                 ],
                 where: {
                     [Op.and]: [
-                        { sdg: { [Op.like]: whereClauseOfDistrict.sdg } },
-                        db.literal('`team->mentor->organization`.`district` like' + JSON.stringify(whereClauseOfDistrict.district))
+                        whereClauseOfSdg,
+                        whereClauseOfDistrict.liter
                     ]
                 },
                 include: {
@@ -778,6 +942,8 @@ export default class ChallengeResponsesController extends BaseController {
                             'full_name'
                         ],
                         include: {
+                            where: whereClauseOfDistrict.whereClause,
+                            required: false,
                             model: organization,
                             attributes: [
                                 "district"
