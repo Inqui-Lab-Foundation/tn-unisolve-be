@@ -2,35 +2,44 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import db from '../utils/dbconnection.util';
 import { constents } from '../configs/constents.config';
 
-export class instructions extends Model<InferAttributes<instructions>, InferCreationAttributes<instructions>> {
-    
-    declare instructions_id: CreationOptional<number>;
-    declare slug: string;
-    declare instructions: string;
+export class evaluation_process extends Model<InferAttributes<evaluation_process>, InferCreationAttributes<evaluation_process>> {
+    declare evaluation_process_id: CreationOptional<number>;
+    declare level_name: string;
+    declare no_of_evaluation: number;
+    declare eval_schema: Enumerator;
+    declare district: string;
     declare status: Enumerator;
     declare created_by: number;
     declare created_at: Date;
     declare updated_by: number;
     declare updated_at: Date;
-    
-    static modelTableName = "instructions";
-    static structure:any =  {
-        instructions_id: {
+
+    static modelTableName = "evaluation_process";
+    static structure: any = {
+        evaluation_process_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        slug: {
+        level_name: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false
         },
-        instructions: {
+        no_of_evaluation: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        eval_schema: {
+            type: DataTypes.ENUM(...Object.values(constents.evaluation_process_status_flags.list)),
+            defaultValue: constents.evaluation_process_status_flags.default
+        },
+        district: {
             type: DataTypes.TEXT('long'),
-            allowNull: true
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
-            defaultValue: constents.common_status_flags.default
+            defaultValue: constents.common_status_flags.list.INACTIVE
         },
         created_by: {
             type: DataTypes.INTEGER,
@@ -56,11 +65,11 @@ export class instructions extends Model<InferAttributes<instructions>, InferCrea
     };
 }
 
-instructions.init(
-    instructions.structure,
+evaluation_process.init(
+    evaluation_process.structure,
     {
         sequelize: db,
-        tableName: instructions.modelTableName,
+        tableName: evaluation_process.modelTableName,
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
