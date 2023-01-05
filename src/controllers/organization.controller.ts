@@ -13,8 +13,6 @@ import { organizationCheckSchema, organizationRawSchema, organizationSchema, org
 import authService from "../services/auth.service";
 import validationMiddleware from "../middlewares/validation.middleware";
 import { Op } from "sequelize";
-import { constant } from "lodash";
-import { constents } from "../configs/constents.config";
 
 export default class OrganizationController extends BaseController {
 
@@ -53,7 +51,7 @@ export default class OrganizationController extends BaseController {
             let whereClauseStatusPart: any = {};
             let whereClauseStatusPartLiteral = "1=1";
             let addWhereClauseStatusPart = false
-            if (paramStatus && (paramStatus in constents.organization_status_flags.list)) {
+            if (paramStatus && (paramStatus in this.statusFlagsToUse)) {
                 if (paramStatus === 'ALL') {
                     whereClauseStatusPart = {};
                     addWhereClauseStatusPart = false;
@@ -151,10 +149,10 @@ export default class OrganizationController extends BaseController {
                 },
                 group: ['district']
             });
-            response.push('All Districts');
             result.forEach((obj: any) => {
                 response.push(obj.dataValues.district)
             });
+            response.push('All Districts');
             return res.status(200).send(dispatcher(res, response, 'success'));
         } catch (error) {
             console.log(error)
