@@ -716,6 +716,7 @@ export default class ChallengeResponsesController extends BaseController {
                             //@ts-ignore
                             evaluatedIdeas: evaluatedIdeas[0].evaluatedIdeas
                         };
+
                         if (challengeResponse instanceof Error) {
                             throw challengeResponse
                         }
@@ -728,6 +729,8 @@ export default class ChallengeResponsesController extends BaseController {
                     default:
                         break;
                 }
+ 
+
             }
             return res.status(200).send(dispatcher(res, challengeResponse, 'success'));
         } catch (error) {
@@ -1212,6 +1215,7 @@ export default class ChallengeResponsesController extends BaseController {
             if (!evaluator_id) {
                 throw badRequest(speeches.TEAM_NAME_ID)
             };
+
             if (evaluation_status) {
                 if (evaluation_status in constents.evaluation_status.list) {
                     whereClauseEvaluationStatus = { 'evaluation_status': evaluation_status };
@@ -1229,6 +1233,7 @@ export default class ChallengeResponsesController extends BaseController {
                 districtFilter['whereClauseForDistrict'] = district && typeof district == 'string' ? { district } : {}
                 districtFilter["liter"] = district ? db.literal('`team->mentor->organization`.`district` = ' + JSON.stringify(district)) : {}
             }
+
             if (level && typeof level == 'string') {
                 switch (level) {
                     case 'L1':
