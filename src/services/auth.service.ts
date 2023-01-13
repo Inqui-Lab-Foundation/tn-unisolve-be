@@ -44,6 +44,20 @@ export default class authService {
                     status: {
                         [Op.or]: ['ACTIVE', 'NEW']
                     }
+                }, include: {
+                    model: mentor,
+                    attributes: [
+                        "mentor_id",
+                        'user_id',
+                        'full_name',
+                        'mobile',
+                    ],
+                    include: {
+                        model: user,
+                        attributes: [
+                            'username'
+                        ]
+                    }
                 }
             })
             return org;
