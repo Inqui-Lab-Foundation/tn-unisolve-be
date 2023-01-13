@@ -36,9 +36,9 @@ export default class DashboardService extends BaseService {
                         district_name: district.district,
                         students: stats.studentsInDistric.length,
                         schools_with_teams: stats.schoolIdsInDistrictWithTeams.length,
-                        boys: stats.studentBoys.length,
-                        girls: stats.studentGirls.length,
-                        youth_center: stats.YouthCentersInDistric.length
+                        boys: stats.studentBoys.length, 
+                        girls: stats.studentGirls.length, 
+                        youth_center: stats.YouthCentersInDistric.length 
                     })
                 } catch (err) {
                     console.log(err)
@@ -55,9 +55,9 @@ export default class DashboardService extends BaseService {
                 district_name: "all",
                 students: statsForAllDistrics.studentsInDistric.length,
                 schools_with_teams: statsForAllDistrics.schoolIdsInDistrictWithTeams.length,
-                boys: statsForAllDistrics.studentBoys.length,
-                girls: statsForAllDistrics.studentGirls.length,
-                youth_center: statsForAllDistrics.YouthCentersInDistric.length
+                boys: statsForAllDistrics.studentBoys.length, 
+                girls: statsForAllDistrics.studentGirls.length, 
+                youth_center: statsForAllDistrics.YouthCentersInDistric.length 
             })
             await this.crudService.delete(dashboard_map_stat, { where: {}, truncate: true });
             const result = await this.crudService.bulkCreate(dashboard_map_stat, bulkCreateArray);
