@@ -582,8 +582,7 @@ export default class DashboardController extends BaseController {
             return await this.getData(req, res, next, [],
                 [
                     [db.fn('DISTINCT', db.col('district_name')), 'district_name'],
-                    `dashboard_map_stat_id`,
-                    `overall_schools`, `reg_schools`, `schools_with_teams`, `teams`, `ideas`, `students`, `status`, `created_by`, `created_at`, `updated_by`, `updated_at`
+                    "dashboard_map_stat_id", "district_name", "overall_schools", "reg_schools", "teams", "ideas", "students", "status","created_by", "created_at", "updated_by", "updated_at", "schools_with_teams", "boys", "girls", "youth_center"
                 ]
             )
         } catch (error) {
