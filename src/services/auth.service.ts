@@ -521,18 +521,19 @@ export default class authService {
     }
     async mentorResetPassword(requestBody: any) {
         let result: any = {};
+        let mentor_res: any;
         let otp = requestBody.otp == undefined ? true : false;
-        let passwordNeedToBeUpdated: any;
+        let passwordNeedToBeUpdated: any = {};
         try {
-            const mentor_res: any = await this.crudService.findOne(user, {
-                where: {
-                    [Op.or]: [
-                        {
-                            username: requestBody.email
-                        }
-                    ]
-                }
-            });
+            if (!otp) {
+                mentor_res = await this.crudService.findOne(mentor, {
+                    where: { organization_code: requestBody.organization_code }
+                });
+            } else {
+                mentor_res = await this.crudService.findOne(user, {
+                    where: { username: requestBody.email }
+                });
+            }
             if (!mentor_res) {
                 result['error'] = speeches.USER_NOT_FOUND;
                 return result;
@@ -541,7 +542,8 @@ export default class authService {
                 where: { user_id: mentor_res.dataValues.user_id }
             });
             if (!otp) {
-                passwordNeedToBeUpdated = requestBody.email;
+                passwordNeedToBeUpdated['otp'] = requestBody.organization_code;
+                passwordNeedToBeUpdated["messageId"] = speeches.AWSMESSAGEID
             } else {
                 passwordNeedToBeUpdated = await this.triggerEmail(requestBody.email);
                 if (passwordNeedToBeUpdated instanceof Error) {
