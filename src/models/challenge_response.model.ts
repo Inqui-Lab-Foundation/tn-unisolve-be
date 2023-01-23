@@ -10,8 +10,14 @@ export class challenge_response extends Model<InferAttributes<challenge_response
     declare sdg: String;
     declare response: string;
     declare initiated_by: String;
-    declare submitted_by: String;
+    declare submitted_at: String;
+    declare evaluated_by: String;
+    declare evaluated_at: Date;
     declare status: Enumerator;
+    declare evaluation_status: Enumerator;
+    declare rejected_reason: String;
+    declare final_result: Enumerator;
+    declare district: String;
     declare created_by: number;
     declare created_at: Date;
     declare updated_by: number;
@@ -33,6 +39,15 @@ challenge_response.init(
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
+        },
+        final_result: {
+            type: DataTypes.ENUM(...Object.values(constents.final_result_flags.list)),
+            defaultValue: constents.final_result_flags.default,
+            allowNull: true,
+        },
+        district: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         challenge_id: {
             type: DataTypes.INTEGER,
@@ -58,8 +73,24 @@ challenge_response.init(
             type: DataTypes.INTEGER,
             allowNull: true
         },
-        submitted_by: {
+        submitted_at: {
+            type: DataTypes.DATE(),
+            allowNull: true
+        },
+        evaluated_by: {
             type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        evaluated_at: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+        evaluation_status: {
+            type: DataTypes.ENUM(...Object.values(constents.evaluation_status.list)),
+            allowNull: true
+        },
+        rejected_reason: {
+            type: DataTypes.TEXT,
             allowNull: true
         },
         status: {
@@ -97,5 +128,3 @@ challenge_response.init(
         updatedAt: 'updated_at'
     }
 );
-
-//todo: add associations.. here 
