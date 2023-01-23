@@ -90,10 +90,10 @@ export default class authService {
             if (user_data) {
                 throw badRequest('Email');
             } else {
-                const mentor_data = await this.crudService.findOne(mentor, { where: { mobile: requestBody.mobile } })
-                if (mentor_data) {
-                    throw badRequest('Mobile')
-                } else {
+                // const mentor_data = await this.crudService.findOne(mentor, { where: { mobile: requestBody.mobile } })
+                // if (mentor_data) {
+                //     throw badRequest('Mobile')
+                // } else {
                     let createUserAccount = await this.crudService.create(user, requestBody);
                     let conditions = { ...requestBody, user_id: createUserAccount.dataValues.user_id };
                     let createMentorAccount = await this.crudService.create(mentor, conditions);
@@ -101,7 +101,7 @@ export default class authService {
                     createMentorAccount.dataValues['user_id'] = createUserAccount.dataValues.user_id;
                     response = createMentorAccount;
                     return response;
-                }
+                // }
             }
         } catch (error) {
             return error;
