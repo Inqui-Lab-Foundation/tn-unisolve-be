@@ -23,6 +23,7 @@ import { user_topic_progress } from "../models/user_topic_progress.model";
 import { worksheet_response } from "../models/worksheet_response.model";
 import { mentor_topic_progress } from '../models/mentor_topic_progress.model';
 import { constents } from '../configs/constents.config';
+import AWS from 'aws-sdk';
 export default class authService {
     crudService: CRUDService = new CRUDService;
     private otp = '112233';
@@ -309,6 +310,52 @@ export default class authService {
             return error
         }
     }
+    async triggerEmail(email: any) {
+        AWS.config.update({
+            region: process.env.AWS_REGION,
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        });
+        const otp: any = Math.random().toFixed(6).substr(-6);
+        let params = {
+            Destination: { /* required */
+                CcAddresses: [
+                ],
+                ToAddresses: [
+                    email
+                ]
+            },
+            Message: { /* required */
+                Body: { /* required */
+                    Html: {
+                        Charset: "UTF-8",
+                        Data: `Your temporary password to log-in is <B>${otp}</B> - UNISOLVE`
+                    },
+                    Text: {
+                        Charset: "UTF-8",
+                        Data: "TEXT_FOR MAT_BODY"
+                    }
+                },
+                Subject: {
+                    Charset: 'UTF-8',
+                    Data: 'UNISOLVE OTP SERVICES'
+                }
+            },
+            Source: "unisolvebhutan@inqui-lab.org", /* required */
+            ReplyToAddresses: [],
+        };
+        // Create the promise and SES service object
+        let sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
+        // Handle promise's fulfilled/rejected states
+        sendPromise.then((data: any) => {
+            return {
+                response: data.MessageId,
+                otp: otp
+            }
+        }).catch((err: any) => {
+            return err.stack;
+        });
+    }
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
         try {
@@ -385,18 +432,20 @@ export default class authService {
     }
     async mentorResetPassword(requestBody: any) {
         let result: any = {};
+        let mentor_res: any;
+        let mentor_id: any = requestBody.mentor_id;
         let otp = requestBody.otp == undefined ? true : false;
-        let passwordNeedToBeUpdated: any;
+        let passwordNeedToBeUpdated: any = {};
         try {
-            const mentor_res: any = await this.crudService.findOne(mentor, {
-                where: {
-                    [Op.or]: [
-                        {
-                            mobile: { [Op.like]: `%${requestBody.mobile}%` }
-                        }
-                    ]
-                }
-            });
+            if (!otp) {
+                mentor_res = await this.crudService.findOne(mentor, {
+                    where: { [Op.and]: [{ organization_code: requestBody.organization_code }, { mentor_id }] }
+                });
+            } else {
+                mentor_res = await this.crudService.findOne(user, {
+                    where: { username: requestBody.email }
+                });
+            }
             if (!mentor_res) {
                 result['error'] = speeches.USER_NOT_FOUND;
                 return result;
@@ -405,25 +454,27 @@ export default class authService {
                 where: { user_id: mentor_res.dataValues.user_id }
             });
             if (!otp) {
-                passwordNeedToBeUpdated = requestBody.mobile;
+                passwordNeedToBeUpdated['otp'] = requestBody.organization_code;
+                passwordNeedToBeUpdated["messageId"] = speeches.AWSMESSAGEID
             } else {
-                passwordNeedToBeUpdated = await this.triggerOtpMsg(requestBody.mobile);
+                passwordNeedToBeUpdated = await this.triggerEmail(requestBody.email);
                 if (passwordNeedToBeUpdated instanceof Error) {
                     throw passwordNeedToBeUpdated;
                 }
             }
             const findMentorDetailsAndUpdateOTP: any = await this.crudService.updateAndFind(mentor,
-                { otp: passwordNeedToBeUpdated },
+                { otp: passwordNeedToBeUpdated.otp },
                 { where: { user_id: mentor_res.dataValues.user_id } }
             );
-            passwordNeedToBeUpdated = String(passwordNeedToBeUpdated);
-            let hashString = await this.generateCryptEncryption(passwordNeedToBeUpdated)
+            passwordNeedToBeUpdated.otp = String(passwordNeedToBeUpdated.otp);
+            let hashString = await this.generateCryptEncryption(passwordNeedToBeUpdated.otp)
             const user_res: any = await this.crudService.updateAndFind(user, {
                 password: await bcrypt.hashSync(hashString, process.env.SALT || baseConfig.SALT)
             }, { where: { user_id: user_data.dataValues.user_id } })
             result['data'] = {
                 username: user_res.dataValues.username,
-                user_id: user_res.dataValues.user_id
+                user_id: user_res.dataValues.user_id,
+                awsMessageId: passwordNeedToBeUpdated.messageId
             };
             return result;
         } catch (error) {
