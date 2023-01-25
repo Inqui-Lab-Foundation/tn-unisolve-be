@@ -528,7 +528,7 @@ export default class authService {
         try {
             if (!otp) {
                 mentor_res = await this.crudService.findOne(mentor, {
-                    where: { [Op.or]: [{ organization_code: requestBody.organization_code }, { mentor_id }] }
+                    where: { [Op.and]: [{ organization_code: requestBody.organization_code }, { mentor_id }] }
                 });
             } else {
                 mentor_res = await this.crudService.findOne(user, {
