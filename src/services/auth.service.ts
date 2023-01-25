@@ -311,12 +311,14 @@ export default class authService {
         }
     }
     async triggerEmail(email: any) {
+        const result: any = {}
+        const otp: any = Math.random().toFixed(6).substr(-6);
+
         AWS.config.update({
-            region: process.env.AWS_REGION,
+            region: 'ap-south-1',
             accessKeyId: process.env.AWS_ACCESS_KEY_ID,
             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
         });
-        const otp: any = Math.random().toFixed(6).substr(-6);
         let params = {
             Destination: { /* required */
                 CcAddresses: [
@@ -344,17 +346,20 @@ export default class authService {
             Source: "unisolvebhutan@inqui-lab.org", /* required */
             ReplyToAddresses: [],
         };
-        // Create the promise and SES service object
-        let sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
-        // Handle promise's fulfilled/rejected states
-        sendPromise.then((data: any) => {
-            return {
-                response: data.MessageId,
-                otp: otp
-            }
-        }).catch((err: any) => {
-            return err.stack;
-        });
+        try {
+            // Create the promise and SES service object
+            let sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
+            // Handle promise's fulfilled/rejected states
+            await sendPromise.then((data: any) => {
+                result['messageId'] = data.MessageId;
+                result['otp'] = otp;
+            }).catch((err: any) => {
+                throw err;
+            });
+            return result;
+        } catch (error) {
+            return error;
+        }
     }
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
