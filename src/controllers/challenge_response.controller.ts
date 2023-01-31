@@ -908,7 +908,6 @@ export default class ChallengeResponsesController extends BaseController {
             } else {
                 file_name_prefix = `ideas/stage/${team_id}`
             }
-            // console.log(process.env.DB_HOST)
             for (const file_name of Object.keys(files)) {
                 const file = files[file_name];
                 const readFile: any = await fs.readFileSync(file.path);
