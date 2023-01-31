@@ -74,7 +74,6 @@ export default class MentorController extends BaseController {
             const { quiz_survey_id } = req.params
             const { page, size, status } = req.query;
             let condition = {}
-            // condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
 
             const paramStatus: any = req.query.status;
@@ -152,10 +151,8 @@ export default class MentorController extends BaseController {
             if (model) {
                 this.model = model;
             };
-            // const current_user = res.locals.user_id; 
             // pagination
             const { page, size, status } = req.query;
-            // let condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
@@ -175,15 +172,6 @@ export default class MentorController extends BaseController {
                 whereClauseStatusPart = { "status": "ACTIVE" };
                 boolStatusWhereClauseRequired = true;
             };
-            // const getUserIdFromMentorId = await mentor.findOne({
-            //     attributes: ["user_id", "created_by"], where: { mentor_id: req.body.mentor_id }
-            // });
-            // console.log(getUserIdFromMentorId);
-            // if (!getUserIdFromMentorId) throw badRequest(speeches.MENTOR_NOT_EXISTS);
-            // if (getUserIdFromMentorId instanceof Error) throw getUserIdFromMentorId;
-            // if (current_user !== getUserIdFromMentorId.getDataValue("user_id")) {
-            //     throw forbidden();
-            // };
             let district: any = req.query.district;
             let whereClauseOfDistrict: any = district && district !== 'All Districts' ?
                 { district: { [Op.like]: req.query.district } } :
@@ -240,7 +228,6 @@ export default class MentorController extends BaseController {
                         where: {
                             [Op.and]: [
                                 whereClauseStatusPart,
-                                // condition
                             ]
                         },
                         include: {
@@ -261,9 +248,6 @@ export default class MentorController extends BaseController {
                 }
 
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -271,12 +255,6 @@ export default class MentorController extends BaseController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(res, null, "error", speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
-                (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
             return res.status(200).send(dispatcher(res, data, 'success'));
         } catch (error) {
@@ -335,17 +313,6 @@ export default class MentorController extends BaseController {
         if (result && result.output && result.output.payload && result.output.payload.message == 'Mobile') {
             return res.status(406).send(dispatcher(res, result.data, 'error', speeches.MOBILE_EXISTS, 406));
         }
-        // // const otp = await this.authService.generateOtp();
-        // let otp = await this.authService.triggerOtpMsg(req.body.mobile); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
-        // otp = String(otp)
-        // let hashString = await this.authService.generateCryptEncryption(otp);
-        // const updatePassword = await this.authService.crudService.update(user,
-        //     { password: await bcrypt.hashSync(hashString, process.env.SALT || baseConfig.SALT) },
-        //     { where: { user_id: result.dataValues.user_id } });
-        // const findMentorDetailsAndUpdateOTP: any = await this.crudService.updateAndFind(mentor,
-        //     { otp: otp },
-        //     { where: { user_id: result.dataValues.user_id } }
-        // );
         const data = result.dataValues;
         return res.status(201).send(dispatcher(res, data, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
@@ -367,12 +334,7 @@ export default class MentorController extends BaseController {
             if (!result) {
                 return res.status(404).send(dispatcher(res, result, 'error', speeches.USER_NOT_FOUND));
             }
-            // else if (result.error) {
-            //     return res.status(401).send(dispatcher(res, result.error, 'error', speeches.USER_RISTRICTED, 401));
-            // }
             else {
-                // mentorDetails = await this.authService.getServiceDetails('mentor', { user_id: result.data.user_id });
-                // result.data['mentor_id'] = mentorDetails.dataValues.mentor_id
                 const mentorData = await this.authService.crudService.findOne(mentor, {
                     where: { user_id: result.data.user_id },
                     include: {
@@ -473,7 +435,6 @@ export default class MentorController extends BaseController {
     private async deleteAllData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { mentor_user_id } = req.params;
-            // const { mobile } = req.body;
             if (!mentor_user_id) {
                 throw badRequest(speeches.USER_USERID_REQUIRED);
             }
@@ -531,35 +492,21 @@ export default class MentorController extends BaseController {
                         }
                     };
                     const resultBulkDeleteStudents = await this.authService.bulkDeleteUserWithStudentDetails(arrayOfStudentuserIds)
-                    // console.log("resultBulkDeleteStudents",resultBulkDeleteStudents)
-                    // if(!resultBulkDeleteStudents){
-                    //     throw internal("error while deleteing students")
-                    // }
                     if (resultBulkDeleteStudents instanceof Error) {
                         throw resultBulkDeleteStudents
                     }
                 }
 
                 const resultTeamDelete = await this.crudService.delete(team, { where: { team_id: arrayOfteams } })
-                // if(!resultTeamDelete){
-                //     throw internal("error while deleting team")
-                // }
                 if (resultTeamDelete instanceof Error) {
                     throw resultTeamDelete
                 }
             }
             let resultmentorDelete: any = {};
             resultmentorDelete = await this.authService.bulkDeleteUserWithMentorDetails([mentor_user_id])
-            // if(!resultmentorDelete){
-            //     throw internal("error while deleting mentor")
-            //}
             if (resultmentorDelete instanceof Error) {
                 throw resultmentorDelete
             }
-
-            // if (!resultmentorDelete) {
-            //     return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_NOT_FOUND));
-            // } else 
             if (resultmentorDelete.error) {
                 return res.status(404).send(dispatcher(res, resultmentorDelete.error, 'error', resultmentorDelete.error));
             } else {
@@ -575,7 +522,6 @@ export default class MentorController extends BaseController {
             if (!mobile) {
                 throw badRequest(speeches.MOBILE_NUMBER_REQUIRED);
             }
-            // req.body['otp'] = 
             const result = await this.authService.mentorResetPassword(req.body);
             if (!result) {
                 return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_NOT_FOUND));
@@ -606,16 +552,6 @@ export default class MentorController extends BaseController {
         } catch (error) {
             next(error)
         }
-        // const generatedUUID = this.nanoid();
-        // req.body['generatedPassword'] = generatedUUID;
-        // const result = await this.authService.restPassword(req.body, res);
-        // if (!result) {
-        //     return res.status(404).send(dispatcher(res, result.user_res, 'error', speeches.USER_NOT_FOUND));
-        // } else if (result.match) {
-        //     return res.status(404).send(dispatcher(res, result.match, 'error', speeches.USER_PASSWORD));
-        // } else {
-        //     return res.status(202).send(dispatcher(res, result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-        // }
     };
     protected async bulkUpload(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         //@ts-ignore
@@ -639,9 +575,6 @@ export default class MentorController extends BaseController {
         stream.on('data', async (data: any) => {
             dataLength = Object.entries(data).length;
             for (let i = 0; i < dataLength; i++) {
-                // if (Object.entries(data)[i][0] === 'email')
-                // Object.entries(data)[i][0].replace('email', 'username')
-                // console.log(Object.entries(data)[i][0])
                 if (Object.entries(data)[i][1] === '') {
                     Errors.push(badRequest('missing fields', data));
                     return;
@@ -673,7 +606,6 @@ export default class MentorController extends BaseController {
                     bulkData[data] = payload;
                 };
             }
-            // console.log(bulkData)
             if (counter > 0) {
                 await this.crudService.bulkCreate(loadMode, bulkData)
                     .then((result) => {

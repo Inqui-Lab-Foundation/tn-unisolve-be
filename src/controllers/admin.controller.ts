@@ -136,6 +136,8 @@ export default class AdminController extends BaseController {
             return res.status(202).send(dispatcher(res, result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
+    
+    //service deprecated 
     // private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     //     const result = await this.authService.updatePassword(req.body, res);
     //     if (!result) {

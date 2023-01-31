@@ -76,12 +76,6 @@ export default class ReflectiveQuizController extends BaseController {
 
                 res.status(200).send(dispatcher(res,resultQuestion))
             }else{
-                //update worksheet topic progress for this user to completed..!!
-                // if(!boolStatusWhereClauseRequired || 
-                //     (boolStatusWhereClauseRequired && paramStatus == "ACTIVE")){
-                //     const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_topic.course_topic_id,"status":"COMPLETED"})
-                // }
-                
                 //send response that quiz is completed..!!
                 res.status(200).send(dispatcher(res,"Quiz has been completed no more questions to display"))
             }
@@ -122,8 +116,7 @@ export default class ReflectiveQuizController extends BaseController {
             const quizRes = await this.crudService.findOne(reflective_quiz_response,{where: {video_id:video_id,user_id:user_id}});
             if(quizRes instanceof Error){
                 throw internal(quizRes.message)
-            }          
-            // console.log(quizRes);
+            }
             let dataToUpsert:any = {}
             dataToUpsert = {video_id:video_id,user_id:user_id,updated_by:user_id}
             
@@ -157,7 +150,6 @@ export default class ReflectiveQuizController extends BaseController {
             
             let user_response:any = {}
             if(quizRes){
-                // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(quizRes.dataValues.response);
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
 

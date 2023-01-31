@@ -149,11 +149,7 @@ export default class WorksheetController extends BaseController {
                 } catch(error:any){
                     return res.status(500).send(dispatcher(res,data, 'error'))
                 }
-                
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if(data!=null){
                     throw notFound(data.message)
@@ -161,7 +157,6 @@ export default class WorksheetController extends BaseController {
                     throw notFound()
                 }
             }
-
             return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
@@ -178,7 +173,6 @@ export default class WorksheetController extends BaseController {
             if(!user_id){
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
             }
-
             //check if the given worksheet is a valid topic
             const curr_workshet_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":worksheet_id,"topic_type":"WORKSHEET"}})
             if(!curr_workshet_topic || curr_workshet_topic instanceof Error){
@@ -225,26 +219,6 @@ export default class WorksheetController extends BaseController {
                 result['attachments'] = attachments;
                 result['errors'] = errs;
             }
-            // res.status(200).send(dispatcher(res, result));
-            // const targetPath = path.join(process.cwd(), 'resources', 'static', 'uploads', 'worksheets', 'responses', filename);
-            // const copyResult: any = await fs.promises.copyFile(file.path, targetPath).catch(err => {
-            //     errs.push(`Error uploading file: ${file.originalFilename}`);
-            // })
-            // if (copyResult instanceof Error) {
-            //     errs.push(`Error uploading file: ${file.originalFilename}`);
-            //     // console.log(copyResult)
-            //     // throw internal(`Error uploading file: ${file.originalFilename}`) 
-            //     // next(internal(`Error uploading file: ${file.originalFilename}`))  
-            // } else {
-
-            //     reqData[file.fieldName] = `/assets/worksheets/responses/${filename}`;
-            //     attachments = attachments + `/assets/worksheets/responses/${filename},`
-            //     // console.log(attachments)
-            // }
-            // }
-            // if (errs.length) {
-            //     return res.status(406).send(dispatcher(res, errs, 'error', speeches.NOT_ACCEPTABLE, 406));
-            // }
             const modelLoaded = await this.loadModel("worksheet_response");
             //create an entry in worksheet submission table
             let dataToBeUploaded:any = {};
@@ -257,8 +231,6 @@ export default class WorksheetController extends BaseController {
             //update worksheet topic progress for this user to completed..!!
             const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_workshet_topic.course_topic_id,"status":"COMPLETED"})
             res.status(200).send(dispatcher(res,data,"success"));
-            
-
         }catch(err){
             next(err)
         }

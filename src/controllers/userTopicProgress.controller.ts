@@ -43,7 +43,6 @@ export default class UserTopicProgress extends BaseController {
                     user_id:user_id,
                     course_topic_id:course_topic_id
             }})
-            // console.log(topicProgressAlreadyPresent)
             if( topicProgressAlreadyPresent instanceof Error){
                 throw topicProgressAlreadyPresent
             }
@@ -68,9 +67,6 @@ export default class UserTopicProgress extends BaseController {
             }else{
                 data = await this.crudService.create(modelLoaded, payload);    
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if ( data instanceof Error) {
                 throw badRequest(data.message)
             }

@@ -32,7 +32,6 @@ export default class EvaluatorController extends BaseController {
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
         this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
         this.router.post(`${this.path}/bulkUpload`, this.bulkUpload.bind(this))
-        // this.router.put(`${this.path}/updatePassword`, this.updatePassword.bind(this));
         super.initializeRoutes();
     };
 
@@ -171,9 +170,6 @@ export default class EvaluatorController extends BaseController {
         stream.on('data', async (data: any) => {
             dataLength = Object.entries(data).length;
             for (let i = 0; i < dataLength; i++) {
-                // if (Object.entries(data)[i][0] === 'email')
-                // Object.entries(data)[i][0].replace('email', 'username')
-                // console.log(Object.entries(data)[i][0])
                 if (Object.entries(data)[i][1] === '') {
                     Errors.push(badRequest('missing fields', data));
                     return;
@@ -195,7 +191,6 @@ export default class EvaluatorController extends BaseController {
                     existedEntities++;
                 } else {
                     counter++;
-                    // const cryptoEncryptedPassword = await this.authService.generateCryptEncryption(bulkData[data]['mobile']);
                     payload = await this.autoFillUserDataForBulkUpload(req, res, loadMode, {
                         ...bulkData[data], role,
                         password: this.password
@@ -203,12 +198,9 @@ export default class EvaluatorController extends BaseController {
                     bulkData[data] = payload;
                 };
             }
-            // console.log(bulkData)
             if (counter > 0) {
                 await this.crudService.bulkCreate(loadMode, bulkData)
                     .then((result) => {
-                        // let mentorData = {...bulkData, user_id: result.user_id}
-                        // await this.crudService.bulkCreate(user, bulkData)
                         return res.send(dispatcher(res, { data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
                     }).catch((error: any) => {
                         return res.status(500).send(dispatcher(res, error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));

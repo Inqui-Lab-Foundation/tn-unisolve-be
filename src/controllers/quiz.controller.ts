@@ -64,7 +64,6 @@ export default class QuizController extends BaseController {
                     throw badRequest("INVALID TOPIC");
                 }
                 isMentorCourse = true;
-                // console.log("isMentorCourse",isMentorCourse)
             }
     
             const quizRes = await this.crudService.findOne(quiz_response, { where: { quiz_id: quiz_id, user_id: user_id } });
@@ -88,26 +87,17 @@ export default class QuizController extends BaseController {
             let level = "HARD"
             let question_no = 1
             let nextQuestion: any = null;
-            // console.log("user_id",user_id);
-            // console.log("quizRes",quizRes);
             if (quizRes) {
                 //TOOO :: implement checking response and based on that change the 
                 let user_response: any = {}
                 user_response = JSON.parse(quizRes.dataValues.response);
-                // console.log(user_response);
                 let questionNosAsweredArray = Object.keys(user_response);
                 questionNosAsweredArray = questionNosAsweredArray.sort((a, b) => (Number(a) > Number(b) ? -1 : 1));
-                // console.log(questionNosAsweredArray)
                 const noOfQuestionsAnswered = Object.keys(user_response).length
-                // console.log(noOfQuestionsAnswered)
                 const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
                 if (lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer ) {
                     question_no = lastQuestionAnsewered.question_no + 1;
-                    // console.log("came here1");
-
                 } else if(!isMentorCourse){// converted to else if from else to take into account diff behaviour of mentor course which is it doesnt have hard medium easy instead it will have only one question per question no which is hard
-                    // console.log("came here2");
-
                     question_no = lastQuestionAnsewered.question_no;
                     if (lastQuestionAnsewered.level == "HARD") {
                         level = "MEDIUM"
@@ -118,10 +108,7 @@ export default class QuizController extends BaseController {
                         level = "HARD"
                     }
                 }else{
-                    // console.log("came here3");
-                    //since this is mentor quiz id hence next question will not advance to easy medium instead will remain on same question untill answered correctly
                     question_no = lastQuestionAnsewered.question_no+1;
-                    // console.log(lastQuestionAnsewered.question_no);
                     level = "HARD"
 
                 }
@@ -171,12 +158,6 @@ export default class QuizController extends BaseController {
     
                 res.status(200).send(dispatcher(res,resultQuestion))
             } else {
-                //update worksheet topic progress for this user to completed..!!
-                // if (!boolStatusWhereClauseRequired ||
-                    // (boolStatusWhereClauseRequired && paramStatus == "ACTIVE")) {
-                    // const updateProgress = await this.crudService.create(user_topic_progress, { "user_id": user_id, "course_topic_id": curr_topic.course_topic_id, "status": "COMPLETED" })
-                // }
-    
                 //send response that quiz is completed..!!
                 res.status(200).send(dispatcher(res,"Quiz has been completed no more questions to display"))
             }
@@ -195,7 +176,6 @@ export default class QuizController extends BaseController {
             const { quiz_question_id  } = req.body;
             let selected_option = req.body.selected_option;
             selected_option = res.locals.translationService.getTranslationKey(selected_option)
-            // console.log(selected_option)
             const user_id = res.locals.user_id;
             if (!quiz_id) {
                 throw badRequest(speeches.QUIZ_ID_REQUIRED);
@@ -233,15 +213,12 @@ export default class QuizController extends BaseController {
                 console.log(topic_to_redirect_to);
                 topic_to_redirect_to = null
             }
-
             const quizRes = await this.crudService.findOne(quiz_response, { where: { quiz_id: quiz_id, user_id: user_id } });
             if (quizRes instanceof Error) {
                 throw internal(quizRes.message)
             }
-            // console.log(quizRes);
             let dataToUpsert: any = {}
             dataToUpsert = { quiz_id: quiz_id, user_id: user_id, updated_by: user_id }
-
             //check if question was ansered correctly
             let hasQuestionBeenAnsweredCorrectly = false;
             if (questionAnswered.type == "TEXT" || questionAnswered.type == "DRAW") {
@@ -265,7 +242,6 @@ export default class QuizController extends BaseController {
 
             let user_response: any = {}
             if (quizRes) {
-                // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(quizRes.dataValues.response);
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
 
@@ -286,7 +262,6 @@ export default class QuizController extends BaseController {
                 } else {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                     result["ar_image"] = questionAnswered.dataValues.ar_image_ans_wrong;
-                    // result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
                     result["ar_video"]= topic_to_redirect_to
                     result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
@@ -314,7 +289,6 @@ export default class QuizController extends BaseController {
                 } else {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                     result["ar_image"] = questionAnswered.dataValues.ar_image_ans_wrong;
-                    // result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
                     result["ar_video"]= topic_to_redirect_to
                     result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
@@ -325,5 +299,4 @@ export default class QuizController extends BaseController {
             next(err)
         }
     }
-    //TODO: 
 }
