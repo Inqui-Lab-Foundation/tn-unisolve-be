@@ -54,6 +54,7 @@ import {
     worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete
 } from "./worksheets.api.docs";
 import { organizationList, createOrganization, organizationSingle, organizationDelete, organizationUpdate, createOrganizationWithFile, organizationRequestBody, organizationRequestBodyWithFile, organizationUpdatesRequestBody } from "./organization.api.docs";
+import { admin, admins, changePassword, login, logout, registration } from "./admin.api.docs";
 
 // define Swagger options with specific properties
 const options = {
@@ -83,6 +84,7 @@ const options = {
         },
         {
             name: 'Auth',
+            description: 'Auth operations'
         },
         {
             name: 'Admins',
@@ -203,14 +205,22 @@ const options = {
             get: get_dynamicSignupForm
         },
         '/api/v1/admins/register': {
+            post: registration
         },
         '/api/v1/admins/login': {
+            post: login
         },
         '/api/v1/admins/logout': {
+            get: logout
         },
         '/api/v1/admins/changePassword': {
+            put: changePassword
         },
         '/api/v1/admins': {
+            get: admins
+        },
+        '/api/v1/admins/{id}': {
+            get: admin
         },
         '/api/v1/evaluators/register': {
         },

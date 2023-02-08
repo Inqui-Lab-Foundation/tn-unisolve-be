@@ -23,5 +23,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "exclude": ["node_modules", "dist", "coverage"],
-  "include": ["src", "config", "singUp.json", "src/models/quiz.model.ts"]
+  "include": ["src", "config", "singUp.json", "src/models/quiz.model.ts", "src/docs/dashboard.api.docs.ts"]
 }
