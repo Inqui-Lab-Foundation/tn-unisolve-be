@@ -38,7 +38,10 @@ export default class DashboardService extends BaseService {
                         ideas: stats.challengeInDistrict.length,
                         district_name: district.district,
                         students: stats.studentsInDistric.length,
-                        schools_with_teams: stats.schoolIdsInDistrictWithTeams.length
+                        schools_with_teams: stats.schoolIdsInDistrictWithTeams.length,
+                        boys: stats.studentBoys.length, 
+                        girls: stats.studentGirls.length, 
+                        youth_center: stats.YouthCentersInDistric.length 
                     })
                 } catch (err) {
                     console.log(err)
@@ -46,7 +49,7 @@ export default class DashboardService extends BaseService {
             }
 
             const statsForAllDistrics: any = await this.getMapStatsForDistrict(null)
-
+            // console.log(statsForAllDistrics);
             bulkCreateArray.push({
                 overall_schools: statsForAllDistrics.schoolIdsInDistrict.length,
                 reg_schools: statsForAllDistrics.registeredSchoolIdsInDistrict.length,
@@ -54,9 +57,11 @@ export default class DashboardService extends BaseService {
                 ideas: statsForAllDistrics.challengeInDistrict.length,
                 district_name: "all",
                 students: statsForAllDistrics.studentsInDistric.length,
-                schools_with_teams: statsForAllDistrics.schoolIdsInDistrictWithTeams.length
+                schools_with_teams: statsForAllDistrics.schoolIdsInDistrictWithTeams.length,
+                boys: statsForAllDistrics.studentBoys.length, 
+                girls: statsForAllDistrics.studentGirls.length, 
+                youth_center: statsForAllDistrics.YouthCentersInDistric.length 
             })
-
             await this.crudService.delete(dashboard_map_stat, { where: {}, truncate: true });
             const result = await this.crudService.bulkCreate(dashboard_map_stat, bulkCreateArray);
             return result;
@@ -80,6 +85,9 @@ export default class DashboardService extends BaseService {
             let teamIdInDistrict: any = [];
             let challengeInDistrict: any = [];
             let studentsInDistric: any = [];
+            let studentBoys: any = [];
+            let studentGirls: any = [];
+            let YouthCentersInDistric: any = [];
 
             if (argdistric) {
                 whereClause = {
@@ -95,6 +103,10 @@ export default class DashboardService extends BaseService {
             const overAllSchool = await this.crudService.findAll(organization, {
                 where: whereClause
             });
+            // if(argdistric=="b"){
+            //     console.log(argdistric)
+            //     console.log(overAllSchool)
+            // }
             if (!overAllSchool || (!overAllSchool.length) || overAllSchool.length == 0) {
                 return {
                     schoolIdsInDistrict: schoolIdsInDistrict,
@@ -106,6 +118,15 @@ export default class DashboardService extends BaseService {
                 }
             }
             schoolIdsInDistrict = overAllSchool.map((Element: any) => Element.dataValues.organization_code);
+                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                    studentBoys: studentBoys,
+                    studentGirls: studentGirls,
+                    YouthCentersInDistric: YouthCentersInDistric,
+                }
+            }
+            schoolIdsInDistrict = overAllSchool.map((Element: any) => Element.dataValues.organization_code);
+            YouthCentersInDistric = overAllSchool.filter((Element: any) => Element.dataValues.organization_type == "Youth Center");
+            // console.log("YouthCentersInDistric: ", YouthCentersInDistric);
             const mentorReg = await this.crudService.findAll(mentor, {
                 where: {
                     organization_code: schoolIdsInDistrict,
@@ -119,7 +140,10 @@ export default class DashboardService extends BaseService {
                     teamIdInDistrict: teamIdInDistrict,
                     challengeInDistrict: challengeInDistrict,
                     studentsInDistric: studentsInDistric,
-                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams
+                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                    studentBoys: studentBoys,
+                    studentGirls: studentGirls,
+                    YouthCentersInDistric: YouthCentersInDistric
                 }
             }
             mentorIdInDistrict = mentorReg.map((Element: any) => Element.dataValues.mentor_id);//changed this to  user_id from mentor_id, because teams has mentor linked with team via user_id as value in the mentor_id collumn of the teams table
@@ -132,6 +156,16 @@ export default class DashboardService extends BaseService {
                 group: ['organization_code']
             });
             if (!schoolRegistered || (!schoolRegistered.length) || schoolRegistered.length == 0) {
+                // return {
+                //     schoolIdsInDistrict: schoolIdsInDistrict,
+                //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
+                //     teamIdInDistrict: teamIdInDistrict,
+                //     challengeInDistrict: challengeInDistrict,
+                //     studentsInDistric: studentsInDistric,
+                //      studentBoys: studentBoys,
+                //      studentGirls: studentGirls,
+                //      YouthCentersInDistric: YouthCentersInDistric
+                // }
                 registeredSchoolIdsInDistrict = []
             } else {
                 registeredSchoolIdsInDistrict = schoolRegistered.map((Element: any) => Element.dataValues.organization_code);
@@ -151,7 +185,10 @@ export default class DashboardService extends BaseService {
                     teamIdInDistrict: teamIdInDistrict,
                     challengeInDistrict: challengeInDistrict,
                     studentsInDistric: studentsInDistric,
-                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams
+                    schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                    studentBoys: studentBoys,
+                    studentGirls: studentGirls,
+                    YouthCentersInDistric: YouthCentersInDistric
                 }
             }
             teamIdInDistrict = teamReg.map((Element: any) => Element.dataValues.team_id);
@@ -168,6 +205,16 @@ export default class DashboardService extends BaseService {
                 group: ['mentor_id'],
             })
             if (!distinctMentorsWithTeams || (!distinctMentorsWithTeams.length) || distinctMentorsWithTeams.length == 0) {
+                // return {
+                //     schoolIdsInDistrict: schoolIdsInDistrict,
+                //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
+                //     teamIdInDistrict: teamIdInDistrict,
+                //     challengeInDistrict: challengeInDistrict,
+                //     studentsInDistric: studentsInDistric,
+                // studentBoys: studentBoys,
+                //     studentGirls: studentGirls,
+                //         YouthCentersInDistric: YouthCentersInDistric
+                // }
                 schoolIdsInDistrictWithTeams = []
             } else {
                 schoolIdsInDistrictWithTeams = distinctMentorsWithTeams.map((Element: any) => Element.dataValues.mentor_id);
@@ -182,6 +229,16 @@ export default class DashboardService extends BaseService {
             });
 
             if (!challengeReg || (!challengeReg.length) || challengeReg.length == 0) {
+                // return {
+                //     schoolIdsInDistrict: schoolIdsInDistrict,
+                //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
+                //     teamIdInDistrict: teamIdInDistrict,
+                //     challengeInDistrict: challengeInDistrict,
+                //     studentsInDistric: studentsInDistric,
+                // studentBoys: studentBoys,
+                //     studentGirls: studentGirls,
+                //         YouthCentersInDistric: YouthCentersInDistric
+                // }
                 challengeInDistrict = []
             } else {
                 challengeInDistrict = challengeReg.map((Element: any) => Element.dataValues.challenge_response_id);
@@ -191,7 +248,8 @@ export default class DashboardService extends BaseService {
             const studentsResult = await student.findAll({
                 attributes: [
                     "user_id",
-                    "student_id"
+                    "student_id",
+                    "Gender"
                 ],
                 where: {
                     team_id: teamIdInDistrict,
@@ -199,9 +257,21 @@ export default class DashboardService extends BaseService {
                 }
             })
             if (!studentsResult || (!studentsResult.length) || studentsResult.length == 0) {
+                // return {
+                //     schoolIdsInDistrict: schoolIdsInDistrict,
+                //     registeredSchoolIdsInDistrict: registeredSchoolIdsInDistrict,
+                //     teamIdInDistrict: teamIdInDistrict,
+                //     challengeInDistrict: challengeInDistrict,
+                //     studentsInDistric: studentsInDistric,
+                // studentBoys: studentBoys,
+                //     studentGirls: studentGirls,
+                //         YouthCentersInDistric: YouthCentersInDistric
+                // }
                 studentsInDistric = []
             } else {
                 studentsInDistric = studentsResult.map((Element: any) => Element.dataValues.student_id);
+                studentBoys = studentsResult.filter((Element: any) => Element.dataValues.Gender == "MALE");
+                studentGirls = studentsResult.filter((Element: any) => Element.dataValues.Gender == "FEMALE");
             }
             studentsInDistric = studentsResult.map((Element: any) => Element.dataValues.student_id);
 
@@ -211,7 +281,10 @@ export default class DashboardService extends BaseService {
                 teamIdInDistrict: teamIdInDistrict,
                 challengeInDistrict: challengeInDistrict,
                 studentsInDistric: studentsInDistric,
-                schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams
+                schoolIdsInDistrictWithTeams: schoolIdsInDistrictWithTeams,
+                studentBoys: studentBoys,
+                studentGirls: studentGirls,
+                YouthCentersInDistric: YouthCentersInDistric
             }
         } catch (err) {
             return err

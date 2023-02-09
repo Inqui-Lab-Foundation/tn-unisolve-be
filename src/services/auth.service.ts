@@ -40,8 +40,7 @@ export default class authService {
                     status: {
                         [Op.or]: ['ACTIVE', 'NEW']
                     }
-                },
-                include: {
+                }, include: {
                     model: mentor,
                     attributes: [
                         "mentor_id",
@@ -106,18 +105,18 @@ export default class authService {
             if (user_data) {
                 throw badRequest('Email');
             } else {
-                const mentor_data = await this.crudService.findOne(mentor, { where: { mobile: requestBody.mobile } })
-                if (mentor_data) {
-                    throw badRequest('Mobile')
-                } else {
-                    let createUserAccount = await this.crudService.create(user, requestBody);
-                    let conditions = { ...requestBody, user_id: createUserAccount.dataValues.user_id };
-                    let createMentorAccount = await this.crudService.create(mentor, conditions);
-                    createMentorAccount.dataValues['username'] = createUserAccount.dataValues.username;
-                    createMentorAccount.dataValues['user_id'] = createUserAccount.dataValues.user_id;
-                    response = createMentorAccount;
-                    return response;
-                }
+                // const mentor_data = await this.crudService.findOne(mentor, { where: { mobile: requestBody.mobile } })
+                // if (mentor_data) {
+                //     throw badRequest('Mobile')
+                // } else {
+                let createUserAccount = await this.crudService.create(user, requestBody);
+                let conditions = { ...requestBody, user_id: createUserAccount.dataValues.user_id };
+                let createMentorAccount = await this.crudService.create(mentor, conditions);
+                createMentorAccount.dataValues['username'] = createUserAccount.dataValues.username;
+                createMentorAccount.dataValues['user_id'] = createUserAccount.dataValues.user_id;
+                response = createMentorAccount;
+                return response;
+                // }
             }
         } catch (error) {
             return error;
@@ -358,6 +357,57 @@ export default class authService {
         } catch (error: any) {
             return error
         }
+    };
+    async triggerEmail(email: any) {
+        const result: any = {}
+        const otp: any = Math.random().toFixed(6).substr(-6);
+
+        AWS.config.update({
+            region: 'ap-south-1',
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        });
+        let params = {
+            Destination: { /* required */
+                CcAddresses: [
+                ],
+                ToAddresses: [
+                    email
+                ]
+            },
+            Message: { /* required */
+                Body: { /* required */
+                    Html: {
+                        Charset: "UTF-8",
+                        Data: `Your temporary password to log-in is <B>${otp}</B> - UNISOLVE`
+                    },
+                    Text: {
+                        Charset: "UTF-8",
+                        Data: "TEXT_FOR MAT_BODY"
+                    }
+                },
+                Subject: {
+                    Charset: 'UTF-8',
+                    Data: 'UNISOLVE OTP SERVICES'
+                }
+            },
+            Source: "unisolvebhutan@inqui-lab.org", /* required */
+            ReplyToAddresses: [],
+        };
+        try {
+            // Create the promise and SES service object
+            let sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
+            // Handle promise's fulfilled/rejected states
+            await sendPromise.then((data: any) => {
+                result['messageId'] = data.MessageId;
+                result['otp'] = otp;
+            }).catch((err: any) => {
+                throw err;
+            });
+            return result;
+        } catch (error) {
+            return error;
+        }
     }
     /**
      * find the user details and trigger OTP, update the password
@@ -456,18 +506,20 @@ export default class authService {
      */
     async mentorResetPassword(requestBody: any) {
         let result: any = {};
+        let mentor_res: any;
+        let mentor_id: any = requestBody.mentor_id;
         let otp = requestBody.otp == undefined ? true : false;
-        let passwordNeedToBeUpdated: any;
+        let passwordNeedToBeUpdated: any = {};
         try {
-            const mentor_res: any = await this.crudService.findOne(mentor, {
-                where: {
-                    [Op.or]: [
-                        {
-                            mobile: { [Op.like]: `%${requestBody.mobile}%` }
-                        }
-                    ]
-                }
-            });
+            if (!otp) {
+                mentor_res = await this.crudService.findOne(mentor, {
+                    where: { [Op.and]: [{ organization_code: requestBody.organization_code }, { mentor_id }] }
+                });
+            } else {
+                mentor_res = await this.crudService.findOne(user, {
+                    where: { username: requestBody.email }
+                });
+            }
             if (!mentor_res) {
                 result['error'] = speeches.USER_NOT_FOUND;
                 return result;
@@ -476,25 +528,29 @@ export default class authService {
                 where: { user_id: mentor_res.dataValues.user_id }
             });
             if (!otp) {
-                passwordNeedToBeUpdated = requestBody.mobile;
+                passwordNeedToBeUpdated['otp'] = requestBody.organization_code;
+                passwordNeedToBeUpdated["messageId"] = speeches.AWSMESSAGEID
             } else {
-                passwordNeedToBeUpdated = await this.triggerOtpMsg(requestBody.mobile);
+                passwordNeedToBeUpdated = await this.triggerEmail(requestBody.email);
                 if (passwordNeedToBeUpdated instanceof Error) {
                     throw passwordNeedToBeUpdated;
                 }
             }
             const findMentorDetailsAndUpdateOTP: any = await this.crudService.updateAndFind(mentor,
-                { otp: passwordNeedToBeUpdated },
+                { otp: passwordNeedToBeUpdated.otp },
                 { where: { user_id: mentor_res.dataValues.user_id } }
             );
-            passwordNeedToBeUpdated = String(passwordNeedToBeUpdated);
-            let hashString = await this.generateCryptEncryption(passwordNeedToBeUpdated)
+            passwordNeedToBeUpdated.otp = String(passwordNeedToBeUpdated.otp);
+            let hashString = await this.generateCryptEncryption(passwordNeedToBeUpdated.otp)
             const user_res: any = await this.crudService.updateAndFind(user, {
                 password: await bcrypt.hashSync(hashString, process.env.SALT || baseConfig.SALT)
             }, { where: { user_id: user_data.dataValues.user_id } })
             result['data'] = {
                 username: user_res.dataValues.username,
-                user_id: user_res.dataValues.user_id
+                user_id: user_res.dataValues.user_id,
+                awsMessageId: passwordNeedToBeUpdated.messageId
+                // mobile: mentor_res.dataValues.mobile,
+                // reg_status: mentor_res.dataValues.reg_status
             };
             return result;
         } catch (error) {
