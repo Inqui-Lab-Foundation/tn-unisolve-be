@@ -55,6 +55,13 @@ import {
 } from "./worksheets.api.docs";
 import { organizationList, createOrganization, organizationSingle, organizationDelete, organizationUpdate, createOrganizationWithFile, organizationRequestBody, organizationRequestBodyWithFile, organizationUpdatesRequestBody } from "./organization.api.docs";
 import { admin, admins, changePassword, login, logout, registration } from "./admin.api.docs";
+import { userSchema } from "../validations/user.validations";
+import { addStudent, badges, bulkCreateStudent, resetPassword, student, studentRegister, students } from "./student.api.docs";
+import { user, users } from "./users.api.docs";
+import { badge } from "../models/badge.model";
+import { deleteData, mentorId, mentors, regStatus, updateMobile, updatePassword, validateOtp, verifyUser } from "./mentor.api.docs";
+import { mentor } from "../models/mentor.model";
+import { register} from "./evaluater.api.docs";
 
 // define Swagger options with specific properties
 const options = {
@@ -223,10 +230,13 @@ const options = {
             get: admin
         },
         '/api/v1/evaluators/register': {
+            post :register
         },
         '/api/v1/evaluators/login': {
+        
         },
         '/api/v1/evaluators/logout': {
+    
         },
         '/api/v1/evaluators/changePassword': {
         },
@@ -235,72 +245,103 @@ const options = {
         '/evaluators/bulkUpload': {
         },
         '/api/v1/mentors/register': {
+            post :register
         },
         '/api/v1/mentors/validateOtp': {
+            post :validateOtp
         },
         '/api/v1/mentors/login': {
+            post : login
         },
         '/api/v1/mentors/changePassword': {
+            put : changePassword
         },
         '/api/v1/mentors/updatePassword': {
+            put :updatePassword
         },
         '/api/v1/mentors/verifyUser': {
+            put : verifyUser
         },
         '/api/v1/mentors/updateMobile': {
+            put :updateMobile
         },
         '/api/v1/mentors/:mentor_user_id/deleteAllData': {
+            delete : deleteData
         },
         '/api/v1/mentors/resetPassword': {
+            put : resetPassword
         },
         '/api/v1/mentors/manualResetPassword': {
         },
         '/api/v1/mentors/regStatus': {
+            get : regStatus
         },
         '/api/v1/mentors/bulkUpload': {
+
         },
         '/api/v1/mentors': {
+            get : mentors
         },
         '/api/v1/mentors/:id': {
+            get : mentorId
         },
         '/api/v1/students/register': {
+            post: studentRegister
         },
         '/api/v1/students/addStudent': {
+            post: addStudent
         },
         '/api/v1/students/bulkCreateStudent': {
+            post: bulkCreateStudent
         },
         '/api/v1/students/login': {
+            post: login
         },
         '/api/v1/students/logout': {
+            get: logout
         },
         '/api/v1/students/changePassword': {
+            put :changePassword
         },
         '/api/v1/students/resetPassword': {
+            put : resetPassword
+
         },
         '/api/v1/students/:student_user_id/studentCertificate': {
         },
         '/api/v1/students/:student_user_id/badges': {
+            get : badges
         },
         '/api/v1/students/passwordUpdate': {
+
         },
         '/api/v1/students': {
+            get :student
         },
         '/api/v1/students/:id': {
+            get :students
         },
         '/api/v1/students/withfile': {
+            
         },
         '/api/v1/students/:id/withfile': {
         },
         '/api/v1/users/updateMentorDetails': {
+
         },
         '/api/v1/users': {
+            get: user
         },
         '/api/v1/users/:id': {
+          get : users
+
         },
         '/api/v1/users/withfile': {
         },
         '/api/v1/users/:id/withfile': {
         },
         '/api/v1/notifications/tome': {
+            
         },
         '/api/v1/notifications/all': {
         },
@@ -313,10 +354,12 @@ const options = {
         '/api/v1/courses/test': {
         },
         '/api/v1/courses': {
+
         },
         '/api/v1/courses/:id': {
         },
         '/api/v1/courses/withfile': {
+        
         },
         '/api/v1/courses/:id/withfile': {
         },
@@ -591,6 +634,7 @@ const options = {
         '/api/v1/tutorialVideos/:id/withfile': {
         },
         '/api/v1/reports/allMentorReports': {
+
         },
         '/api/v1/reports/mentorRegList': {
         },
