@@ -35,45 +35,4 @@ export default class QuizQuestionsController extends BaseController {
         await this.copyAllFiles(req,filenamePrefix,"images","quiz_imgs");
         return super.createData(req,res,next)
     }
-
-    // protected async createDataWithFile(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-    //     try {
-    //         const { model } = req.params;
-    //         if (model) {
-    //             this.model = model;
-    //         };
-    //         const rawFiles: any = req.files;
-    //         const files: any = Object.values(rawFiles);
-    //         const reqData: any = req.body;
-    //         const errs: any = [];
-    //         for (const file_name of Object.keys(files)) {
-    //             const file = files[file_name];
-    //             const filename = file.path.split(path.sep).pop();
-    //             const targetPath = path.join(process.cwd(), 'resources', 'static', 'uploads', 'images', "quiz_ing",filename);
-    //             await fs.rename(file.path, targetPath, async (err) => {
-    //                 if (err) {
-    //                     errs.push(`Error uploading file: ${file.originalFilename}`);
-    //                 } else {
-    //                     reqData[file.fieldName] = `/posters/${filename}`;
-    //                 }
-    //             });
-    //         }
-    //         if (errs.length) {
-    //             return res.status(406).send(dispatcher(res,errs, 'error', speeches.NOT_ACCEPTABLE, 406));
-    //         }
-    //         const modelLoaded = await this.loadModel(model);
-    //         const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
-    //         const data = await this.crudService.create(modelLoaded, payload);
-
-    //         // if (!data) {
-    //         //     return res.status(404).send(dispatcher(res,data, 'error'));
-    //         // }
-    //         if (!data || data instanceof Error) {
-    //             throw badRequest(data.message)
-    //         }
-    //         return res.status(201).send(dispatcher(res,data, 'created'));
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
 }

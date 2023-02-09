@@ -92,14 +92,9 @@ export default class OrganizationController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    console.log(error)
-                    //  res.status(500).send(dispatcher(res,data, 'error'))
                     next(error)
                 }
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -107,12 +102,6 @@ export default class OrganizationController extends BaseController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(res, null, "error", speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
-                (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
             return res.status(200).send(dispatcher(res, data, 'success'));
         } catch (error) {
@@ -157,12 +146,10 @@ export default class OrganizationController extends BaseController {
             });
             return res.status(200).send(dispatcher(res, response, 'success'));
         } catch (error) {
-            console.log(error)
             next(error);
         }
     }
     private async createOrg(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        // console.log(req.body);
         return this.createData(req, res, next);
     }
 }

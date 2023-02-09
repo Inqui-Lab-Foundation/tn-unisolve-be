@@ -57,7 +57,6 @@ export default class DashboardController extends BaseController {
         //evaluator stats..
         this.router.get(`${this.path}/evaluatorStats`, this.getEvaluatorStats.bind(this));
         //loggedInUserCount
-        this.router.get(`${this.path}/loggedInUserCount`, this.getLoggedInUserCount.bind(this));
 
         super.initializeRoutes();
     }
@@ -164,19 +163,9 @@ export default class DashboardController extends BaseController {
                 encoding: 'utf8',
                 flag: 'r'
             })
-
             if (file instanceof Error) {
                 throw file;
             }
-
-            // if(!file){
-            //     file=JSON.parse(file)
-            //     console.log("file",file)
-            //     if(!file.teacher || typeof file.teacher !='object'){
-            //         throw internal(speeches.ROADMAP_FILE_CORRUPTED)
-            //     }
-            // }
-            console.log(file.teacher);
             const teacherStepsTotal = Object.keys(file.teacher);
             const totalNoOfSteps = teacherStepsTotal.length;
             let totalNoOfCompletedSteps = 0;
@@ -192,21 +181,16 @@ export default class DashboardController extends BaseController {
                     if (currDate << endDate && currDate >> startDate) {
                         totalNoOfCompletedSteps++;
                     }
-
                 } catch (err) {
                     continue;
                 }
-
             }
-
             const result = {
                 "total_steps": totalNoOfSteps,
                 "completed_steps": totalNoOfCompletedSteps,
                 "progress": ((totalNoOfCompletedSteps / totalNoOfSteps) * 100)
             }
-
             res.send(dispatcher(res, result, "success"))
-
         } catch (err) {
             next(err)
         }
@@ -315,7 +299,6 @@ export default class DashboardController extends BaseController {
             if (studentStatsResul instanceof Error) {
                 throw studentStatsResul
             }
-            // console.log(studentStatsResul)
             const badges = studentStatsResul.badges;
             let badgesCount = 0
             if (badges) {
@@ -326,11 +309,7 @@ export default class DashboardController extends BaseController {
                 delete studentStatsResul.badges;
             }
             studentStatsResul["badges_earned_count"] = badgesCount;
-
-
-
             res.status(200).send(dispatcher(res, studentStatsResul, "success"))
-
         } catch (err) {
             next(err)
         }
@@ -447,7 +426,6 @@ export default class DashboardController extends BaseController {
             if (studentStatsResul instanceof Error) {
                 throw studentStatsResul
             }
-            console.log(studentStatsResul)
             const badges = studentStatsResul.badges;
             let badgesCount = 0
             if (badges) {
@@ -458,11 +436,7 @@ export default class DashboardController extends BaseController {
                 delete studentStatsResul.badges;
             }
             studentStatsResul["badges_earned_count"] = badgesCount;
-
-
-
             res.status(200).send(dispatcher(res, studentStatsResul, "success"))
-
         } catch (err) {
             next(err)
         }
@@ -470,7 +444,6 @@ export default class DashboardController extends BaseController {
 
     private async getStudentChallengeDetails(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-
             const { student_user_id } = req.params;
             const paramStatus: any = req.query.status;
             let whereClauseStatusPart: any = {};
@@ -497,21 +470,17 @@ export default class DashboardController extends BaseController {
             }
             result = {
                 ...result,
-                "challenge_submission_status": challenge_submission_status,
-                // "team_members": teamMembers
+                "challenge_submission_status": challenge_submission_status
             }
-            // console.log("teamMembers",teamMembers)
             if (teamMembers.length <= 0) {
                 res.status(200).send(dispatcher(res, result, "success"))
                 return;
             }
-
             const studentChallengeSubmission = await challenge_response.findAll({
                 where: {
                     team_id: teamMembers[0].team_id
                 }
             })
-
             if (!studentChallengeSubmission) {
                 res.status(200).send(dispatcher(res, result, "success"))
                 return;
@@ -519,12 +488,10 @@ export default class DashboardController extends BaseController {
             if (studentChallengeSubmission instanceof Error) {
                 throw studentChallengeSubmission
             }
-
             challenge_submission_status = true;
             result = {
                 ...result,
-                "challenge_submission_status": challenge_submission_status,
-                // "team_members": teamMembers
+                "challenge_submission_status": challenge_submission_status
             }
             res.status(200).send(dispatcher(res, result, "success"))
             return;
@@ -545,22 +512,18 @@ export default class DashboardController extends BaseController {
                 addWhereClauseStatusPart = true;
             }
             const studentService = new StudentService();
-
             let teamMembers: any = await studentService.getTeamMembersForUserIdWithProgressAsOptional(
                 student_user_id,
                 true,
                 addWhereClauseStatusPart,
                 whereClauseStatusPartLiteral)
-
             if (!teamMembers) {
                 throw badData(speeches.TEAM_NOT_FOUND)
             }
             if (teamMembers instanceof Error) {
                 throw teamMembers
             }
-
             res.status(200).send(dispatcher(res, teamMembers, "success"))
-
         } catch (err) {
             next(err)
         }
@@ -660,41 +623,6 @@ export default class DashboardController extends BaseController {
             response['final_challenges'] = Object.values(final_challenges[0]).toString();
             response['final_evaluation_challenge'] = Object.values(final_evaluation_challenge[0]).toString();
             response['final_evaluation_final'] = Object.values(final_evaluation_final[0]).toString();
-            res.status(200).send(dispatcher(res, response, "success"))
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    //loggedUserCount
-    protected async getLoggedInUserCount(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        try {
-            let response: any;
-            const paramStatus: any = req.query.status;
-            // let  timer: any = req.body.time;
-            let whereClauseStatusPart: any = {};
-            let whereClauseStatusPartLiteral = "1=1";
-            let addWhereClauseStatusPart = false
-            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
-                whereClauseStatusPart = { "status": paramStatus }
-                whereClauseStatusPartLiteral = `status = "${paramStatus}"`
-                addWhereClauseStatusPart = true;
-            }
-            // timer = new Date(timer);
-            // const modifiedTime: any = timer.setSeconds(timer.getSeconds() + 5);
-            response = await this.crudService.findAndCountAll(user, {
-                attributes: [
-                    "username",
-                    "full_name"
-                ],
-                where: {
-                    [Op.and]: [
-                        { is_loggedin: 'YES' },
-                        { role: 'STUDENT' },
-                        // { last_login: { [Op.between]: [req.body.time, modifiedTime] } }
-                    ]
-                }
-            })
             res.status(200).send(dispatcher(res, response, "success"))
         } catch (err) {
             next(err)

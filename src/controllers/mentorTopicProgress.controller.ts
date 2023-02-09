@@ -37,18 +37,12 @@ export default class MentorTopicProgressController extends BaseController {
             }
             
             const modelLoaded = await this.loadModel(model);
-            // console.log(modelLoaded)
-            // for( let key in modelLoaded.rawAttributes ){
-            //     console.log('Field: ', key); // this is name of the field
-            //     console.log('TypeField: ', modelLoaded.rawAttributes[key].type.key); // Sequelize type of field
-            // }
             //check if the topic progress already exists then don't create a new entry
             const topicProgressAlreadyPresent = await modelLoaded.findOne({
                 where:{
                     user_id:user_id,
                     mentor_course_topic_id:mentor_course_topic_id
             }})
-            // console.log(topicProgressAlreadyPresent)
             if( topicProgressAlreadyPresent instanceof Error){
                 throw topicProgressAlreadyPresent
             }
@@ -73,9 +67,6 @@ export default class MentorTopicProgressController extends BaseController {
             }else{
                 data = await this.crudService.create(modelLoaded, payload);    
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if ( data instanceof Error) {
                 throw badRequest(data.message)
             }

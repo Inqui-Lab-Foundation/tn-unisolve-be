@@ -31,7 +31,6 @@ export default class VideoController extends BaseController {
     }
 
     protected async getData(req:Request, res: Response, next: NextFunction) {
-        // super.getData(req,res,next)
         try {
             let data: any;
             const { model, id} = req.params;
@@ -73,41 +72,6 @@ export default class VideoController extends BaseController {
                     include:{
                         required:false,
                         model:reflective_quiz_question,
-                        // attributes:[
-                        //     //this was done to add a flag of status whether the question was completed or not 
-                        //         "video_id",
-                        //         "reflective_quiz_question_id",
-                        //         "question_no",
-                        //         "question",
-                        //         "option_a",
-                        //         "option_b",
-                        //         "option_b",
-                        //         "option_d",
-                        //         "question_image",
-                        //         "type",
-                        //         "level",
-                        //         "status",
-                        //         "created_by",
-                        //         "created_at",
-                        //         "updated_by",
-                        //         "updated_at",
-                        //         [// Note the wrapping parentheses in the call below!
-                        //             database.literal(`(
-                        //                 SELECT CASE WHEN EXISTS
-                        //                     (SELECT video_id
-                        //                     FROM reflective_quiz_responses AS rfqr
-                        //                     WHERE
-                        //                         rfqr.video_id = \`video\`.\`video_id\`
-                        //                     )
-                        //                 THEN
-                        //                     "COMPLETED"
-                        //                 ELSE
-                        //                     "INCOMPLETE"
-                        //                 END AS rfq_status
-                        //             )`),
-                        //             'rfq_status'
-                        //         ],
-                        // ],
                         where:{
                             [Op.and]:[
                                 whereClauseStatusPart
@@ -128,7 +92,6 @@ export default class VideoController extends BaseController {
                             include:{
                                 required:false,
                                 model:reflective_quiz_question,
-                            //     attributes:[
                             //     //this was done to add a flag of status whether the question was completed or not 
                             //         "video_id",
                             //         "reflective_quiz_question_id",
@@ -175,16 +138,12 @@ export default class VideoController extends BaseController {
                     let result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     
                     result  = await this.formatAllRowsProperly(req,res,result);
-                    // console.log(result)
                     data = result;
                 } catch(error:any){
                     return res.status(500).send(dispatcher(res,data, 'error'))
                 }
                 
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if(data!=null){
                     throw notFound(data.message)
@@ -241,13 +200,11 @@ export default class VideoController extends BaseController {
             //db intensive operation especially for a loop 
             //optimise it going forward 
             const nextQuestionsToChooseFrom =  await this.reflectiveQuizService.fetchNextQuestion(user_id,dataModified.video_id,null)
-            // console.log(nextQuestionsToChooseFrom);
             if(nextQuestionsToChooseFrom){
                 newVideoRow.reflective_quiz_status ="INCOMPLETE"
             }else{
                 newVideoRow.reflective_quiz_status ="COMPLETED"
             }
-            // newVideoRow.reflective_quiz_status = (nextQuestionsToChooseFrom)?"INCOMPLETE":"COMPLETED";
         }else{
             newVideoRow.reflective_quiz_status = "COMPLETED";
         }

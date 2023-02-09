@@ -33,7 +33,6 @@ export default class BaseController extends CRUDController {
         this.router.post(`${this.path}`, validationMiddleware(this.validations?.create), this.createData.bind(this));
         this.router.put(`${this.path}/:id`, validationMiddleware(this.validations?.update), this.updateData.bind(this));
         this.router.delete(`${this.path}/:id`, this.deleteData.bind(this));
-
         this.router.post(`${this.path}/withfile`,validationMiddleware(this.validations?.create), this.createDataWithFile.bind(this));
         this.router.put(`${this.path}/:id/withfile`, validationMiddleware(this.validations?.update),this.updateDataWithFile.bind(this));
 
@@ -68,14 +67,10 @@ export default class BaseController extends CRUDController {
             })
             if(copyResult instanceof Error) {
                     errs.push(`Error uploading file: ${file.originalFilename}`);
-                    // console.log(copyResult)
-                    // throw internal(`Error uploading file: ${file.originalFilename}`) 
-                    // next(internal(`Error uploading file: ${file.originalFilename}`))  
             } else {
                     
                 reqData[file.fieldName] = `/assets/${targetResourcePath}/${filename}`;
                 attachments  = attachments+`/assets/${targetResourcePath}/${filename},`
-                // console.log(attachments)
             }
         }
         result.errors = errs;

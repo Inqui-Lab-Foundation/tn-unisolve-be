@@ -3,6 +3,11 @@ import Joi from 'joi';
 import { speeches } from '../configs/speeches.config';
 import dispatcher from '../utils/dispatch.util';
 
+/**
+ * validate the routes with given schema before executing the route
+ * @param schema Object to validate the request
+ * @returns Object response
+ */
 export default function validationMiddleware(schema?: Joi.Schema | null): RequestHandler {
     return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
         if(!schema) {

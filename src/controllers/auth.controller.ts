@@ -25,7 +25,6 @@ import { evaluator } from '../models/evaluator.model';
 import { badRequest } from 'boom';
 import { nanoid } from 'nanoid'
 import roadMapMasterObject from '../configs/roadMapConfig';
-// import { constents } from '../configs/constents.config';
 
 export default class AuthController implements IController {
     public path: string;
@@ -39,14 +38,8 @@ export default class AuthController implements IController {
         this.router = Router();
         this.initializeRoutes();
     }
-    // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluator/login, admins/login
 
     private initializeRoutes(): void {
-        // this.router.post(`${this.path}/login`, this.login);
-        // this.router.get(`${this.path}/logout`, this.logout);
-        // this.router.post(`${this.path}/register`, this.register);
-        // this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword.bind(this));
-        // this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
         this.router.post(`${this.path}/roadMap`, validationMiddleware(authValidations.roadMap), this.roadMap);
@@ -128,25 +121,6 @@ export default class AuthController implements IController {
                 user_res.is_loggedin = "YES";
                 const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
 
-                // await sendNotification({
-                //     notification_type: constents.notification_types.list.PUSH,
-                //     target_audience: user_res.user_id, // Keep 'ALL' for all users
-                //     title: 'Login Successful',
-                //     image: '',
-                //     message: 'You have successfully logged in.',
-                //     status: constents.notification_status_flags.list.PUBLISHED,
-                //     created_by: user_res.user_id
-                // });
-
-                // await sendNotification({
-                //     notification_type: constents.notification_types.list.EMAIL,
-                //     target_audience: user_res.email, // Keep 'ALL' for all users
-                //     title: 'Login Successful',
-                //     image: '',
-                //     message: 'You have successfully logged in.',
-                //     status: constents.notification_status_flags.list.PUBLISHED,
-                //     created_by: user_res.user_id
-                // });
                 return res.status(200).send(dispatcher(res,{
                     user_id: user_res.dataValues.user_id,
                     name: user_res.dataValues.username,
@@ -212,39 +186,6 @@ export default class AuthController implements IController {
             next(error);
         }
     }
-
-    // private changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    //     try {
-    //         const user_res: any = await this.crudService.findOnePassword(user, {
-    //             where: {
-    //                 [Op.or]: [
-    //                     {
-    //                         username: { [Op.eq]: req.body.username }
-    //                     },
-    //                     {
-    //                         user_id: { [Op.like]: `%${req.body.user_id}%` }
-    //                     }
-    //                 ]
-    //             }
-    //         });
-    //         if (!user_res) {
-    //             return res.status(404).send(dispatcher(res,user_res, 'error', speeches.USER_NOT_FOUND));
-    //         }
-    //         //comparing the password with hash
-    //         const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
-    //         if (match === false) {
-    //             return res.status(404).send(dispatcher(res,user_res, 'error', speeches.USER_PASSWORD));
-    //         } else {
-    //             const result = await this.crudService.update(user, {
-    //                 password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
-    //             }, { where: { user_id: user_res.dataValues.user_id } });
-    //             return res.status(202).send(dispatcher(res,result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-    //         }
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
-
     private dynamicSignupForm = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const result: any = dynamicForm.getFormObject(req.body);
@@ -425,9 +366,6 @@ export default class AuthController implements IController {
         // user_id or email_id will be getting from the params then find the
         try {
             const data = await this.authService.bulkDeleteUserResponse(req.params.user_id)
-            // if (!data || data instanceof Error) {
-            //     throw badRequest(data.message)
-            // }
             return res.status(200).send(dispatcher(res,data, 'deleted'));
         } catch (error) {
             next(error)

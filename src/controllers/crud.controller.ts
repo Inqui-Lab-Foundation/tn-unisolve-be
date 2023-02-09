@@ -67,7 +67,6 @@ export default class CRUDController implements IController {
     };
 
     protected autoFillTrackingColumns(req: Request, res: Response, modelLoaded: any, reqData: any = null) {
-        // console.log(res.locals);
         let payload = req.body;
         if (reqData != null) {
             payload = reqData
@@ -99,7 +98,6 @@ export default class CRUDController implements IController {
             };
             // pagination
             const { page, size, status } = req.query;
-            // let condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
@@ -142,11 +140,7 @@ export default class CRUDController implements IController {
                     //  res.status(500).send(dispatcher(res,data, 'error'))
                     next(error)
                 }
-
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -154,12 +148,6 @@ export default class CRUDController implements IController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
-                (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
             return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
@@ -260,10 +248,6 @@ export default class CRUDController implements IController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
-            // console.log(data)
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if(!data){
                 throw badRequest()
             }
@@ -305,10 +289,6 @@ export default class CRUDController implements IController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.create(modelLoaded, payload);
-
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if(!data ){
                 throw badRequest()
             }
@@ -333,9 +313,6 @@ export default class CRUDController implements IController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if(!data){
                 throw badRequest()
             }
@@ -385,9 +362,6 @@ export default class CRUDController implements IController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if(!data){
                 throw badRequest()
             }
@@ -409,9 +383,6 @@ export default class CRUDController implements IController {
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
             const data = await this.crudService.delete(await this.loadModel(model), { where: where });
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if(!data){
                 throw badRequest()
             }

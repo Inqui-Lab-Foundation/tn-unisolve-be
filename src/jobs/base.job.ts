@@ -1,5 +1,6 @@
 import { CronJob } from 'cron';
 
+//cron job 
 export default class BaseJob  {
     
     public name: string="";
@@ -10,6 +11,7 @@ export default class BaseJob  {
         this.startInitialisation();
     };
     
+    //start initialization job
     private startInitialisation(){
         this.init()
         this.initializeCronJob();
@@ -19,10 +21,12 @@ export default class BaseJob  {
         
     };
 
+    // initialize Cron
     protected initializeCronJob(){
         this.cronJob = new CronJob(this.period,this.handle.bind(this))
     };
     
+    // console.log the progress and execute job
     public async handle() {
         console.log("/////////////////////////////////")
         console.log("starting execution JOB:"+this.name)
@@ -33,10 +37,12 @@ export default class BaseJob  {
         console.log("/////////////////////////////////")
     };
 
+    //executeJob
     public async executeJob(){
         console.log("executing:"+this.name)
     }
 
+    // Start executing the job
     public start() {
         // Start job
         if(!this.cronJob){
@@ -47,6 +53,7 @@ export default class BaseJob  {
         }
     }
 
+    // Stop executing the job
     public stop() {
         // Start job
         if(!this.cronJob){

@@ -34,7 +34,6 @@ export default class TranslationController extends BaseController {
                 throw badRequest();
             }
             const result =  TranslationsProvider.getTranslationKeyForValue(res.locals.translationService.getCurrentLocale(),value)
-            // console.log("translatedObjKey",result)
             res.locals.translationService.setCurrentLocale(constents.translations_flags.default_locale)
             res.status(200).send(dispatcher(res,result,"success"))
         }catch(err){
@@ -59,7 +58,6 @@ export default class TranslationController extends BaseController {
         try{
             const service = new TranslationService();
            let ser =  await service.translationRefresh(translateTable);
-            // res.status(201).send(dispatcher(res,ser, 'success'));
             res.status(201).send(ser);
         }catch(err){
             console.log("🚀 ~ file: translation.controller.ts ~ line 63 ~ TranslationController ~ err", err)
