@@ -684,8 +684,10 @@ export default class DashboardController extends BaseController {
             // const modifiedTime: any = timer.setSeconds(timer.getSeconds() + 5);
             response = await this.crudService.findAndCountAll(user, {
                 attributes: [
-                    "username",
-                    "full_name"
+                    "full_name",
+                    [
+                        db.literal(`(SELECT mentorTeamOrg.organization_name FROM unisolve_db.students AS student LEFT OUTER JOIN teams AS team ON student.team_id = team.team_id LEFT OUTER JOIN mentors AS mentorTeam ON team.mentor_id = mentorTeam.mentor_id LEFT OUTER JOIN organizations AS mentorTeamOrg ON mentorTeam.organization_code = mentorTeamOrg.organization_code WHERE student.user_id = \`user\`.\`user_id\`)`), 'organization_name'
+                    ],
                 ],
                 where: {
                     [Op.and]: [
