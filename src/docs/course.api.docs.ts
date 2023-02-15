@@ -25,7 +25,7 @@ export const courseUpdatesRequestBody = {
 
 export const createCourse = {
     tags: ['Courses'],
-    description: 'Endpoint for creating new course',
+    description: 'Creating new course',
     security: [
         {
             bearerAuth: [],
@@ -256,7 +256,7 @@ export const courseByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'course_id',
             schema: {
                 type: 'integer',
                 default: 2

@@ -356,7 +356,7 @@ export const admins = {
         '404': notAcceptableError
     }
 }
-export const admin = {
+export const adminId = {
     tags: ['Admins'],
     summary: 'Get admin by user_id',
     security: [

@@ -49,7 +49,7 @@ export const courseTopicProgressRequestBody = {
 };
 
 export const createCourseTopic = {
-    tags: ['Course Topics'],
+    tags: ['Course topics'],
     description: 'Endpoint for creating new Topics',
     security: [
         {
@@ -104,7 +104,7 @@ export const createCourseTopic = {
     }
 }
 export const courseTopicList = {
-    tags: ['Course Topics'],
+    tags: ['Course topics'],
     description: 'Endpoint for getting list of Topics created',
     security: [
         {
@@ -148,7 +148,7 @@ export const courseTopicList = {
     }
 }
 export const courseTopicById = {
-    tags: ['Course Topics'],
+    tags: ['Course topics'],
     description: 'Endpoint for getting single Topics',
     security: [
         {
@@ -204,7 +204,7 @@ export const courseTopicById = {
     }
 }
 export const courseTopicByIdUpdate = {
-    tags: ['Course Topics'],
+    tags: ['Course topics'],
     description: 'Endpoint for updating the specific Topics',
     security: [
         {
@@ -270,7 +270,7 @@ export const courseTopicByIdUpdate = {
     }
 }
 export const courseTopicByIdDelete = {
-    tags: ['Courses'],
+    tags: ['Course topics'],
     description: 'Endpoint for removing a single Topics category',
     security: [
         {
@@ -326,7 +326,7 @@ export const courseTopicByIdDelete = {
     }
 }
 export const courseTopicProgress = {
-    tags: ['Course Topics'],
+    tags: ['Course topics'],
     description: 'Endpoint for updating the topic progress',
     security: [
         {

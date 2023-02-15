@@ -1,19 +1,27 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createCourseRequestBody = {
+export const createMentorCoursesRequestBody = {
     type: 'object',
     properties: {
+        course_module_id: {
+            type: 'string',
+            example: '1',
+        },
+        topic_type_id: {
+            type: 'string',
+            example: '1',
+        },
+        topic_type: {
+            type: 'string',
+            example: 'VIDEO',
+        },
         title: {
             type: 'string',
-            example: 'Health',
-        },
-        description: {
-            type: 'string',
-            example: 'Health, according to the World Health Organization, is a state of complete physical',
+            example: 'video 1',
         }
     }
 };
-export const courseUpdatesRequestBody = {
+export const mentorCoursesUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -23,9 +31,9 @@ export const courseUpdatesRequestBody = {
     },
 };
 
-export const createCourse = {
-    tags: ['Courses'],
-    description: 'Endpoint for creating new course',
+export const createMentorCourses = {
+    tags: ['Mentor course'],
+    description: 'Endpoint for creating new worksheet',
     security: [
         {
             bearerAuth: [],
@@ -36,7 +44,7 @@ export const createCourse = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createCourseRequestBody'
+                    $ref: '#/components/schemas/createWorksheetRequestBody'
                 },
             },
         },
@@ -78,9 +86,9 @@ export const createCourse = {
         '404': badRequestError
     }
 }
-export const courseList = {
-    tags: ['Courses'],
-    description: 'Endpoint for getting list of courses created',
+export const mentorCoursesList = {
+    tags: ['Mentor course'],
+    description: 'Endpoint for getting list of Worksheets created',
     security: [
         {
             bearerAuth: [],
@@ -122,9 +130,9 @@ export const courseList = {
         '404': badRequestError
     }
 }
-export const courseById = {
-    tags: ['Courses'],
-    description: 'Endpoint for getting single course',
+export const mentorCoursesById = {
+    tags: ['Mentor course'],
+    description: 'Endpoint for getting single Worksheets',
     security: [
         {
             bearerAuth: [],
@@ -133,13 +141,13 @@ export const courseById = {
     parameters: [
         {
             in: 'path',
-            name: 'course_id',
+            name: 'worksheet_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add courseId to fetch specify course",
+            description: "Add WorksheetId to fetch specify Worksheet",
         }
     ],
     responses: {
@@ -168,7 +176,7 @@ export const courseById = {
                             data: {
                                 type: 'array',
                                 example: ['object']
-                            } 
+                            }
                         }
                     }
                 }
@@ -178,9 +186,9 @@ export const courseById = {
         '404': badRequestError
     }
 }
-export const courseByIdUpdate = {
-    tags: ['Courses'],
-    description: 'Endpoint for updating the specific course',
+export const mentorCoursesByIdUpdate = {
+    tags: ['Mentor course'],
+    description: 'Endpoint for updating the specific Worksheets',
     security: [
         {
             bearerAuth: [],
@@ -191,7 +199,7 @@ export const courseByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/courseUpdatesRequestBody'
+                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
                 },
             },
         },
@@ -199,13 +207,13 @@ export const courseByIdUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'course_id',
+            name: 'Worksheet_id',
             schema: {
                 type: 'integer',
                 default: 2
             },
             required: true,
-            description: "Add courseId to update specify course",
+            description: "Add Worksheet_Id to update specify Worksheets",
         }
     ],
     responses: {
@@ -244,10 +252,9 @@ export const courseByIdUpdate = {
         '404': badRequestError
     }
 }
-export const courseByIdDelete = {
-    tags: ['Courses'],
-    description: 'Endpoint for removing a single course category',
-    operationId: 'courseByIdDelete',
+export const mentorCoursesByIdDelete = {
+    tags: ['Mentor course'],
+    description: 'Endpoint for removing a single Worksheet category',
     security: [
         {
             bearerAuth: [],
@@ -256,13 +263,13 @@ export const courseByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'WorksheetsId',
             schema: {
                 type: 'integer',
                 default: 2
             },
             required: true,
-            description: "Add courseId to delete specify course",
+            description: "Add topicId to delete specify Topics",
         }
     ],
     responses: {

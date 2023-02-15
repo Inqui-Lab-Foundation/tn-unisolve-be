@@ -1,6 +1,6 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createCourseTopicRequestBody = {
+export const createCourseModulesRequestBody = {
     type: 'object',
     properties: {
         course_module_id: {
@@ -21,7 +21,7 @@ export const createCourseTopicRequestBody = {
         }
     }
 };
-export const courseTopicUpdatesRequestBody = {
+export const courseModulesUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -30,7 +30,7 @@ export const courseTopicUpdatesRequestBody = {
         }
     },
 };
-export const courseTopicProgressRequestBody = {
+export const courseModulesProgressRequestBody = {
     type: 'object',
     properties: {
         user_id: {
@@ -48,9 +48,9 @@ export const courseTopicProgressRequestBody = {
     },
 };
 
-export const createCourseTopic = {
-    tags: ['Course Topics'],
-    description: 'Endpoint for creating new Topics',
+export const createCourseModules = {
+    tags: ['Courses modules'],
+    description: 'Creating new Modules',
     security: [
         {
             bearerAuth: [],
@@ -61,7 +61,7 @@ export const createCourseTopic = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createCourseTopicRequestBody'
+                    $ref: '#/components/schemas/createCourseModulesRequestBody'
                 },
             },
         },
@@ -103,9 +103,9 @@ export const createCourseTopic = {
         '404': badRequestError
     }
 }
-export const courseTopicList = {
-    tags: ['Course Topics'],
-    description: 'Endpoint for getting list of Topics created',
+export const courseModulesList = {
+    tags: ['Courses modules'],
+    description: 'Getting list of Modules',
     security: [
         {
             bearerAuth: [],
@@ -147,9 +147,9 @@ export const courseTopicList = {
         '404': badRequestError
     }
 }
-export const courseTopicById = {
-    tags: ['Course Topics'],
-    description: 'Endpoint for getting single Topics',
+export const courseModulesById = {
+    tags: ['Courses modules'],
+    description: 'Getting single Modules',
     security: [
         {
             bearerAuth: [],
@@ -164,7 +164,7 @@ export const courseTopicById = {
                 default: 1
             },
             required: true,
-            description: "Add topicId to fetch specify Topics",
+            description: "Add topicId to fetch specify Modules",
         }
     ],
     responses: {
@@ -203,9 +203,9 @@ export const courseTopicById = {
         '404': badRequestError
     }
 }
-export const courseTopicByIdUpdate = {
-    tags: ['Course Topics'],
-    description: 'Endpoint for updating the specific Topics',
+export const courseModulesByIdUpdate = {
+    tags: ['Courses modules'],
+    description: 'Updating the singe  Modules',
     security: [
         {
             bearerAuth: [],
@@ -216,7 +216,7 @@ export const courseTopicByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/courseTopicUpdatesRequestBody'
+                    $ref: '#/components/schemas/courseModulesUpdatesRequestBody'
                 },
             },
         },
@@ -230,7 +230,7 @@ export const courseTopicByIdUpdate = {
                 default: 2
             },
             required: true,
-            description: "Add topicId to update specify  Topics",
+            description: "Add topicId to update specify  Modules",
         }
     ],
     responses: {
@@ -269,9 +269,9 @@ export const courseTopicByIdUpdate = {
         '404': badRequestError
     }
 }
-export const courseTopicByIdDelete = {
-    tags: ['Courses'],
-    description: 'Endpoint for removing a single Topics category',
+export const courseModulesByIdDelete = {
+    tags: ['Courses modules'],
+    description: 'Removing a single Modules category',
     security: [
         {
             bearerAuth: [],
@@ -280,13 +280,13 @@ export const courseTopicByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'topicId',
+            name: 'topic_Id',
             schema: {
                 type: 'integer',
                 default: 2
             },
             required: true,
-            description: "Add topicId to delete specify Topics",
+            description: "Add topicId to delete specify Modules",
         }
     ],
     responses: {
@@ -325,9 +325,9 @@ export const courseTopicByIdDelete = {
         '404': badRequestError
     }
 }
-export const courseTopicProgress = {
-    tags: ['Course Topics'],
-    description: 'Endpoint for updating the topic progress',
+export const courseModulesProgress = {
+    tags: ['Courses modules'],
+    description: 'Updating the topic progress',
     security: [
         {
             bearerAuth: [],
@@ -338,7 +338,7 @@ export const courseTopicProgress = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/courseTopicProgressRequestBody'
+                    $ref: '#/components/schemas/courseModulesProgressRequestBody'
                 },
             },
         },

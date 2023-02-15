@@ -1,67 +1,38 @@
 import { assets, healthCheck, home } from "./assets.api.docs";
 import { version } from '../../package.json';
-import {
-    courseList,
-    createCourse,
-    courseById,
-    courseByIdUpdate,
-    courseByIdDelete,
-    createCourseRequestBody,
-    courseUpdatesRequestBody
-} from "./course.api.docs";
-import {
-    courseTopicList,
-    createCourseTopic,
-    courseTopicById,
-    courseTopicByIdUpdate,
-    courseTopicByIdDelete,
-    courseTopicProgress,
-    courseTopicProgressRequestBody,
-    createCourseTopicRequestBody,
-    courseTopicUpdatesRequestBody
-} from "./courseTopic.api.docs";
-import {
-    moduleList,
-    createModule,
-    moduleById,
-    moduleByIdUpdate,
-    moduleByIdDelete,
-    createModuleRequestBody,
-    moduleUpdatesRequestBody
-} from "./module.api.docs";
-import {
-    videosList,
-    createVideos,
-    videosById,
-    videosByIdUpdate,
-    videosByIdDelete,
-    createVideosRequestBody,
-    videosUpdatesRequestBody,
-} from "./video.api.docs";
-import {
-    create_dynamicSignupForm,
-    get_dynamicSignupForm,
-} from "./auth.api.docs";
-import {
-    createCrud, createCrudWithFile, crudDelete, crudList, crudUpdate, crudUpdateWithFile, crudRequestBodyWithFile, crudRequestBody,
-    crudUpdatesRequestBodyWithFile,
-    crudSingle,
-} from "./crud.api.docs";
+import { courseList, createCourse, courseById, courseByIdUpdate, courseByIdDelete, createCourseRequestBody, courseUpdatesRequestBody } from "./course.api.docs";
+import { courseTopicList, createCourseTopic, courseTopicById, courseTopicByIdUpdate, courseTopicByIdDelete, courseTopicProgress, courseTopicProgressRequestBody, createCourseTopicRequestBody, courseTopicUpdatesRequestBody } from "./courseTopic.api.docs";
+import { moduleList, createModule, moduleById, moduleByIdUpdate, moduleByIdDelete, createModuleRequestBody, moduleUpdatesRequestBody } from "./module.api.docs";
+import { videosList, createVideos, videosById, videosByIdUpdate, videosByIdDelete, createVideosRequestBody, videosUpdatesRequestBody } from "./video.api.docs";
+import { create_dynamicSignupForm, get_dynamicSignupForm } from "./auth.api.docs";
 import { createTeam, teamByIdDelete, teamsById, teamsByIdUpdate, teamsList, createTeamRequestBody, teamUpdatesRequestBody } from "./team.api.docs";
 import { notificationsTome, notificationWithPoster, notification, notificationsWithPosterRequestBody, notificationsRequestBody } from "./notification.api.docs";
-import {
-    createWorksheetRequestBody,
-    worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete
-} from "./worksheets.api.docs";
+import { createWorksheetRequestBody, worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete } from "./worksheets.api.docs";
 import { organizationList, createOrganization, organizationSingle, organizationDelete, organizationUpdate, createOrganizationWithFile, organizationRequestBody, organizationRequestBodyWithFile, organizationUpdatesRequestBody } from "./organization.api.docs";
-import { admin, admins, changePassword, login, logout, registration } from "./admin.api.docs";
+import { adminId, admins, changePassword, login, logout, registration } from "./admin.api.docs";
 import { userSchema } from "../validations/user.validations";
-import { addStudent, badges, bulkCreateStudent, resetPassword, student, studentRegister, students } from "./student.api.docs";
+import { addBadges, addStudent, bulkCreateStudent, getBadges, studentCertificate, studentChangePassword, studentId, studentLogin, studentLogout, studentRegister, studentResetPassword, students } from "./student.api.docs";
 import { user, users } from "./users.api.docs";
 import { badge } from "../models/badge.model";
-import { deleteData, mentorId, mentors, regStatus, updateMobile, updatePassword, validateOtp, verifyUser } from "./mentor.api.docs";
+import { mentorChangePassword, mentorLogin, mentorRegister, mentorResetPassword, mentors, mentorUpdateMobile, mentorUpdatePassword, mentorValidateOtp, mentorVerifyUser, mentorBulkUpload, mentorId } from "./mentor.api.docs";
 import { mentor } from "../models/mentor.model";
-import { register} from "./evaluater.api.docs";
+import { evaluatorChangePassword, evaluatorLogin, evaluatorRegistration, evaluators, evaluatorBulkUpload, evaluatorId } from "./evaluater.api.docs";
+import { courseModulesById, courseModulesByIdDelete, courseModulesByIdUpdate, courseModulesList, createCourseModules } from "./courseModules.api.docs";
+import { createQuiz, quizById, quizByIdDelete, quizByIdUpdate, quizList } from "./quiz.api.docs";
+import { createQuizQuestion, quizQuestionById, quizQuestionByIdDelete, quizQuestionByIdUpdate, quizQuestionList } from "./quizQuestion.api.docs";
+import { createFaq, faqById, faqByIdDelete, faqByIdUpdate, faqList } from "./faq.api.docs";
+import { createFaqCategory, faqCategoryById, faqCategoryByIdDelete, faqCategoryByIdUpdate, faqCategoryList } from "./faqCategories.api.docs";
+import { createEvaluationProcess, evaluationProcessById, evaluationProcessByIdDelete, evaluationProcessByIdUpdate, evaluationProcessList } from "./evluationProcess.api.docs";
+import { createInstruction, InstructionById, InstructionByIdDelete, InstructionByIdUpdate, InstructionList } from "./instructions.api.docs";
+import { createEvaluaterRating, evaluaterRatingById, evaluaterRatingByIdDelete, evaluaterRatingByIdUpdate, evaluaterRatingList } from "./evaluaterRating.api.docs";
+import { CertificateById, CertificateByIdDelete, CertificateByIdUpdate, CertificateList, createCertificate } from "./certificatesDownload.api.docs";
+import { challengeById, challengeByIdDelete, challengeByIdUpdate, challengeList, createChallenge } from "./challenge.api.docs";
+import { createTranslations, translationsById, translationsByIdDelete, translationsByIdUpdate, translationsList } from "./translations.api.docs";
+import { badgesById, badgesByIdDelete, badgesByIdUpdate, badgesList, createBadges } from "./badges.api.docs";
+import { createTutorialVideos, tutorialVideosById, tutorialVideosByIdDelete, tutorialVideosByIdUpdate, tutorialVideosList } from "./tutorialVideos.api.docs";
+import { createSupportTickets, supportTicketsById, supportTicketsByIdDelete, supportTicketsByIdUpdate, supportTicketsList } from "./supportTickets.api.docs";
+import { createMentorAttachments, mentorAttachmentsById, mentorAttachmentsByIdDelete, mentorAttachmentsByIdUpdate, mentorAttachmentsList } from "./mentorAttachments.api.docs";
+import { createMentorCourses, mentorCoursesById, mentorCoursesByIdDelete, mentorCoursesByIdUpdate, mentorCoursesList } from "./mentorCourse.api.docs";
 
 // define Swagger options with specific properties
 const options = {
@@ -133,6 +104,9 @@ const options = {
             name: 'Quiz',
         },
         {
+            name: 'Quiz questions',
+        },
+        {
             name: 'FAQ',
         },
         {
@@ -164,9 +138,6 @@ const options = {
         },
         {
             name: 'Challenges response',
-        },
-        {
-            name: 'Quiz questions',
         },
         {
             name: 'Dashboard',
@@ -227,63 +198,69 @@ const options = {
             get: admins
         },
         '/api/v1/admins/{id}': {
-            get: admin
+            get: adminId
         },
         '/api/v1/evaluators/register': {
-            post :register
+            post: evaluatorRegistration
         },
         '/api/v1/evaluators/login': {
-        
+            post: evaluatorLogin
         },
         '/api/v1/evaluators/logout': {
-    
+            get: evaluatorLogin
         },
         '/api/v1/evaluators/changePassword': {
+            put: evaluatorChangePassword
         },
         '/api/v1/evaluators': {
+            get: evaluators
+        },
+        '/api/v1/evaluators/{id}': {
+            get: evaluatorId
         },
         '/evaluators/bulkUpload': {
+            evaluatorBulkUpload
         },
         '/api/v1/mentors/register': {
-            post :register
+            post: mentorRegister
         },
         '/api/v1/mentors/validateOtp': {
-            post :validateOtp
+            post: mentorValidateOtp
         },
         '/api/v1/mentors/login': {
-            post : login
+            post: mentorLogin
         },
         '/api/v1/mentors/changePassword': {
-            put : changePassword
+            put: mentorChangePassword
         },
         '/api/v1/mentors/updatePassword': {
-            put :updatePassword
+            put: mentorUpdatePassword
         },
         '/api/v1/mentors/verifyUser': {
-            put : verifyUser
+            put: mentorVerifyUser
         },
         '/api/v1/mentors/updateMobile': {
-            put :updateMobile
+            put: mentorUpdateMobile
         },
         '/api/v1/mentors/:mentor_user_id/deleteAllData': {
-            delete : deleteData
+            // delete : deleteData
         },
         '/api/v1/mentors/resetPassword': {
-            put : resetPassword
+            put: mentorResetPassword
         },
         '/api/v1/mentors/manualResetPassword': {
         },
         '/api/v1/mentors/regStatus': {
-            get : regStatus
-        },
-        '/api/v1/mentors/bulkUpload': {
 
         },
-        '/api/v1/mentors': {
-            get : mentors
+        '/api/v1/mentors/bulkUpload': {
+            mentorBulkUpload
         },
-        '/api/v1/mentors/:id': {
-            get : mentorId
+        '/api/v1/mentors': {
+            get: mentors
+        },
+        '/api/v1/mentors/{id}': {
+            get: mentorId
         },
         '/api/v1/students/register': {
             post: studentRegister
@@ -295,34 +272,35 @@ const options = {
             post: bulkCreateStudent
         },
         '/api/v1/students/login': {
-            post: login
+            post: studentLogin
         },
         '/api/v1/students/logout': {
-            get: logout
+            get: studentLogout
         },
         '/api/v1/students/changePassword': {
-            put :changePassword
+            put: studentChangePassword
         },
         '/api/v1/students/resetPassword': {
-            put : resetPassword
-
+            put: studentResetPassword
         },
-        '/api/v1/students/:student_user_id/studentCertificate': {
+        '/api/v1/students/{id}/studentCertificate': {
+            get: studentCertificate
         },
-        '/api/v1/students/:student_user_id/badges': {
-            get : badges
+        '/api/v1/students/{id}/badges': {
+            get: getBadges,
+            post: addBadges
         },
         '/api/v1/students/passwordUpdate': {
 
         },
         '/api/v1/students': {
-            get :student
+            get: studentId
         },
-        '/api/v1/students/:id': {
-            get :students
+        '/api/v1/students/{id}': {
+            get: students
         },
         '/api/v1/students/withfile': {
-            
+
         },
         '/api/v1/students/:id/withfile': {
         },
@@ -332,48 +310,62 @@ const options = {
         '/api/v1/users': {
             get: user
         },
-        '/api/v1/users/:id': {
-          get : users
-
+        '/api/v1/users/{id}': {
+            get: users
         },
         '/api/v1/users/withfile': {
         },
         '/api/v1/users/:id/withfile': {
         },
         '/api/v1/notifications/tome': {
-            
+            get: notificationsTome
         },
         '/api/v1/notifications/all': {
         },
         '/api/v1/notifications/send': {
+            post: notification
         },
         '/api/v1/notifications/sendwithposter': {
+            post: notificationWithPoster
         },
         '/api/v1/notifications/read/:id': {
         },
         '/api/v1/courses/test': {
         },
         '/api/v1/courses': {
-
+            get: courseList,
+            post: createCourse
         },
-        '/api/v1/courses/:id': {
+        '/api/v1/courses/{course_id}': {
+            get: courseById,
+            put: courseByIdUpdate,
+            delete: courseByIdDelete
         },
         '/api/v1/courses/withfile': {
-        
         },
         '/api/v1/courses/:id/withfile': {
         },
         '/api/v1/courseModules': {
+            get: courseModulesList,
+            post: createCourseModules
         },
-        '/api/v1/courseModules/:id': {
+        '/api/v1/courseModules/{id}': {
+            get: courseModulesById,
+            put: courseModulesByIdUpdate,
+            delete: courseModulesByIdDelete
         },
         '/api/v1/courseModules/withfile': {
         },
         '/api/v1/courseModules/:id/withfile': {
         },
         '/api/v1/videos': {
+            post: createVideos,
+            get: videosList
         },
-        '/api/v1/videos/:id': {
+        '/api/v1/videos/{id}': {
+            get: videosById,
+            put: videosByIdUpdate,
+            delete: videosByIdDelete
         },
         '/api/v1/videos/withfile': {
         },
@@ -382,16 +374,26 @@ const options = {
         '/api/v1/teams/:id/members': {
         },
         '/api/v1/teams': {
+            post: createTeam,
+            get: teamsList
         },
-        '/api/v1/teams/:id': {
+        '/api/v1/teams/{id}': {
+            get: teamsById,
+            put: teamsByIdUpdate,
+            delete: teamByIdDelete
         },
         '/api/v1/teams/withfile': {
         },
         '/api/v1/teams/:id/withfile': {
         },
         '/api/v1/courseTopics': {
+            post: createCourseTopic,
+            get: courseTopicList
         },
-        '/api/v1/courseTopics/:id': {
+        '/api/v1/courseTopics/{id}': {
+            get: courseTopicById,
+            put: courseTopicByIdUpdate,
+            delete: courseTopicByIdDelete
         },
         '/api/v1/courseTopics/withfile': {
         },
@@ -400,8 +402,13 @@ const options = {
         '/api/v1/worksheets/:id/response': {
         },
         '/api/v1/worksheets': {
+            post: createWorksheet,
+            get: worksheetList
         },
-        '/api/v1/worksheets/:id': {
+        '/api/v1/worksheets/{id}': {
+            get: worksheetById,
+            put: worksheetByIdUpdate,
+            delete: WorksheetsByIdDelete
         },
         '/api/v1/worksheets/withfile': {
         },
@@ -415,33 +422,61 @@ const options = {
         },
         '/api/v1/userTopicProgress/:id/withfile': {
         },
-        '/api/v1/quiz/:id/nextQuestion/': {
+        '/api/v1/quiz/{id}/nextQuestion/': {
+            get: quizByIdUpdate
         },
-        '/api/v1/quiz/:id/response/': {
+        '/api/v1/quiz/{id}/response/': {
+            post: createQuiz
         },
         '/api/v1/quiz': {
+            get: quizList
         },
-        '/api/v1/quiz/:id': {
+        '/api/v1/quiz/{id}': {
+            get: quizById,
+            delete: quizByIdDelete
         },
         '/api/v1/quiz/withfile': {
         },
         '/api/v1/quiz/:id/withfile': {
         },
-        '/api/v1/faqCategories': {
+        '/api/v1/quizQuestions': {
+            post: createQuizQuestion,
+            get: quizQuestionList
         },
-        '/api/v1/faqCategories/:id': {
+        '/api/v1/quizQuestions/{id}': {
+            get: quizQuestionById,
+            put: quizQuestionByIdUpdate,
+            delete: quizQuestionByIdDelete
         },
-        '/api/v1/faqCategories/withfile': {
+        '/api/v1/quizQuestions/withfile': {
         },
-        '/api/v1/faqCategories/:id/withfile': {
+        '/api/v1/quizQuestions/:id/withfile': {
         },
         '/api/v1/faqs': {
+            post: createFaq,
+            get: faqList
         },
         '/api/v1/faqs/:id': {
+            get: faqById,
+            put: faqByIdUpdate,
+            delete: faqByIdDelete
         },
         '/api/v1/faqs/withfile': {
         },
         '/api/v1/faqs/:id/withfile': {
+        },
+        '/api/v1/faqCategories': {
+            post: createFaqCategory,
+            get: faqCategoryList
+        },
+        '/api/v1/faqCategories/{id}': {
+            get: faqCategoryById,
+            put: faqCategoryByIdUpdate,
+            delete: faqCategoryByIdDelete
+        },
+        '/api/v1/faqCategories/withfile': {
+        },
+        '/api/v1/faqCategories/:id/withfile': {
         },
         '/api/v1/organizations/bulkUpload': {
         },
@@ -452,8 +487,12 @@ const options = {
         '/api/v1/organizations/createOrg': {
         },
         '/api/v1/organizations': {
+            post: createOrganization,
+            get: organizationList
         },
-        '/api/v1/organizations/:id': {
+        '/api/v1/organizations/{id}': {
+            put: organizationUpdate,
+            delete: organizationDelete
         },
         '/api/v1/organizations/withfile': {
         },
@@ -490,16 +529,26 @@ const options = {
         '/api/v1/mentorCourses/test': {
         },
         '/api/v1/mentorCourses': {
+            post: createMentorCourses,
+            get: mentorCoursesList
         },
-        '/api/v1/mentorCourses/:id': {
+        '/api/v1/mentorCourses/{id}': {
+            get: mentorCoursesById,
+            put: mentorCoursesByIdUpdate,
+            delete: mentorCoursesByIdDelete
         },
         '/api/v1/mentorCourses/withfile': {
         },
         '/api/v1/mentorCourses/:id/withfile': {
         },
         '/api/v1/mentorAttachments': {
+            post: createMentorAttachments,
+            get: mentorAttachmentsList
         },
-        '/api/v1/mentorAttachments/:id': {
+        '/api/v1/mentorAttachments/{id}': {
+            get: mentorAttachmentsById,
+            put: mentorAttachmentsByIdUpdate,
+            delete: mentorAttachmentsByIdDelete
         },
         '/api/v1/mentorAttachments/withfile': {
         },
@@ -514,8 +563,13 @@ const options = {
         '/api/v1/mentorTopicProgress/:id/withfile': {
         },
         '/api/v1/supportTickets': {
+            post: createSupportTickets,
+            get: supportTicketsList
         },
-        '/api/v1/supportTickets/:id': {
+        '/api/v1/supportTickets/{id}': {
+            get: supportTicketsById,
+            put: supportTicketsByIdUpdate,
+            delete: supportTicketsByIdDelete
         },
         '/api/v1/supportTickets/withfile': {
         },
@@ -529,17 +583,14 @@ const options = {
         },
         '/api/v1/supportTicketsReply/:id/withfile': {
         },
-        '/api/v1/quizQuestions': {
-        },
-        '/api/v1/quizQuestions/:id': {
-        },
-        '/api/v1/quizQuestions/withfile': {
-        },
-        '/api/v1/quizQuestions/:id/withfile': {
-        },
         '/api/v1/challenge': {
+            post: createChallenge,
+            ge: challengeList
         },
-        '/api/v1/challenge/:id': {
+        '/api/v1/challenge/{id}': {
+            get: challengeById,
+            put: challengeByIdUpdate,
+            delete: challengeByIdDelete
         },
         '/api/v1/challenge/withfile': {
         },
@@ -610,31 +661,45 @@ const options = {
         '/api/v1/translations/translate-refresh': {
         },
         '/api/v1/translations': {
+            post: createTranslations,
+            get: translationsList
         },
-        '/api/v1/translations/:id': {
+        '/api/v1/translations/{id}': {
+            get: translationsById,
+            put: translationsByIdUpdate,
+            delete: translationsByIdDelete
         },
         '/api/v1/translations/withfile': {
         },
         '/api/v1/translations/:id/withfile': {
         },
         '/api/v1/badges': {
+            post: createBadges,
+            get: badgesList
         },
-        '/api/v1/badges/:id': {
+        '/api/v1/badges/{id}': {
+            get: badgesById,
+            put: badgesByIdUpdate,
+            delete: badgesByIdDelete
         },
         '/api/v1/badges/withfile': {
         },
         '/api/v1/badges/:id/withfile': {
         },
         '/api/v1/tutorialVideos': {
+            post: createTutorialVideos,
+            get: tutorialVideosList
         },
-        '/api/v1/tutorialVideos/:id': {
+        '/api/v1/tutorialVideos/{id}': {
+            get: tutorialVideosById,
+            put: tutorialVideosByIdUpdate,
+            delete: tutorialVideosByIdDelete
         },
         '/api/v1/tutorialVideos/withfile': {
         },
         '/api/v1/tutorialVideos/:id/withfile': {
         },
         '/api/v1/reports/allMentorReports': {
-
         },
         '/api/v1/reports/mentorRegList': {
         },
@@ -659,135 +724,57 @@ const options = {
         '/api/v1/certificate/mobileCheck': {
         },
         '/api/v1/certificate': {
+            post: createCertificate,
+            get: CertificateList
         },
-        '/api/v1/certificate/:id': {
+        '/api/v1/certificate/{id}': {
+            get: CertificateById,
+            put: CertificateByIdUpdate,
+            delete: CertificateByIdDelete
         },
         '/api/v1/certificate/withfile': {
         },
         '/api/v1/certificate/:id/withfile': {
         },
         '/api/v1/evaluatorRating': {
+            post: createEvaluaterRating,
+            get: evaluaterRatingList
         },
-        '/api/v1/evaluatorRating/:id': {
+        '/api/v1/evaluatorRating/{id}': {
+            get: evaluaterRatingById,
+            put: evaluaterRatingByIdUpdate,
+            delete: evaluaterRatingByIdDelete
         },
         '/api/v1/evaluatorRating/withfile': {
         },
         '/api/v1/evaluatorRating/:id/withfile': {
         },
         '/api/v1/instructions': {
+            post: createInstruction,
+            get: InstructionList
         },
-        '/api/v1/instructions/:id': {
+        '/api/v1/instructions/{id}': {
+            get: InstructionById,
+            put: InstructionByIdUpdate,
+            delete: InstructionByIdDelete
         },
         '/api/v1/instructions/withfile': {
         },
         '/api/v1/instructions/:id/withfile': {
         },
         '/api/v1/evaluationProcess': {
+            post: createEvaluationProcess,
+            get: evaluationProcessList
         },
-        '/api/v1/evaluationProcess/:id': {
+        '/api/v1/evaluationProcess/{id}': {
+            get: evaluationProcessById,
+            put: evaluationProcessByIdUpdate,
+            delete: evaluationProcessByIdDelete
         },
         '/api/v1/evaluationProcess/withfile': {
         },
         '/api/v1/evaluationProcess/:id/withfile': {
         },
-        '/api/v1/crud/{model_name}': {
-            post: createCrud,
-            get: crudList
-        },
-        '/api/v1/crud/{model_name}/{id}': {
-            get: crudSingle,
-            put: crudUpdate,
-            delete: crudDelete
-        },
-        '/api/v1/crud/{model_name}/withfile': {
-            post: createCrudWithFile,
-            put: crudUpdateWithFile
-        },
-        //course
-        // '/api/v1/courses': {
-        //     post: createCourse,
-        //     get: courseList
-        // },
-        '/api/v1/courses/{course_id}': {
-            get: courseById,
-            put: courseByIdUpdate,
-            delete: courseByIdDelete
-        },
-        //course modules
-        // '/api/v1/courseModules': {
-        //     post: createModule,
-        //     get: moduleList
-        // },
-        '/api/v1/courseModules/{module_id}': {
-            get: moduleById,
-            put: moduleByIdUpdate,
-            delete: moduleByIdDelete
-        },
-        //videos
-        '/api/v1/videos/': {
-            post: createVideos,
-            get: videosList
-        },
-        '/api/v1/videos/{video_id}': {
-            get: videosById,
-            put: videosByIdUpdate,
-            delete: videosByIdDelete
-        },
-        //courseTopics
-        // '/api/v1/courseTopics': {
-        //     post: createCourseTopic,
-        //     get: courseTopicList
-        // },
-        '/api/v1/courseTopics/{topic_id}': {
-            get: courseTopicById,
-            put: courseTopicByIdUpdate,
-            delete: courseTopicByIdDelete
-        },
-        // '/api/v1/userTopicProgress': {
-        //     post: courseTopicProgress
-        // },
-        // //worksheets
-        // '/api/v1/worksheets': {
-        //     post: createWorksheet,
-        //     get: worksheetList
-        // },
-        '/api/v1/worksheet/{worksheet_id}': {
-            get: worksheetById,
-            put: worksheetByIdUpdate,
-            delete: WorksheetsByIdDelete
-        },
-        //teams
-        '/api/v1/teams/': {
-            post: createTeam,
-            get: teamsList
-        },
-        '/api/v1/teams/{team_id}': {
-            get: teamsById,
-            put: teamsByIdUpdate,
-            delete: teamByIdDelete
-        },
-        //Notifications
-        // '/api/v1/notifications/tome': {
-        //     get: notificationsTome
-        // },
-        // '/api/v1/notifications/send': {
-        //     post: notification
-        // },
-        // '/api/v1/notifications/sendwithposter': {
-        //     post: notificationWithPoster
-        // },
-        //organization
-        '/api/v1/organization/': {
-            post: createOrganization,
-            get: organizationList
-        },
-        '/api/v1/organization/{organization_id}': {
-            put: organizationUpdate,
-            delete: organizationDelete
-        },
-        '/api/v1/organization/withFile': {
-            post: createOrganizationWithFile
-        }
     },
     components: {
         securitySchemes: {

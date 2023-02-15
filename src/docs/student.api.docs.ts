@@ -1,6 +1,6 @@
 import { badRequestError, notAcceptableError, notFoundError, unauthorizedError } from "./errors";
 
-export const changePasswordRequestBody = {
+export const studentChangePasswordRequestBody = {
     type: 'object',
     properties: {
         user_id: {
@@ -17,28 +17,388 @@ export const changePasswordRequestBody = {
         }
     },
 };
+export const bulkCreateStudent = {
+    tags: ['Students'],
+    summary: 'student bulk add',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        file: {
+                            type: 'file',
+                            describe: 'mandatory field'
+                        }
+                    }
+                }
+            }
+        }
+    },
+    responses: {
+        '202': {
+            description: 'successful operation',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'string',
+                                example: '202'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'User password Updated'
+                            },
+                            count: {
+                                type: 'string',
+                                example: 'null'
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': notAcceptableError
+    }
 
-export const bulkCreateStudent ={
-    tags :['Students']
-    
 }
-export const addStudent ={
-    tags :['Students']
-    
+export const addStudent = {
+    tags: ['Students'],
+    description: 'add multiple students',
+    summary: 'Add students',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        type: 'array',
+                        example: ['object', 'object']
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        type: 'array',
+                        example: ['object', 'object']
+                    },
+                },
+            },
+        },
+    },
+    responses: {
+        '201': {
+            description: 'successful operation',
+            content: {
+                'application/ json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '201'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'successful'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '400': badRequestError,
+        '406': notAcceptableError
+    }
 }
-export const resetPassword ={
-    tags :['Students']
-    
+export const studentResetPassword = {
+    tags: ['Students'],
+    summary: 'Reset student password',
+    description: 'This can only be done by the logged in user.',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        user_id: {
+                            type: 'string',
+                            example: '2214412414',
+                        }
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        user_id: {
+                            type: 'string',
+                            example: '2214412414',
+                        }
+                    }
+                },
+            },
+        }
+    },
+    responses: {
+        '202': {
+            description: 'successful operation',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'successfully'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '400': badRequestError,
+        '401': unauthorizedError,
+        '404': notFoundError
+    },
 }
-export const badges ={
-    tags :['Students']
-    
-}
+export const getBadges = {
+    tags: ['Students'],
+    summary: 'Get student by user_id',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "student_user_id",
+        }
+    ],
+    responses: {
+        '202': {
+            description: 'successful operation',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'string',
+                                example: '202'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'successful'
+                            },
+                            count: {
+                                type: 'string',
+                                example: '1'
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError
+    }
 
-
+}
+export const addBadges = {
+    tags: ['Students'],
+    description: 'create a new badge for student',
+    summary: 'add badge for student',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        badge_ids: {
+                            type: 'array',
+                            example: '[1,2,3]',
+                            describe: 'mandatory field'
+                        }
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        badge_ids: {
+                            type: 'array',
+                            example: '[1,2,3]',
+                            describe: 'mandatory field'
+                        }
+                    },
+                },
+            },
+        },
+    },
+    responses: {
+        '201': {
+            description: 'successful operation',
+            content: {
+                'application/ json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '201'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'User registered successfully'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '400': badRequestError,
+        '406': notAcceptableError
+    }
+}
+export const studentCertificate = {
+    tags: ['Students'],
+    summary: 'Get student certificate by user_id',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "student_user_id",
+        }
+    ],
+    responses: {
+        '202': {
+            description: 'successful operation',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'string',
+                                example: '202'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'successful'
+                            },
+                            count: {
+                                type: 'string',
+                                example: '1'
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError
+    }
+}
 export const studentRegister = {
     tags: ['Students'],
-    description: 'Registration for admin',
+    description: 'Registration for student',
     summary: 'Create user',
     requestBody: {
         required: true,
@@ -49,12 +409,12 @@ export const studentRegister = {
                     properties: {
                         username: {
                             type: 'string',
-                            example: 'admin@unisolve.org',
+                            example: 'student@unisolve.org',
                             describe: 'mandatory field'
                         },
                         full_name: {
                             type: 'string',
-                            example: 'Admin User',
+                            example: 'Student User',
                             describe: 'mandatory field'
                         },
                         password: {
@@ -64,7 +424,7 @@ export const studentRegister = {
                         },
                         role: {
                             type: 'string',
-                            example: 'ADMIN',
+                            example: 'STUDENT',
                             describe: 'mandatory field'
                         },
                     },
@@ -76,12 +436,12 @@ export const studentRegister = {
                     properties: {
                         username: {
                             type: 'string',
-                            example: 'admin@unisolve.org',
+                            example: 'student@unisolve.org',
                             describe: 'mandatory field'
                         },
                         full_name: {
                             type: 'string',
-                            example: 'Admin User',
+                            example: 'Student User',
                             describe: 'mandatory field'
                         },
                         password: {
@@ -91,7 +451,7 @@ export const studentRegister = {
                         },
                         role: {
                             type: 'string',
-                            example: 'ADMIN',
+                            example: 'STUDENT',
                             describe: 'mandatory field'
                         },
                     },
@@ -136,9 +496,9 @@ export const studentRegister = {
         '406': notAcceptableError
     }
 }
-export const login = {
+export const studentLogin = {
     tags: ['Students'],
-    summary: 'Logs admin into the system',
+    summary: 'Logs student into the system',
     requestBody: {
         required: true,
         content: {
@@ -148,7 +508,7 @@ export const login = {
                     properties: {
                         username: {
                             type: 'string',
-                            example: 'admin@unisolve.org',
+                            example: 'student@unisolve.org',
 
                         },
                         password: {
@@ -164,7 +524,7 @@ export const login = {
                     properties: {
                         username: {
                             type: 'string',
-                            example: 'admin@unisolve.org',
+                            example: 'student@unisolve.org',
 
                         },
                         password: {
@@ -212,11 +572,10 @@ export const login = {
         '401': unauthorizedError,
         '400': badRequestError
     },
-
 }
-export const changePassword = {
+export const studentChangePassword = {
     tags: ['Students'],
-    summary: 'Update admin password',
+    summary: 'Update student password',
     description: 'This can only be done by the logged in user.',
     requestBody: {
         required: true,
@@ -301,7 +660,7 @@ export const changePassword = {
     },
 
 }
-export const logout = {
+export const studentLogout = {
     tags: ['Students'],
     summary: 'Logs out current logged in user session',
     security: [
@@ -331,7 +690,7 @@ export const logout = {
 }
 export const students = {
     tags: ['Students'],
-    summary: 'Get admins',
+    summary: 'Get students',
     security: [
         {
             bearerAuth: [],
@@ -355,11 +714,11 @@ export const students = {
                             },
                             message: {
                                 type: 'string',
-                                example: 'User password Updated'
+                                example: 'successful'
                             },
                             count: {
                                 type: 'string',
-                                example: 'null'
+                                example: '2'
                             },
                             data: {
                                 type: 'array',
@@ -374,9 +733,9 @@ export const students = {
         '404': notAcceptableError
     }
 }
-export const student = {
+export const studentId = {
     tags: ['Students'],
-    summary: 'Get admin by user_id',
+    summary: 'Get student by user_id',
     security: [
         {
             bearerAuth: [],
@@ -391,7 +750,7 @@ export const student = {
                 default: 1
             },
             required: true,
-            description: "user_id",
+            description: "student_user_id",
         }
     ],
     responses: {
@@ -402,9 +761,25 @@ export const student = {
                     schema: {
                         type: 'object',
                         properties: {
+                            status: {
+                                type: 'string',
+                                example: '202'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
                             message: {
                                 type: 'string',
-                                example: 'Password updated successfully'
+                                example: 'successful'
+                            },
+                            count: {
+                                type: 'string',
+                                example: '1'
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1]
                             }
                         }
                     }
