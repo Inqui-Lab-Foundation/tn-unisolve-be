@@ -1,6 +1,6 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createChallengeRequestBody = {
+export const createUserTopicProgressRequestBody = {
     type: 'object',
     properties: {
         course_module_id: {
@@ -21,7 +21,7 @@ export const createChallengeRequestBody = {
         }
     }
 };
-export const challengeUpdatesRequestBody = {
+export const userTopicProgressUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -31,44 +31,8 @@ export const challengeUpdatesRequestBody = {
     },
 };
 
-export const allMentorReports = {
-    tags: ['Reports'],
-}
-export const mentorRegList = {
-    tags: ['Reports'],
-}
-export const refreshMapStats = {
-    tags: ['Reports'],
-}
-export const preSurvey = {
-    tags: ['Reports'],
-}
-export const courseComplete = {
-    tags: ['Reports'],
-}
-export const courseInComplete = {
-    tags: ['Reports'],
-}
-export const notRegistered = {
-    tags: ['Reports'],
-}
-export const notRegister = {
-    tags: ['Reports'],
-}
-export const userTopicProgress = {
-    tags: ['Reports'],
-}
-export const mentorTeamsStudents = {
-    tags: ['Reports'],
-}
-export const challengesCount = {
-    tags: ['Reports'],
-}
-export const challengesDistrictCount = {
-    tags: ['Reports'],
-}
-export const createReports = {
-    tags: ['Reports'],
+export const createUserTopicProgress = {
+    tags: ['User topic progress'],
     description: 'Endpoint for creating new worksheet',
     security: [
         {
@@ -122,8 +86,8 @@ export const createReports = {
         '404': badRequestError
     }
 }
-export const reportsList = {
-    tags: ['Reports'],
+export const userTopicProgressList = {
+    tags: ['User topic progress'],
     description: 'Endpoint for getting list of Worksheets created',
     security: [
         {
@@ -166,8 +130,8 @@ export const reportsList = {
         '404': badRequestError
     }
 }
-export const reportsById = {
-    tags: ['Reports'],
+export const userTopicProgressById = {
+    tags: ['User topic progress'],
     description: 'Endpoint for getting single Worksheets',
     security: [
         {
@@ -222,8 +186,8 @@ export const reportsById = {
         '404': badRequestError
     }
 }
-export const reportsByIdUpdate = {
-    tags: ['Reports'],
+export const userTopicProgressByIdUpdate = {
+    tags: ['User topic progress'],
     description: 'Endpoint for updating the specific Worksheets',
     security: [
         {
@@ -288,8 +252,8 @@ export const reportsByIdUpdate = {
         '404': badRequestError
     }
 }
-export const reportsByIdDelete = {
-    tags: ['Reports'],
+export const userTopicProgressByIdDelete = {
+    tags: ['User topic progress'],
     description: 'Endpoint for removing a single Worksheet category',
     security: [
         {

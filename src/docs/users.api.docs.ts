@@ -1,6 +1,12 @@
-export const users ={
+export const usersList ={
     tags: ['Users'],
 }
-export const user={
+export const userById ={
+    tags: ['Users']
+}
+export const userByIdUpdate ={
+    tags: ['Users']
+}
+export const userByIdDelete ={
     tags: ['Users']
 }

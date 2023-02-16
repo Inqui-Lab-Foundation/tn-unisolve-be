@@ -100,6 +100,14 @@ export const notificationsTome = {
     }
 };
 
+export const notificationsAll = {
+    tags: ['Notifications'],
+}
+
+export const notificationsId = {
+    tags: ['Notifications'],
+}
+
 export const notification = {
     tags: ['Notifications'],
     description: 'Endpoint for creating new notification',

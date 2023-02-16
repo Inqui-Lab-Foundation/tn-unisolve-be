@@ -31,6 +31,9 @@ export const worksheetUpdatesRequestBody = {
     },
 };
 
+export const worksheetResponse = {
+    tags: ['Worksheets']
+}
 export const createWorksheet = {
     tags: ['Worksheets'],
     description: 'Endpoint for creating new worksheet',

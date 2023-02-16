@@ -30,7 +30,15 @@ export const translationsUpdatesRequestBody = {
         }
     },
 };
-
+export const translationsRefresh = {
+    tags: ['Translations']
+}
+export const translationsKey = {
+    tags: ['Translations']
+}
+export const translationsTranslateRefresh = {
+    tags: ['Translations']
+}
 export const createTranslations = {
     tags: ['Translations'],
     description: 'Endpoint for creating new worksheet',

@@ -22,6 +22,61 @@ export const teamUpdatesRequestBody = {
         }
     },
 };
+export const teamMembers = {
+    tags: ['Teams'],
+    description: 'Endpoint for creating new Team category',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    $ref: '#/components/schemas/createTeamRequestBody'
+                },
+            },
+        },
+    },
+    responses: {
+        '200': {
+            description: 'New Entry added successfully',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
 export const createTeam = {
     tags: ['Teams'],
     description: 'Endpoint for creating new Team category',

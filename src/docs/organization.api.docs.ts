@@ -39,6 +39,19 @@ export const organizationUpdatesRequestBody = {
     },
 };
 
+export const organizationBulkUpload = {
+    tags: ['Organization']
+}
+export const organizationDistricts = {
+    tags: ['Organization']
+}
+export const organizationCheckOrg = {
+    tags: ['Organization']
+}
+export const organizationCreateOrg = {
+    tags: ['Organization']
+}
+
 export const createOrganization = {
     tags: ['Organization'],
     description: 'Endpoint for organizations service => creating a new record in specific table name mentioned in the req.params',

@@ -1,6 +1,6 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createWorksheetRequestBody = {
+export const createFaqRequestBody = {
     type: 'object',
     properties: {
         course_module_id: {
@@ -21,7 +21,7 @@ export const createWorksheetRequestBody = {
         }
     }
 };
-export const worksheetUpdatesRequestBody = {
+export const faqUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -31,8 +31,14 @@ export const worksheetUpdatesRequestBody = {
     },
 };
 
-export const createWorksheet = {
-    tags: ['Worksheets'],
+export const reflectiveQuizNextQuestion = {
+    tags: ['Reflective quiz'],
+}
+export const reflectiveQuizResponse = {
+    tags: ['Reflective quiz'],
+}
+export const createReflectiveQuiz = {
+    tags: ['Reflective quiz'],
     description: 'Endpoint for creating new worksheet',
     security: [
         {
@@ -86,8 +92,8 @@ export const createWorksheet = {
         '404': badRequestError
     }
 }
-export const worksheetList = {
-    tags: ['Worksheets'],
+export const reflectiveQuizList = {
+    tags: ['Reflective quiz'],
     description: 'Endpoint for getting list of Worksheets created',
     security: [
         {
@@ -130,8 +136,8 @@ export const worksheetList = {
         '404': badRequestError
     }
 }
-export const worksheetById = {
-    tags: ['Worksheets'],
+export const reflectiveQuizById = {
+    tags: ['Reflective quiz'],
     description: 'Endpoint for getting single Worksheets',
     security: [
         {
@@ -176,7 +182,7 @@ export const worksheetById = {
                             data: {
                                 type: 'array',
                                 example: ['object']
-                            } 
+                            }
                         }
                     }
                 }
@@ -186,8 +192,8 @@ export const worksheetById = {
         '404': badRequestError
     }
 }
-export const worksheetByIdUpdate = {
-    tags: ['Worksheets'],
+export const reflectiveQuizByIdUpdate = {
+    tags: ['Reflective quiz'],
     description: 'Endpoint for updating the specific Worksheets',
     security: [
         {
@@ -252,8 +258,8 @@ export const worksheetByIdUpdate = {
         '404': badRequestError
     }
 }
-export const WorksheetsByIdDelete = {
-    tags: ['Worksheets'],
+export const reflectiveQuizByIdDelete = {
+    tags: ['Reflective quiz'],
     description: 'Endpoint for removing a single Worksheet category',
     security: [
         {
@@ -308,58 +314,3 @@ export const WorksheetsByIdDelete = {
         '404': badRequestError
     }
 }
-// export const courseTopicProgress = {
-//     tags: ['Course Topics'],
-//     description: 'Endpoint for updating the topic progress',
-//     security: [
-//         {
-//             bearerAuth: [],
-//         },
-//     ],
-//     requestBody: {
-//         required: true,
-//         content: {
-//             'application/json': {
-//                 schema: {
-//                     $ref: '#/components/schemas/courseTopicProgressRequestBody'
-//                 },
-//             },
-//         },
-//     },
-//     responses: {
-//         '201': {
-//             description: 'Created',
-//             content: {
-//                 'application/json': {
-//                     schema: {
-//                         type: 'object',
-//                         properties: {
-//                             status: {
-//                                 type: 'number',
-//                                 example: '200'
-//                             },
-//                             status_typeL: {
-//                                 type: 'string',
-//                                 example: 'success'
-//                             },
-//                             message: {
-//                                 type: 'string',
-//                                 example: 'OK'
-//                             },
-//                             count: {
-//                                 type: 'number',
-//                                 example: 1
-//                             },
-//                             data: {
-//                                 type: 'array',
-//                                 example: ['object']
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         },
-//         '401': unauthorizedError,
-//         '404': badRequestError
-//     }
-// }

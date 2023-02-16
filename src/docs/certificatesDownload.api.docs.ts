@@ -30,7 +30,9 @@ export const CertificateUpdatesRequestBody = {
         }
     },
 };
-
+export const mobileCheck = {
+    tags: ['Reports'],
+}
 export const createCertificate = {
     tags: ['Certificates download'],
     description: 'Endpoint for creating new worksheet',
