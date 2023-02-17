@@ -22,9 +22,6 @@ export const quizNextQuestionSchema = Joi.object().keys({
 });
 
 export const quizSubmitResponseSchema = Joi.object().keys({
-    // quiz_id: Joi.number().required().messages({
-    //     'string.empty': speeches.QUIZ_ID_REQUIRED
-    // }),
     quiz_survey_question_id:Joi.number().required().messages({
         'string.empty': speeches.QUIZ_QUESTION_ID_REQUIRED
     }),
@@ -34,9 +31,6 @@ export const quizSubmitResponseSchema = Joi.object().keys({
 });
 
 export const quizSubmitResponsesSchema = Joi.object().keys({
-    // quiz_id: Joi.number().required().messages({
-    //     'string.empty': speeches.QUIZ_ID_REQUIRED
-    // }),
     responses:Joi.array().required().messages({
         'array.empty': speeches.SELCTED_OPTION_REQUIRED
     }),

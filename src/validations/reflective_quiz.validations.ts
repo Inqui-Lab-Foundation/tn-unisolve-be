@@ -22,9 +22,6 @@ export const quizNextQuestionSchema = Joi.object().keys({
 });
 
 export const quizSubmitResponseSchema = Joi.object().keys({
-    // quiz_id: Joi.number().required().messages({
-    //     'string.empty': speeches.QUIZ_ID_REQUIRED
-    // }),
     reflective_quiz_question_id:Joi.number().required().messages({
         'string.empty': speeches.QUIZ_QUESTION_ID_REQUIRED
     }),
