@@ -923,7 +923,6 @@ export default class ChallengeResponsesController extends BaseController {
     }
     protected async getResponse(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            console.log(Date.now);
             let user_id = res.locals.user_id;
             let { team_id } = req.query;
             if (!user_id) {
@@ -950,7 +949,6 @@ export default class ChallengeResponsesController extends BaseController {
             const where: any = {};
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
-                console.log(where)
                 data = await this.crudService.findOne(challenge_response, {
                     attributes: [
                         [
@@ -1221,7 +1219,6 @@ export default class ChallengeResponsesController extends BaseController {
             if (sdg) {
                 whereClause['sdg'] = sdg && typeof sdg == 'string' ? sdg : {}
             }
-            console.log(whereClause);
             const data = await this.crudService.findAll(challenge_response, {
                 attributes: [
                     "challenge_response_id",

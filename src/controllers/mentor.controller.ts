@@ -609,8 +609,6 @@ export default class MentorController extends BaseController {
             if (counter > 0) {
                 await this.crudService.bulkCreate(loadMode, bulkData)
                     .then((result) => {
-                        // let mentorData = {...bulkData, user_id: result.user_id}
-                        // await this.crudService.bulkCreate(user, bulkData)
                         return res.send(dispatcher(res, { data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
                     }).catch((error: any) => {
                         return res.status(500).send(dispatcher(res, error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));

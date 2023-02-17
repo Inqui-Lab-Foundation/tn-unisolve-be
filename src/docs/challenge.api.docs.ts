@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createChallengeRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const challengeUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createChallenge = {
     tags: ['Challenges'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add challenge',
+    description: 'Authentication required to add challenge',
     security: [
         {
             bearerAuth: [],
@@ -44,10 +14,29 @@ export const createChallenge = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'challenge name',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'badge name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +77,8 @@ export const createChallenge = {
 }
 export const challengeList = {
     tags: ['Challenges'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of challenge',
+    description: 'Gets list of challenge created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +122,8 @@ export const challengeList = {
 }
 export const challengeById = {
     tags: ['Challenges'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get challenge',
+    description: 'Get single challenge challenge_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +132,13 @@ export const challengeById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'challenge_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +179,54 @@ export const challengeById = {
 }
 export const challengeByIdUpdate = {
     tags: ['Challenges'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update challenge',
+    description: 'Get single challenge challenge_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'challenge_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +238,7 @@ export const challengeByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -253,24 +264,26 @@ export const challengeByIdUpdate = {
     }
 }
 export const challengeByIdDelete = {
+
     tags: ['Challenges'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete challenge',
+    description: 'Delete single challenge challenge_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'challenge_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

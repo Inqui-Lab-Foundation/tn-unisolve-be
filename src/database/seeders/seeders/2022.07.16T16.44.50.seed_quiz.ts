@@ -18,15 +18,11 @@ export const up: Migration = async ({ context: sequelize }) => {
 			course_module_id:module.module_id,
 			topic_type:"QUIZ",
 		}})
-		// console.log(module);
-		// console.log(course_topic_of_topic_type_quiz);
 		if(!course_topic_of_topic_type_quiz || course_topic_of_topic_type_quiz instanceof Error){
-			console.log("course_topic_of_topic_type_quiz",course_topic_of_topic_type_quiz);
 		}else{
 			// 	//////Question  1
 			module.data;
 			for(const question of module.data){
-			// 	// console.log(question)
 				await createQuizQuestion(sequelize,
 					course_topic_of_topic_type_quiz.dataValues.topic_type_id,
 					Number(question.question_no),
@@ -120,9 +116,7 @@ export const down: Migration = async ({ context: sequelize }) => {
 			topic_type:"QUIZ",
 			course_module_id:module.module_id,
 		}})
-		// console.log(course_topic_of_topic_type_quiz);
 		if(!course_topic_of_topic_type_quiz || course_topic_of_topic_type_quiz instanceof Error){
-			console.log("quiz_id_module_1",course_topic_of_topic_type_quiz);
 		}else{
 			arrOfQuizIds.push(course_topic_of_topic_type_quiz.dataValues.topic_type_id)
 		}

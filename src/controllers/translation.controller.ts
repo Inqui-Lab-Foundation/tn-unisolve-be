@@ -52,7 +52,6 @@ export default class TranslationController extends BaseController {
 
     protected async translationRefresh(req:Request,res:Response,next:NextFunction)
     {
-        console.log("Req ",req)
         let translateTable = req.body?.translateTable ? req.body?.translateTable : '*';
         
         try{

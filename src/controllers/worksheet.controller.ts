@@ -201,7 +201,6 @@ export default class WorksheetController extends BaseController {
             for (const file_name of Object.keys(files)) {
                 const file = files[file_name];
                 let filename = file.path.split(path.sep).pop();
-                // filename = ""+Date.now()+"_"+filename
                 filename = "user_id_" + user_id + "_worksheet_id_" + worksheet_id
                 const readFile: any = await fs.readFileSync(file.path);
                 if (readFile instanceof Error) {

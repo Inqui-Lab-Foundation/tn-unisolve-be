@@ -1,6 +1,7 @@
 
 export const home = {
     tags: ['Assets'],
+    summary: 'Open route',
     description: 'basic route',
     responses: {
         '200': {
@@ -35,6 +36,8 @@ export const home = {
 };
 export const assets = {
     tags: ['Assets'],
+    summary: 'Open route',
+    description: 'home route',
     parameters: [
         {
             in: 'path',
@@ -47,7 +50,6 @@ export const assets = {
             description: "File to retrieve",
         }
     ],
-    description: 'home route',
     responses: {
         '200': {
             description: 'success',
@@ -81,7 +83,8 @@ export const assets = {
 };
 export const healthCheck = {
     tags: ['Assets'],
-    description: 'Returns server Health like : status, running time and database connectivity',
+    summary: 'Open route',
+    description: 'Returns server health',
     responses: {
         '200': {
             description: 'success',

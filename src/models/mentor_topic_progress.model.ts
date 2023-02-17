@@ -16,18 +16,6 @@ export class mentor_topic_progress extends Model<InferAttributes<mentor_topic_pr
     declare created_at: Date;
     declare updated_by: number;
     declare updated_at: Date;
-
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The "models/index" file will call this method automatically.
-     */
-    static associate(models: any) {
-        // define association here
-        // course.hasMany(models, { foreignKey: "course_id", as: "courseModules" });
-    }
-
-
 }
 mentor_topic_progress.init(
     {

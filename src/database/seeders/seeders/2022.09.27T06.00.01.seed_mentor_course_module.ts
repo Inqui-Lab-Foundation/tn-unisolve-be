@@ -34,7 +34,6 @@ Description
 	// "Do you want to make a difference in the world around you but are not sure how?\n"+
 	// "Then watch the story of our Problem Solvers: Adila, Aryn, Shama and Amir.\n"+
 	// "What inspired them to be Problem Solvers? Let us see and get inspired too!")
-	// console.log(courseInserted)
 	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"VIDEO","Training","",18)
 	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"ATTACHMENT","Handbook","/assets/defaults/default_worksheet.pdf")
 	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"QUIZ","Quiz")
@@ -179,32 +178,6 @@ async function truncateTable(sequelize:Sequelize,tableNameToTruncate:string,opti
 }
 
 export const down: Migration = async ({ context: sequelize }) => {
-	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
-	//or below implementation 
-	// const arrOfQuizIds: number[] = [];
-	// const course_topic_of_topic_type_quiz:any = await mentor_course_topic.findOne({
-	// 	where:{
-	// 	topic_type:"QUIZ",
-	// 	mentor_course_id:module.mentor_course_id,
-	// }})
-	// for(const module of dataMentorCourseQuizModuleArray){
-	// 	const course_topic_of_topic_type_quiz:any = await mentor_course_topic.findOne({
-	// 		where:{
-	// 		topic_type:"QUIZ",
-	// 		mentor_course_id:module.mentor_course_id,
-	// 	}})
-	// 	// console.log("module",module);
-	// 	// console.log(course_topic_of_topic_type_quiz);
-	// 	if(!course_topic_of_topic_type_quiz || course_topic_of_topic_type_quiz instanceof Error){
-	// 		console.log("course_topic_of_topic_type_quiz",course_topic_of_topic_type_quiz);
-	// 	}else{
-	// 		arrOfQuizIds.push(course_topic_of_topic_type_quiz.dataValues.topic_type_id)
-	// 	}
-	// }
-	// console.log("arrOfQuizIds",arrOfQuizIds);
-	// // 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
-	// //or below implementation 
-
 	await truncateTable(sequelize,tableNameCourseTopics,{})
 	await truncateTable(sequelize,tableNameCourses,{})
 };

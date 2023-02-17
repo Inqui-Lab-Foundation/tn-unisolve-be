@@ -92,40 +92,6 @@ export default class VideoController extends BaseController {
                             include:{
                                 required:false,
                                 model:reflective_quiz_question,
-                            //     //this was done to add a flag of status whether the question was completed or not 
-                            //         "video_id",
-                            //         "reflective_quiz_question_id",
-                            //         "question_no",
-                            //         "question",
-                            //         "option_a",
-                            //         "option_b",
-                            //         "option_b",
-                            //         "option_d",
-                            //         "question_image",
-                            //         "type",
-                            //         "level",
-                            //         "status",
-                            //         "created_by",
-                            //         "created_at",
-                            //         "updated_by",
-                            //         "updated_at",
-                            //         [// Note the wrapping parentheses in the call below!
-                            //             database.literal(`(
-                            //                 SELECT CASE WHEN EXISTS 
-                            //                     (SELECT video_id
-                            //                     FROM reflective_quiz_responses AS rfqr
-                            //                     WHERE
-                            //                         rfqr.video_id = \`video\`.\`video_id\`
-                            //                     )
-                            //                 THEN
-                            //                     "COMPLETED"
-                            //                 ELSE
-                            //                     "INCOMPLETE"
-                            //                 END AS rfq_status
-                            //             )`),
-                            //             'rfq_status'
-                            //         ],
-                            // ],
                                 where:{
                                     [Op.and]:[
                                         whereClauseStatusPart

@@ -314,7 +314,6 @@ export default class QuizSurveyController extends BaseController {
                             delete quizSurvey.dataValues.quiz_survey_questions
                         }
                     }
-                    console.log(quizSurvey.dataValues)
                     return quizSurvey;
                 }))
             }else if(data && data.dataValues){
@@ -344,12 +343,6 @@ export default class QuizSurveyController extends BaseController {
         if(!user_id){
             throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
         }
-        //do not check for course topic in this case .... //check if the given quiz is a valid topic
-        // const curr_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":quiz_id,"topic_type":"QUIZ"}})
-        // if(!curr_topic || curr_topic instanceof Error){
-        //     throw badRequest("INVALID TOPIC");
-        // }
-
         const quizRes = await this.crudService.findOne(quiz_survey_response,{where: {quiz_survey_id:quiz_survey_id,user_id:user_id}});
         if(quizRes instanceof Error){
             throw internal(quizRes.message)
@@ -368,11 +361,9 @@ export default class QuizSurveyController extends BaseController {
             //TOOO :: implement checking response and based on that change the 
             let user_response:any = {}
             user_response =  JSON.parse(quizRes.dataValues.response);
-            // console.log(user_response);
             let questionNosAsweredArray = Object.keys(user_response);
             questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (Number(a) > Number(b) ? -1 : 1));
             const noOfQuestionsAnswered = Object.keys(user_response).length
-            // console.log(noOfQuestionsAnswered)
             const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
             // if(lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer){
             //     question_no = lastQuestionAnsewered.question_no+1;
@@ -474,13 +465,10 @@ export default class QuizSurveyController extends BaseController {
             if(!questionAnswered){
                 throw badData("Invalid Quiz question id")
             }
-    
-    
             const quizRes = await this.crudService.findOne(quiz_survey_response,{where: {quiz_survey_id:quiz_survey_id,user_id:user_id}});
             if(quizRes instanceof Error){
                 throw internal(quizRes.message)
             }          
-            // console.log(quizRes);
             let dataToUpsert:any = {}
             dataToUpsert = {quiz_survey_id:quiz_survey_id,user_id:user_id,updated_by:user_id}
     

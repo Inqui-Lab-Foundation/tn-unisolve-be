@@ -20,7 +20,7 @@ export const changePasswordRequestBody = {
 
 export const registration = {
     tags: ['Admins'],
-    description: 'Registration for admin',
+    description: 'Register admin',
     summary: 'Create user',
     requestBody: {
         required: true,
@@ -120,7 +120,8 @@ export const registration = {
 }
 export const login = {
     tags: ['Admins'],
-    summary: 'Logs admin into the system',
+    description: 'Login admin',
+    summary: 'Logs user into the system',
     requestBody: {
         required: true,
         content: {
@@ -131,7 +132,6 @@ export const login = {
                         username: {
                             type: 'string',
                             example: 'admin@unisolve.org',
-
                         },
                         password: {
                             type: 'string',
@@ -285,7 +285,8 @@ export const changePassword = {
 }
 export const logout = {
     tags: ['Admins'],
-    summary: 'Logs out current logged in user session',
+    description: 'Helps clear the session data',
+    summary: 'Clear user session',
     security: [
         {
             bearerAuth: [],
@@ -313,6 +314,7 @@ export const logout = {
 }
 export const admins = {
     tags: ['Admins'],
+    description: 'List of registered admin users',
     summary: 'Get admins',
     security: [
         {
@@ -337,7 +339,7 @@ export const admins = {
                             },
                             message: {
                                 type: 'string',
-                                example: 'User password Updated'
+                                example: 'Successful'
                             },
                             count: {
                                 type: 'string',
@@ -358,7 +360,8 @@ export const admins = {
 }
 export const adminId = {
     tags: ['Admins'],
-    summary: 'Get admin by user_id',
+    description: 'Get admin details by admin_user_id in params',
+    summary: 'Get admin by admin_user_id',
     security: [
         {
             bearerAuth: [],

@@ -1,56 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createCourseModulesRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const courseModulesUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-export const courseModulesProgressRequestBody = {
-    type: 'object',
-    properties: {
-        user_id: {
-            type: 'string',
-            example: '1',
-        },
-        course_topic_id: {
-            type: 'string',
-            example: '1',
-        },
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
-export const createCourseModules = {
+export const courseModulesProgress = {
     tags: ['Courses modules'],
-    description: 'Creating new Modules',
+    summary: 'Update topic progress',
+    description: 'Updating the topic progress',
     security: [
         {
             bearerAuth: [],
@@ -61,7 +14,40 @@ export const createCourseModules = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createCourseModulesRequestBody'
+                    type: 'object',
+                    properties: {
+                        user_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        course_topic_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        status: {
+                            type: 'string',
+                            example: 'COMPLETED',
+                        }
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        user_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        course_topic_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        status: {
+                            type: 'string',
+                            example: 'COMPLETED',
+                        }
+                    },
                 },
             },
         },
@@ -103,9 +89,107 @@ export const createCourseModules = {
         '404': badRequestError
     }
 }
+export const createCourseModules = {
+    tags: ['Courses modules'],
+    summary: 'Add Course Module',
+    description: 'Authentication required to add CourseModule',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        course_module_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        topic_type_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        topic_type: {
+                            type: 'string',
+                            example: 'VIDEO',
+                        },
+                        title: {
+                            type: 'string',
+                            example: 'video 1',
+                        }
+                    }
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        course_module_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        topic_type_id: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        topic_type: {
+                            type: 'string',
+                            example: 'VIDEO',
+                        },
+                        title: {
+                            type: 'string',
+                            example: 'video 1',
+                        }
+                    }
+                },
+            },
+        }
+    },
+    responses: {
+        '201': {
+            description: 'Created',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
 export const courseModulesList = {
     tags: ['Courses modules'],
-    description: 'Getting list of Modules',
+    summary: 'List of Course Module',
+    description: 'Gets list of Course Module created',
     security: [
         {
             bearerAuth: [],
@@ -149,7 +233,8 @@ export const courseModulesList = {
 }
 export const courseModulesById = {
     tags: ['Courses modules'],
-    description: 'Getting single Modules',
+    summary: 'Get Course Module',
+    description: 'Get single Course Module course_module_id in params',
     security: [
         {
             bearerAuth: [],
@@ -158,13 +243,13 @@ export const courseModulesById = {
     parameters: [
         {
             in: 'path',
-            name: 'topic_id',
+            name: 'course_module_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add topicId to fetch specify Modules",
+            description: "Required",
         }
     ],
     responses: {
@@ -193,7 +278,7 @@ export const courseModulesById = {
                             data: {
                                 type: 'array',
                                 example: ['object']
-                            } 
+                            }
                         }
                     }
                 }
@@ -205,34 +290,54 @@ export const courseModulesById = {
 }
 export const courseModulesByIdUpdate = {
     tags: ['Courses modules'],
-    description: 'Updating the singe  Modules',
+    summary: 'Update Course Module',
+    description: 'Get single Course Module course_module_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'course_module_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/courseModulesUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'topic_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add topicId to update specify  Modules",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -244,7 +349,7 @@ export const courseModulesByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -271,23 +376,24 @@ export const courseModulesByIdUpdate = {
 }
 export const courseModulesByIdDelete = {
     tags: ['Courses modules'],
-    description: 'Removing a single Modules category',
+    summary: 'Delete Course Module',
+    description: 'Delete single Course Module course_module_id  in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'course_module_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'topic_Id',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Modules",
-        }
     ],
     responses: {
         '200': {
@@ -325,58 +431,4 @@ export const courseModulesByIdDelete = {
         '404': badRequestError
     }
 }
-export const courseModulesProgress = {
-    tags: ['Courses modules'],
-    description: 'Updating the topic progress',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/courseModulesProgressRequestBody'
-                },
-            },
-        },
-    },
-    responses: {
-        '201': {
-            description: 'Created',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
+

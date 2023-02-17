@@ -51,7 +51,6 @@ export default async function sendNotification(notificationData: INotificationUt
     try {
         const crudService = new CRUDService();
         const response = await crudService.create(notification, notificationData);
-        console.log(response);
         if (!response) {
             logIt(constents.log_levels.list.ERROR, `Error in sending notification. ErrorObject: ${response}`);
             return Promise.reject("Error in sending notification");

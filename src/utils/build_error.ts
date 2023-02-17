@@ -31,13 +31,6 @@ export default function buildError(err:any) {
       data:{},
       error:
         err.details 
-        // &&
-        // err.details.map(err => {
-        //   return {
-        //     message: err.message,
-        //     param: err.path.join('.')
-        //   };
-        // })
     };
   }
   

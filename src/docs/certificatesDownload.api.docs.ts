@@ -1,41 +1,13 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createCertificateRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const CertificateUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
 export const mobileCheck = {
     tags: ['Reports'],
 }
+
 export const createCertificate = {
     tags: ['Certificates download'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Certificate',
+    description: 'Authentication required to add Certificate',
     security: [
         {
             bearerAuth: [],
@@ -46,10 +18,39 @@ export const createCertificate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        mobile: {
+                            type: 'string',
+                            example: '98456789',
+                            describe: 'mandatory field'
+                        },
+                        faculty_name: {
+                            type: 'string',
+                            example: 'faculty name',
+                            describe: 'mandatory field'
+                        },
+                        organization_name: {
+                            type: 'string',
+                            example: 'organization name',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'badge name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -59,28 +60,23 @@ export const createCertificate = {
                     schema: {
                         type: 'object',
                         properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
+                            mobile: {
                                 type: 'string',
-                                example: 'success'
+                                example: '98456789',
+                                describe: 'mandatory field'
                             },
-                            message: {
+                            faculty_name: {
                                 type: 'string',
-                                example: 'OK'
+                                example: 'faculty name',
+                                describe: 'mandatory field'
                             },
-                            count: {
-                                type: 'number',
-                                example: 1
+                            organization_name: {
+                                type: 'string',
+                                example: 'organization name',
+                                describe: 'mandatory field'
                             },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
+                        },
+                    },
                 }
             }
         },
@@ -89,8 +85,9 @@ export const createCertificate = {
     }
 }
 export const CertificateList = {
-    tags: ['FAQ'],
-    description: 'Endpoint for getting list of Worksheets created',
+    tags: ['Certificates download'],
+    summary: 'List of Certificate',
+    description: 'Gets list of Certificate created',
     security: [
         {
             bearerAuth: [],
@@ -134,7 +131,8 @@ export const CertificateList = {
 }
 export const CertificateById = {
     tags: ['Certificates download'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get Certificate',
+    description: 'Get single Certificate badge_id in params',
     security: [
         {
             bearerAuth: [],
@@ -143,13 +141,13 @@ export const CertificateById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'certificate_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -190,34 +188,54 @@ export const CertificateById = {
 }
 export const CertificateByIdUpdate = {
     tags: ['Certificates download'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update Certificate',
+    description: 'Get single Certificate certificate_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'certificate_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -229,7 +247,7 @@ export const CertificateByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -256,23 +274,24 @@ export const CertificateByIdUpdate = {
 }
 export const CertificateByIdDelete = {
     tags: ['Certificates download'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete Certificate',
+    description: 'Delete single Certificate certificate_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'certificate_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

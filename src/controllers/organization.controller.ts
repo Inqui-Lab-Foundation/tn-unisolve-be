@@ -44,7 +44,6 @@ export default class OrganizationController extends BaseController {
             };
             // pagination
             const { page, size, status } = req.query;
-            // let condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)

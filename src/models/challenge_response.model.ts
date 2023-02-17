@@ -22,15 +22,6 @@ export class challenge_response extends Model<InferAttributes<challenge_response
     declare created_at: Date;
     declare updated_by: number;
     declare updated_at: Date;
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    // static associate(models: any) {
-    //     // define association here
-    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
-    // }
 }
 
 challenge_response.init(

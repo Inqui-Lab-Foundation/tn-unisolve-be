@@ -7,15 +7,7 @@ import { constents } from '../configs/constents.config';
 
 
 export class course_module extends Model<courseModuleAttributes> {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    // static associate(models: any) {
-    //     // define association here
-    //     course_module.belongsTo(models.courses, { foreignKey: 'course_id',targetKey: 'course_id' });
-    // }
+
 }
 
 const courseModuleSequelize = course_module.init(

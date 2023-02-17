@@ -13,7 +13,6 @@ import CRUDService from '../services/crud.service';
 import jwtUtil from '../utils/jwt.util';
 import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
-// import sendNotification from '../utils/notification.util';
 
 import { user } from '../models/user.model';
 import { speeches } from '../configs/speeches.config';

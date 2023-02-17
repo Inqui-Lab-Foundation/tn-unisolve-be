@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createBadgesRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const badgesUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createBadges = {
     tags: ['Badges'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Badge',
+    description: 'Authentication required to add badges',
     security: [
         {
             bearerAuth: [],
@@ -44,10 +14,29 @@ export const createBadges = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'badge name',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'badge name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +77,8 @@ export const createBadges = {
 }
 export const badgesList = {
     tags: ['Badges'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of badges',
+    description: 'Gets list of Badges created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +122,8 @@ export const badgesList = {
 }
 export const badgesById = {
     tags: ['Badges'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get badge',
+    description: 'Get single badges badge_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +132,13 @@ export const badgesById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'badge_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +179,54 @@ export const badgesById = {
 }
 export const badgesByIdUpdate = {
     tags: ['Badges'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update badge',
+    description: 'Get single badges badge_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'badge_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +238,7 @@ export const badgesByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -254,23 +265,24 @@ export const badgesByIdUpdate = {
 }
 export const badgesByIdDelete = {
     tags: ['Badges'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete badge',
+    description: 'Delete single badges badge_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'badge_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

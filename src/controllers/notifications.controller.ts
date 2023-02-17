@@ -214,7 +214,6 @@ export default class NotificationsController {
             }
 
             await this.crudService.update(notification, {
-                // read_by: Sequelize.fn('CONCAT', Sequelize.col('read_by'), ',', Sequelize.literal(`'${res.locals.id}'`)),
                 read_by: read_by_list.join(","),
                 updated_by: res.locals.user_id,
             },
@@ -281,7 +280,6 @@ export default class NotificationsController {
                         read_users.push(res.locals.user_id);
                     }
                     const result = await this.crudService.update(notification, {
-                        // read_by: Sequelize.fn('CONCAT', Sequelize.col('read_by'), ',', Sequelize.literal(`'${res.locals.user_id}'`)),
                         read_by: read_users.join(","),
                         updated_by: res.locals.user_id,
                     },

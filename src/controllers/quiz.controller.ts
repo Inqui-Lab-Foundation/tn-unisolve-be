@@ -210,7 +210,6 @@ export default class QuizController extends BaseController {
                 })
             }
             if(topic_to_redirect_to instanceof Error){
-                console.log(topic_to_redirect_to);
                 topic_to_redirect_to = null
             }
             const quizRes = await this.crudService.findOne(quiz_response, { where: { quiz_id: quiz_id, user_id: user_id } });

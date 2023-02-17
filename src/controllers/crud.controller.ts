@@ -216,9 +216,6 @@ export default class CRUDController implements IController {
                 }
 
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -226,12 +223,6 @@ export default class CRUDController implements IController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
-                (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
             return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
@@ -332,16 +323,11 @@ export default class CRUDController implements IController {
                 this.model = model;
             };
             const user_id = res.locals.user_id
-            console.log(user_id);
-
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
             const rawFiles: any = req.files;
             const files: any = Object.values(rawFiles);
             const file_key: any = Object.keys(rawFiles);
-            console.log(rawFiles);
-            console.log(files);
-            console.log(file_key);
             const reqData: any = req.body;
             const errs: any = [];
             for (const file_name of Object.keys(files)) {

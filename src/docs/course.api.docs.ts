@@ -1,31 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createCourseRequestBody = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            example: 'Health',
-        },
-        description: {
-            type: 'string',
-            example: 'Health, according to the World Health Organization, is a state of complete physical',
-        }
-    }
-};
-export const courseUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createCourse = {
     tags: ['Courses'],
-    description: 'Creating new course',
+    summary: 'Add course',
+    description: 'Authentication required to add course',
     security: [
         {
             bearerAuth: [],
@@ -36,10 +14,35 @@ export const createCourse = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createCourseRequestBody'
+                    type: 'object',
+                    properties: {
+                        title: {
+                            type: 'string',
+                            example: 'Health',
+                        },
+                        description: {
+                            type: 'string',
+                            example: 'Health, according to the World Health Organization, is a state of complete physical',
+                        }
+                    }
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        title: {
+                            type: 'string',
+                            example: 'Health',
+                        },
+                        description: {
+                            type: 'string',
+                            example: 'Health, according to the World Health Organization, is a state of complete physical',
+                        }
+                    }
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -80,7 +83,8 @@ export const createCourse = {
 }
 export const courseList = {
     tags: ['Courses'],
-    description: 'Endpoint for getting list of courses created',
+    summary: 'List of course',
+    description: 'Gets list of course created',
     security: [
         {
             bearerAuth: [],
@@ -124,7 +128,8 @@ export const courseList = {
 }
 export const courseById = {
     tags: ['Courses'],
-    description: 'Endpoint for getting single course',
+    summary: 'Get course',
+    description: 'Get single course course_id in params',
     security: [
         {
             bearerAuth: [],
@@ -139,7 +144,7 @@ export const courseById = {
                 default: 1
             },
             required: true,
-            description: "Add courseId to fetch specify course",
+            description: "Required",
         }
     ],
     responses: {
@@ -147,72 +152,6 @@ export const courseById = {
             description: 'Success',
             content: {
                 'applications/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            } 
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const courseByIdUpdate = {
-    tags: ['Courses'],
-    description: 'Endpoint for updating the specific course',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/courseUpdatesRequestBody'
-                },
-            },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'course_id',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add courseId to update specify course",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
                     schema: {
                         properties: {
                             status: {
@@ -244,10 +183,10 @@ export const courseByIdUpdate = {
         '404': badRequestError
     }
 }
-export const courseByIdDelete = {
+export const courseByIdUpdate = {
     tags: ['Courses'],
-    description: 'Endpoint for removing a single course category',
-    operationId: 'courseByIdDelete',
+    summary: 'Update course',
+    description: 'Get single course course_id in params',
     security: [
         {
             bearerAuth: [],
@@ -259,11 +198,96 @@ export const courseByIdDelete = {
             name: 'course_id',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
-            description: "Add courseId to delete specify course",
+            description: "Required",
         }
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'COMPLETED',
+                        }
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
+    },
+    responses: {
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const courseByIdDelete = {
+    tags: ['Courses'],
+    summary: 'Delete course',
+    description: 'Delete single course course_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'course_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
+    security: [
+        {
+            bearerAuth: [],
+        },
     ],
     responses: {
         '200': {

@@ -1,7 +1,7 @@
 import { assets, healthCheck, home } from "./assets.api.docs";
 import { version } from '../../package.json';
-import { courseList, createCourse, courseById, courseByIdUpdate, courseByIdDelete, createCourseRequestBody, courseUpdatesRequestBody } from "./course.api.docs";
-import { courseTopicList, createCourseTopic, courseTopicById, courseTopicByIdUpdate, courseTopicByIdDelete, courseTopicProgress, courseTopicProgressRequestBody, createCourseTopicRequestBody, courseTopicUpdatesRequestBody } from "./courseTopic.api.docs";
+import { courseList, createCourse, courseById, courseByIdUpdate, courseByIdDelete } from "./course.api.docs";
+import { courseTopicList, createCourseTopic, courseTopicById, courseTopicByIdUpdate, courseTopicByIdDelete, courseTopicProgress } from "./courseTopic.api.docs";
 import { moduleList, createModule, moduleById, moduleByIdUpdate, moduleByIdDelete, createModuleRequestBody, moduleUpdatesRequestBody } from "./module.api.docs";
 import { videosList, createVideos, videosById, videosByIdUpdate, videosByIdDelete, createVideosRequestBody, videosUpdatesRequestBody } from "./video.api.docs";
 import { create_dynamicSignupForm, get_dynamicSignupForm } from "./auth.api.docs";
@@ -266,7 +266,7 @@ const options = {
             put: mentorManualResetPassword
         },
         '/api/v1/mentors/regStatus': {
-            
+
         },
         '/api/v1/mentors/bulkUpload': {
             mentorBulkUpload
@@ -643,7 +643,7 @@ const options = {
             post: createChallenge,
             ge: challengeList
         },
-        '/api/v1/challenge/{id}': {
+        '/api/v1/challenge/{challenge_id}': {
             get: challengeById,
             put: challengeByIdUpdate,
             delete: challengeByIdDelete
@@ -767,14 +767,14 @@ const options = {
             post: createBadges,
             get: badgesList
         },
-        '/api/v1/badges/{id}': {
+        '/api/v1/badges/{badge_id}': {
             get: badgesById,
             put: badgesByIdUpdate,
             delete: badgesByIdDelete
         },
         '/api/v1/badges/withfile': {
         },
-        '/api/v1/badges/{id}/withfile': {
+        '/api/v1/badges/{badge_id}/withfile': {
         },
         '/api/v1/tutorialVideos': {
             post: createTutorialVideos,
@@ -824,13 +824,13 @@ const options = {
         },
         '/api/v1/certificate/mobileCheck': {
             get: mobileCheck
-            
+
         },
         '/api/v1/certificate': {
             post: createCertificate,
             get: CertificateList
         },
-        '/api/v1/certificate/{id}': {
+        '/api/v1/certificate/{certificate_id}': {
             get: CertificateById,
             put: CertificateByIdUpdate,
             delete: CertificateByIdDelete
