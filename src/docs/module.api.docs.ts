@@ -1,31 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createModuleRequestBody = {
-    type: 'object',
-    properties: {
-        course_id: {
-            type: 'string',
-            example: '126546654695',
-        },
-        description: {
-            type: 'string',
-            example: "a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity"
-        }
-    }
-};
-export const moduleUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createModule = {
     tags: ['Course Modules'],
-    description: 'Endpoint for creating new module category',
+    summary: 'Add Course Modules',
+    description: 'Authentication required to add Course Modules',
     security: [
         {
             bearerAuth: [],
@@ -36,10 +14,35 @@ export const createModule = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createModuleRequestBody'
+                    type: 'object',
+                    properties: {
+                        course_id: {
+                            type: 'string',
+                            example: '126546654695',
+                        },
+                        description: {
+                            type: 'string',
+                            example: "a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity"
+                        }
+                    }
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        course_id: {
+                            type: 'string',
+                            example: '126546654695',
+                        },
+                        description: {
+                            type: 'string',
+                            example: "a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity"
+                        }
+                    }
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -75,12 +78,13 @@ export const createModule = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
+        '404': badRequestError
     }
 }
 export const moduleList = {
     tags: ['Course Modules'],
-    description: 'Get the list of the module',
+    summary: 'List of Course Modules',
+    description: 'Gets list of Course Modules created',
     security: [
         {
             bearerAuth: [],
@@ -124,7 +128,8 @@ export const moduleList = {
 }
 export const moduleById = {
     tags: ['Course Modules'],
-    description: 'Endpoint for getting single module',
+    summary: 'Get Course Module',
+    description: 'Get single Course Module course_module_id in params',
     security: [
         {
             bearerAuth: [],
@@ -133,13 +138,13 @@ export const moduleById = {
     parameters: [
         {
             in: 'path',
-            name: 'module_id',
+            name: 'course_module_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add moduleId to fetch specify module",
+            description: "Required",
         }
     ],
     responses: {
@@ -180,34 +185,54 @@ export const moduleById = {
 }
 export const moduleByIdUpdate = {
     tags: ['Course Modules'],
-    description: 'Endpoint for updating the specific module',
+    summary: 'Update Course Module',
+    description: 'Get single Course Module course_module_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'course_module_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/moduleUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'module_id',
-            schema: {
-                type: 'integer',
-                default: 1
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add moduleId to update specify module",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -219,7 +244,7 @@ export const moduleByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -241,28 +266,29 @@ export const moduleByIdUpdate = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
+        '404': badRequestError
     }
 }
 export const moduleByIdDelete = {
     tags: ['Course Modules'],
-    description: 'Endpoint for removing a single module category',
+    summary: 'Delete Course Module',
+    description: 'Delete single Course Module course_module_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'course_module_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'module_id',
-            schema: {
-                type: 'integer',
-                default: 1
-            },
-            required: true,
-            description: "module_id to fetch",
-        }
     ],
     responses: {
         '200': {

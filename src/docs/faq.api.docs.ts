@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createFaqRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const faqUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createFaq = {
     tags: ['FAQ'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add faq',
+    description: 'Authentication required to add FAQ',
     security: [
         {
             bearerAuth: [],
@@ -43,11 +13,45 @@ export const createFaq = {
         required: true,
         content: {
             'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                type: 'object',
+                properties: {
+                    type: 'object',
+                    properties: {
+                        question: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        answer: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        faq_category_id: {
+                            type: 'string',
+                            example: '121',
+                        }
+                    }
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        question: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        answer: {
+                            type: 'string',
+                            example: '1',
+                        },
+                        faq_category_id: {
+                            type: 'string',
+                            example: '121',
+                        }
+                    }
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +92,8 @@ export const createFaq = {
 }
 export const faqList = {
     tags: ['FAQ'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of faq',
+    description: 'Gets list of faq created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +137,8 @@ export const faqList = {
 }
 export const faqById = {
     tags: ['FAQ'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get faq',
+    description: 'Get single faq faq_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +147,13 @@ export const faqById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'faq_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +194,54 @@ export const faqById = {
 }
 export const faqByIdUpdate = {
     tags: ['FAQ'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update faq',
+    description: 'Get single faq faq_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'faq_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +253,7 @@ export const faqByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -254,23 +280,24 @@ export const faqByIdUpdate = {
 }
 export const faqByIdDelete = {
     tags: ['FAQ'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete FAQ',
+    description: 'Delete single FAQ on params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'FAQ',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

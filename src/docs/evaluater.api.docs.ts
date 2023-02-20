@@ -1,26 +1,70 @@
 import { badRequestError, notAcceptableError, notFoundError, unauthorizedError } from "./errors";
 
-export const evaluatorChangePasswordRequestBody = {
-    type: 'object',
-    properties: {
-        user_id: {
-            type: 'string',
-            example: '2',
+export const evaluatorBulkUpload = {
+    tags: ['Evaluater'],
+    summary: 'Evaluator bulk add',
+    description: 'Evaluator bulk add',
+    security: [
+        {
+            bearerAuth: [],
         },
-        oldPassword: {
-            type: 'string',
-            example: '33a4da31c6569c14921f7b068a94b18e',
-        },
-        newPassword: {
-            type: 'string',
-            example: '17d3f297d157cfa29bd7fa04023bc56f',
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        file: {
+                            type: 'file',
+                            describe: 'mandatory field'
+                        }
+                    }
+                }
+            }
         }
     },
-};
-
+    responses: {
+        '202': {
+            description: 'successful operation',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'string',
+                                example: '202'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'User password Updated'
+                            },
+                            count: {
+                                type: 'string',
+                                example: 'null'
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': notAcceptableError
+    }
+}
 export const evaluatorRegistration = {
     tags: ['Evaluater'],
-    description: 'Registration for evaluator',
+    description: 'Register evaluator',
     summary: 'Create user',
     requestBody: {
         required: true,
@@ -120,7 +164,8 @@ export const evaluatorRegistration = {
 }
 export const evaluatorLogin = {
     tags: ['Evaluater'],
-    summary: 'Logs evaluator into the system',
+    description: 'Login evaluator',
+    summary: 'Logs user into the system',
     requestBody: {
         required: true,
         content: {
@@ -285,7 +330,8 @@ export const evaluatorChangePassword = {
 }
 export const evaluatorLogout = {
     tags: ['Evaluater'],
-    summary: 'Logs out current logged in user session',
+    description: 'Helps clear the session data',
+    summary: 'Clear user session',
     security: [
         {
             bearerAuth: [],
@@ -313,6 +359,7 @@ export const evaluatorLogout = {
 }
 export const evaluators = {
     tags: ['Evaluater'],
+    description: 'List of registered mentor users',
     summary: 'Get evaluator',
     security: [
         {
@@ -337,7 +384,7 @@ export const evaluators = {
                             },
                             message: {
                                 type: 'string',
-                                example: 'User password Updated'
+                                example: 'Successful'
                             },
                             count: {
                                 type: 'string',
@@ -358,7 +405,8 @@ export const evaluators = {
 }
 export const evaluatorId = {
     tags: ['Evaluater'],
-    summary: 'Get evaluator by user_id',
+    description: 'Get evaluator details by evaluator_user_id in params',
+    summary: 'Get evaluator by evaluator_user_id',
     security: [
         {
             bearerAuth: [],
@@ -367,7 +415,7 @@ export const evaluatorId = {
     parameters: [
         {
             in: 'path',
-            name: 'id',
+            name: 'evaluator_user_id',
             schema: {
                 type: 'integer',
                 default: 1
@@ -394,66 +442,5 @@ export const evaluatorId = {
             }
         },
         '401': unauthorizedError
-    }
-}
-export const evaluatorBulkUpload = {
-    tags: ['Evaluater'],
-    summary: 'Evaluator bulk add',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/x-www-form-urlencoded': {
-                schema: {
-                    type: 'object',
-                    properties: {
-                        file: {
-                            type: 'file',
-                            describe: 'mandatory field'
-                        }
-                    }
-                }
-            }
-        }
-    },
-    responses: {
-        '202': {
-            description: 'successful operation',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            status: {
-                                type: 'string',
-                                example: '202'
-                            },
-                            status_type: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'User password Updated'
-                            },
-                            count: {
-                                type: 'string',
-                                example: 'null'
-                            },
-                            data: {
-                                type: 'array',
-                                example: [1]
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': notAcceptableError
     }
 }

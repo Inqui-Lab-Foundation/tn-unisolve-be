@@ -1,23 +1,5 @@
 import { badRequestError, notAcceptableError, notFoundError, unauthorizedError } from "./errors";
 
-export const mentorChangePasswordRequestBody = {
-    type: 'object',
-    properties: {
-        user_id: {
-            type: 'string',
-            example: '2',
-        },
-        oldPassword: {
-            type: 'string',
-            example: '33a4da31c6569c14921f7b068a94b18e',
-        },
-        newPassword: {
-            type: 'string',
-            example: '17d3f297d157cfa29bd7fa04023bc56f',
-        }
-    },
-};
-
 export const mentorLogin = {
     tags: ['Mentors'],
     summary: 'Logs mentor into the system',
@@ -681,91 +663,6 @@ export const mentorManualResetPassword = {
     },
 
 }
-export const mentorId = {
-    tags: ['Mentors'],
-    summary: 'Get mentor by user_id',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'id',
-            schema: {
-                type: 'integer',
-                default: 1
-            },
-            required: true,
-            description: "mentor_user_id",
-        }
-    ],
-    responses: {
-        '202': {
-            description: 'successful operation',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            message: {
-                                type: 'string',
-                                example: 'successfully'
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError
-    }
-}
-export const mentors = {
-    tags: ['Mentors'],
-    summary: 'Get mentors',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    responses: {
-        '202': {
-            description: 'successful operation',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            status: {
-                                type: 'string',
-                                example: '202'
-                            },
-                            status_type: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'User password Updated'
-                            },
-                            count: {
-                                type: 'string',
-                                example: 'null'
-                            },
-                            data: {
-                                type: 'array',
-                                example: [1]
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': notAcceptableError
-    }
-}
 export const mentorValidateOtp = {
     tags: ['Mentors'],
     description: 'validate OTP for mentor',
@@ -836,9 +733,97 @@ export const mentorValidateOtp = {
         '406': notAcceptableError
     }
 }
+export const mentorId = {
+    tags: ['Mentors'],
+    description: 'Get mentor details by mentor_user_id in params',
+    summary: 'Get mentor by mentor_user_id',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'mentor_user_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "mentor_user_id",
+        }
+    ],
+    responses: {
+        '202': {
+            description: 'successful operation',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                                example: 'Password updated successfully'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError
+    }
+}
+export const mentors = {
+    tags: ['Mentors'],
+    description: 'List of registered mentor users',
+    summary: 'Get mentor',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '202': {
+            description: 'successful operation',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'string',
+                                example: '202'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'Successful'
+                            },
+                            count: {
+                                type: 'string',
+                                example: 'null'
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': notAcceptableError
+    }
+}
 export const mentorBulkUpload = {
-    tags: ['Evaluater'],
-    summary: 'mentor bulk add',
+    tags: ['Mentors'],
+    summary: 'Mentors bulk add',
+    description: 'Mentors bulk add',
     security: [
         {
             bearerAuth: [],

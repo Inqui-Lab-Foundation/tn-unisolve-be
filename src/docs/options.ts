@@ -2,13 +2,13 @@ import { assets, healthCheck, home } from "./assets.api.docs";
 import { version } from '../../package.json';
 import { courseList, createCourse, courseById, courseByIdUpdate, courseByIdDelete } from "./course.api.docs";
 import { courseTopicList, createCourseTopic, courseTopicById, courseTopicByIdUpdate, courseTopicByIdDelete, courseTopicProgress } from "./courseTopic.api.docs";
-import { moduleList, createModule, moduleById, moduleByIdUpdate, moduleByIdDelete, createModuleRequestBody, moduleUpdatesRequestBody } from "./module.api.docs";
+import { moduleList, createModule, moduleById, moduleByIdUpdate, moduleByIdDelete } from "./module.api.docs";
 import { videosList, createVideos, videosById, videosByIdUpdate, videosByIdDelete, createVideosRequestBody, videosUpdatesRequestBody } from "./video.api.docs";
 import { create_dynamicSignupForm, get_dynamicSignupForm } from "./auth.api.docs";
 import { createTeam, teamByIdDelete, teamsById, teamsByIdUpdate, teamsList, createTeamRequestBody, teamUpdatesRequestBody, teamMembers } from "./team.api.docs";
 import { notificationsTome, notificationWithPoster, notification, notificationsWithPosterRequestBody, notificationsRequestBody, notificationsAll, notificationsId } from "./notification.api.docs";
 import { createWorksheetRequestBody, worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete, worksheetResponse } from "./worksheets.api.docs";
-import { organizationList, createOrganization, organizationSingle, organizationDelete, organizationUpdate, createOrganizationWithFile, organizationRequestBody, organizationRequestBodyWithFile, organizationUpdatesRequestBody, organizationBulkUpload, organizationDistricts, organizationCheckOrg, organizationCreateOrg } from "./organization.api.docs";
+import { organizationList, createOrganization, organizationSingle, organizationDelete, organizationUpdate, organizationBulkUpload, organizationDistricts, organizationCheckOrg, organizationCreateOrg } from "./organization.api.docs";
 import { adminId, admins, changePassword, login, logout, registration } from "./admin.api.docs";
 import { userSchema } from "../validations/user.validations";
 import { addBadges, addStudent, bulkCreateStudent, getBadges, studentCertificate, studentChangePassword, studentId, studentLogin, studentLogout, studentRegister, studentResetPassword, students } from "./student.api.docs";
@@ -18,7 +18,7 @@ import { mentorChangePassword, mentorLogin, mentorRegister, mentorResetPassword,
 import { mentor } from "../models/mentor.model";
 import { evaluatorChangePassword, evaluatorLogin, evaluatorRegistration, evaluators, evaluatorBulkUpload, evaluatorId } from "./evaluater.api.docs";
 import { courseModulesById, courseModulesByIdDelete, courseModulesByIdUpdate, courseModulesList, createCourseModules } from "./courseModules.api.docs";
-import { createQuiz, quizById, quizByIdDelete, quizByIdUpdate, quizList } from "./quiz.api.docs";
+import { createQuiz, quizById, quizByIdDelete, quizNextQuestion, quizList } from "./quiz.api.docs";
 import { createQuizQuestion, quizQuestionById, quizQuestionByIdDelete, quizQuestionByIdUpdate, quizQuestionList } from "./quizQuestion.api.docs";
 import { createFaq, faqById, faqByIdDelete, faqByIdUpdate, faqList } from "./faq.api.docs";
 import { createFaqCategory, faqCategoryById, faqCategoryByIdDelete, faqCategoryByIdUpdate, faqCategoryList } from "./faqCategories.api.docs";
@@ -34,12 +34,12 @@ import { createSupportTickets, supportTicketsById, supportTicketsByIdDelete, sup
 import { createMentorAttachments, mentorAttachmentsById, mentorAttachmentsByIdDelete, mentorAttachmentsByIdUpdate, mentorAttachmentsList } from "./mentorAttachments.api.docs";
 import { createMentorCourses, mentorCoursesById, mentorCoursesByIdDelete, mentorCoursesByIdUpdate, mentorCoursesList } from "./mentorCourse.api.docs";
 import { createUserTopicProgress, userTopicProgressById, userTopicProgressByIdDelete, userTopicProgressByIdUpdate, userTopicProgressList } from "./userTopicProgress.api.docs";
-import { createReflectiveQuiz, reflectiveQuizById, reflectiveQuizByIdDelete, reflectiveQuizByIdUpdate, reflectiveQuizList, reflectiveQuizNextQuestion, reflectiveQuizResponse } from "./reflectiveQuiz.api.docs";
+import { reflectiveQuizById, reflectiveQuizList, reflectiveQuizNextQuestion, reflectiveQuizResponse } from "./reflectiveQuiz.api.docs";
 import { createQuizSurveys, quizSurveysById, quizSurveysByIdDelete, quizSurveysByIdUpdate, quizSurveysList, quizSurveysNextQuestion, quizSurveysResponse, quizSurveysResponses, quizSurveySurveyStatus } from "./surveryQuiz.api.docs";
 import { createMentorTopicProgress, mentorTopicProgressById, mentorTopicProgressByIdDelete, mentorTopicProgressByIdUpdate, mentorTopicProgressList } from "./mentorTopicProgress.api.docs";
 import { createSupportTicketsReplies, supportTicketsRepliesById, supportTicketsRepliesList } from "./supportTicketsReplies.api.docs";
 import { challengeClearResponse, challengeCustomFilter, challengeDistrictWiseRating, challengeEvaluated, challengeEvaluationResult, challengeFetchRandom, challengeFileUpload, challengeFinalEvaluation, challengeInitiate, challengeResponseById, challengeResponseByIdDelete, challengeResponseByIdUpdate, challengeResponseList, challengeSubmittedDetails, challengeUpdateEntry, challengeUpdateSubmission, createChallengeResponse } from "./challengeResponse.api.docs";
-import { createDashboard, dashboardById, dashboardByIdDelete, dashboardByIdUpdate, dashboardList, evaluatorStats, mapStats, mentorStats, refreshMapStats, refreshMapStatsLive, studentStats, studentStatsChallenges, studentStatsTeamProgress, teamStats } from "./dashboard.api.docs";
+import { evaluatorStats, mapStats, mentorStats, refreshMapStats, refreshMapStatsLive, studentStats, studentStatsChallenges, studentStatsTeamProgress, teamStats } from "./dashboard.api.docs";
 import { allMentorReports, challengesCount, challengesDistrictCount, courseComplete, courseInComplete, mentorRegList, mentorTeamsStudents, notRegister, notRegistered, preSurvey, userTopicProgress } from "./reports.api.docs";
 
 // define Swagger options with specific properties
@@ -229,7 +229,7 @@ const options = {
         '/api/v1/evaluators': {
             get: evaluators
         },
-        '/api/v1/evaluators/{id}': {
+        '/api/v1/evaluators/{evaluator_user_id}': {
             get: evaluatorId
         },
         '/evaluators/bulkUpload': {
@@ -256,7 +256,7 @@ const options = {
         '/api/v1/mentors/updateMobile': {
             put: mentorUpdateMobile
         },
-        '/api/v1/mentors/:mentor_user_id/deleteAllData': {
+        '/api/v1/mentors/{mentor_user_id}/deleteAllData': {
             // delete : deleteData
         },
         '/api/v1/mentors/resetPassword': {
@@ -274,7 +274,7 @@ const options = {
         '/api/v1/mentors': {
             get: mentors
         },
-        '/api/v1/mentors/{id}': {
+        '/api/v1/mentors/{mentor_user_id}': {
             get: mentorId
         },
         '/api/v1/students/register': {
@@ -368,7 +368,7 @@ const options = {
             get: courseModulesList,
             post: createCourseModules
         },
-        '/api/v1/courseModules/{id}': {
+        '/api/v1/courseModules/{course_module_id}': {
             get: courseModulesById,
             put: courseModulesByIdUpdate,
             delete: courseModulesByIdDelete
@@ -410,7 +410,7 @@ const options = {
             post: createCourseTopic,
             get: courseTopicList
         },
-        '/api/v1/courseTopics/{id}': {
+        '/api/v1/courseTopics/{course_topic_id}': {
             get: courseTopicById,
             put: courseTopicByIdUpdate,
             delete: courseTopicByIdDelete
@@ -448,16 +448,16 @@ const options = {
         },
         '/api/v1/userTopicProgress/{id}/withfile': {
         },
-        '/api/v1/quiz/{id}/nextQuestion/': {
-            get: quizByIdUpdate
+        '/api/v1/quiz/{quiz_id}/nextQuestion/': {
+            get: quizNextQuestion
         },
-        '/api/v1/quiz/{id}/response/': {
+        '/api/v1/quiz/{quiz_id}/response/': {
             post: createQuiz
         },
         '/api/v1/quiz': {
             get: quizList
         },
-        '/api/v1/quiz/{id}': {
+        '/api/v1/quiz/{quiz_id}': {
             get: quizById,
             delete: quizByIdDelete
         },
@@ -469,7 +469,7 @@ const options = {
             post: createQuizQuestion,
             get: quizQuestionList
         },
-        '/api/v1/quizQuestions/{id}': {
+        '/api/v1/quizQuestions/{quiz_questions_id}': {
             get: quizQuestionById,
             put: quizQuestionByIdUpdate,
             delete: quizQuestionByIdDelete
@@ -482,7 +482,7 @@ const options = {
             post: createFaq,
             get: faqList
         },
-        '/api/v1/faqs/{id}': {
+        '/api/v1/faqs/{faq_id}': {
             get: faqById,
             put: faqByIdUpdate,
             delete: faqByIdDelete
@@ -495,7 +495,7 @@ const options = {
             post: createFaqCategory,
             get: faqCategoryList
         },
-        '/api/v1/faqCategories/{id}': {
+        '/api/v1/faqCategories/{faq_categories_id}': {
             get: faqCategoryById,
             put: faqCategoryByIdUpdate,
             delete: faqCategoryByIdDelete
@@ -520,28 +520,25 @@ const options = {
             post: createOrganization,
             get: organizationList
         },
-        '/api/v1/organizations/{id}': {
+        '/api/v1/organizations/{organization_id}': {
             put: organizationUpdate,
             delete: organizationDelete
         },
         '/api/v1/organizations/withfile': {
         },
-        '/api/v1/organizations/{id}/withfile': {
+        '/api/v1/organizations/{organization_id}/withfile': {
         },
-        '/api/v1/reflectiveQuiz/{id}/nextQuestion/': {
+        '/api/v1/reflectiveQuiz/{reflective_quiz_id}/nextQuestion/': {
             get: reflectiveQuizNextQuestion
         },
         '/api/v1/reflectiveQuiz/{id}/response/': {
             get: reflectiveQuizResponse
         },
         '/api/v1/reflectiveQuiz': {
-            post: createReflectiveQuiz,
             get: reflectiveQuizList
         },
-        '/api/v1/reflectiveQuiz/{id}': {
+        '/api/v1/reflectiveQuiz/{reflective_quiz_id}': {
             get: reflectiveQuizById,
-            put: reflectiveQuizByIdUpdate,
-            delete: reflectiveQuizByIdDelete
         },
         '/api/v1/reflectiveQuiz/withfile': {
         },
@@ -578,7 +575,7 @@ const options = {
             post: createMentorCourses,
             get: mentorCoursesList
         },
-        '/api/v1/mentorCourses/{id}': {
+        '/api/v1/mentorCourses/{mentor_course_id}': {
             get: mentorCoursesById,
             put: mentorCoursesByIdUpdate,
             delete: mentorCoursesByIdDelete
@@ -591,7 +588,7 @@ const options = {
             post: createMentorAttachments,
             get: mentorAttachmentsList
         },
-        '/api/v1/mentorAttachments/{id}': {
+        '/api/v1/mentorAttachments/{attachments_id}': {
             get: mentorAttachmentsById,
             put: mentorAttachmentsByIdUpdate,
             delete: mentorAttachmentsByIdDelete
@@ -604,7 +601,7 @@ const options = {
             post: createMentorTopicProgress,
             get: mentorTopicProgressList
         },
-        '/api/v1/mentorTopicProgress/{id}': {
+        '/api/v1/mentorTopicProgress/{mentor_topic_progress_id}': {
             get: mentorTopicProgressById,
             put: mentorTopicProgressByIdUpdate,
             delete: mentorTopicProgressByIdDelete
@@ -652,7 +649,7 @@ const options = {
         },
         '/api/v1/challenge/{id}/withfile': {
         },
-        '/api/v1/challenge_response/{id}/initiate/': {
+        '/api/v1/challenge_response/{team_id}/initiate/': {
             post: challengeInitiate
         },
         '/api/v1/challenge_response/fileUpload': {
@@ -667,7 +664,7 @@ const options = {
         '/api/v1/challenge_response/fetchRandomChallenge': {
             get: challengeFetchRandom
         },
-        '/api/v1/challenge_response/updateEntry/{id}': {
+        '/api/v1/challenge_response/updateEntry/{challenge_response_id}': {
             get: challengeUpdateEntry
         },
         '/api/v1/challenge_response/clearResponse': {
@@ -692,7 +689,7 @@ const options = {
             post: createChallengeResponse,
             get: challengeResponseList
         },
-        '/api/v1/challenge_response/{id}': {
+        '/api/v1/challenge_response/{challenge_response_id}': {
             get: challengeResponseById,
             put: challengeResponseByIdUpdate,
             delete: challengeResponseByIdDelete
@@ -727,19 +724,6 @@ const options = {
         },
         '/api/v1/dashboard/evaluatorStats': {
             get: evaluatorStats
-        },
-        '/api/v1/dashboard': {
-            post: createDashboard,
-            get: dashboardList
-        },
-        '/api/v1/dashboard/{id}': {
-            get: dashboardById,
-            put: dashboardByIdUpdate,
-            delete: dashboardByIdDelete
-        },
-        '/api/v1/dashboard/withfile': {
-        },
-        '/api/v1/dashboard/{id}/withfile': {
         },
         '/api/v1/translations/refresh': {
             get: translationsRefresh
@@ -843,7 +827,7 @@ const options = {
             post: createEvaluaterRating,
             get: evaluaterRatingList
         },
-        '/api/v1/evaluatorRating/{id}': {
+        '/api/v1/evaluatorRating/{evaluator_rating_id}': {
             get: evaluaterRatingById,
             put: evaluaterRatingByIdUpdate,
             delete: evaluaterRatingByIdDelete
@@ -856,7 +840,7 @@ const options = {
             post: createInstruction,
             get: InstructionList
         },
-        '/api/v1/instructions/{id}': {
+        '/api/v1/instructions/{Instruction_id}': {
             get: InstructionById,
             put: InstructionByIdUpdate,
             delete: InstructionByIdDelete
@@ -869,7 +853,7 @@ const options = {
             post: createEvaluationProcess,
             get: evaluationProcessList
         },
-        '/api/v1/evaluationProcess/{id}': {
+        '/api/v1/evaluationProcess/{evaluation_process_id}': {
             get: evaluationProcessById,
             put: evaluationProcessByIdUpdate,
             delete: evaluationProcessByIdDelete

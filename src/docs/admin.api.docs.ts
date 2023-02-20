@@ -1,23 +1,5 @@
 import { badRequestError, notAcceptableError, notFoundError, unauthorizedError } from "./errors";
 
-export const changePasswordRequestBody = {
-    type: 'object',
-    properties: {
-        user_id: {
-            type: 'string',
-            example: '2',
-        },
-        oldPassword: {
-            type: 'string',
-            example: '33a4da31c6569c14921f7b068a94b18e',
-        },
-        newPassword: {
-            type: 'string',
-            example: '17d3f297d157cfa29bd7fa04023bc56f',
-        }
-    },
-};
-
 export const registration = {
     tags: ['Admins'],
     description: 'Register admin',

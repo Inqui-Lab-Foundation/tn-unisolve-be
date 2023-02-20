@@ -1,53 +1,64 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createQuizRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const quizUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createQuiz = {
     tags: ['Quiz'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Quiz response',
+    description: 'Authentication required to add Quiz response',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'quiz_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        quiz_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        quiz_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +99,8 @@ export const createQuiz = {
 }
 export const quizList = {
     tags: ['Quiz'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of Quiz',
+    description: 'Gets list of Quiz created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +144,8 @@ export const quizList = {
 }
 export const quizById = {
     tags: ['Quiz'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get Quiz',
+    description: 'Get single Quiz quiz_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +154,13 @@ export const quizById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'quiz_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -155,72 +168,6 @@ export const quizById = {
             description: 'Success',
             content: {
                 'applications/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            } 
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const quizByIdUpdate = {
-    tags: ['Quiz'],
-    description: 'Endpoint for updating the specific Worksheets',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
-                },
-            },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
                     schema: {
                         properties: {
                             status: {
@@ -252,9 +199,10 @@ export const quizByIdUpdate = {
         '404': badRequestError
     }
 }
-export const quizByIdDelete = {
+export const quizNextQuestion= {
     tags: ['Quiz'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Get Quiz Next question',
+    description: 'Get single Quiz Next question quiz_id in params',
     security: [
         {
             bearerAuth: [],
@@ -263,14 +211,71 @@ export const quizByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'WorksheetsId',
+            name: 'quiz_id',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
-            description: "Add topicId to delete specify Topics",
+            description: "Required",
         }
+    ],
+    responses: {
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const quizByIdDelete = {
+    tags: ['Quiz'],
+    summary: 'Delete Quiz',
+    description: 'Delete single Quiz quiz_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'quiz_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
+    security: [
+        {
+            bearerAuth: [],
+        },
     ],
     responses: {
         '200': {

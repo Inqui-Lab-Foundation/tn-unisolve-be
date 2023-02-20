@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createMentorTopicProgressRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const mentorTopicProgressUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createMentorTopicProgress = {
     tags: ['Mentor topic progress'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add MentorTopic',
+    description: 'Authentication required to add MentorTopic',
     security: [
         {
             bearerAuth: [],
@@ -44,10 +14,49 @@ export const createMentorTopicProgress = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        user_id: {
+                            type: 'string',
+                            example: 'title name',
+                            describe: 'mandatory field'
+                        },
+                        mentor_course_topic_id: {
+                            type: 'string',
+                            example: 'name',
+                            describe: 'mandatory field'
+                        },
+                        status: {
+                            type: 'string',
+                            example: 'link',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        user_id: {
+                            type: 'string',
+                            example: 'title name',
+                            describe: 'mandatory field'
+                        },
+                        mentor_course_topic_id: {
+                            type: 'string',
+                            example: 'name',
+                            describe: 'mandatory field'
+                        },
+                        status: {
+                            type: 'string',
+                            example: 'link',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +97,8 @@ export const createMentorTopicProgress = {
 }
 export const mentorTopicProgressList = {
     tags: ['Mentor topic progress'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of MentorTopic',
+    description: 'Gets list of MentorTopic created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +142,8 @@ export const mentorTopicProgressList = {
 }
 export const mentorTopicProgressById = {
     tags: ['Mentor topic progress'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get MentorTopic',
+    description: 'Get single MentorTopic mentor_topic_progress_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +152,13 @@ export const mentorTopicProgressById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'mentor_topic_progress_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +199,54 @@ export const mentorTopicProgressById = {
 }
 export const mentorTopicProgressByIdUpdate = {
     tags: ['Mentor topic progress'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update MentorTopic',
+    description: 'Get MentorTopic mentor_topic_progress_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'mentor_topic_progress_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +258,7 @@ export const mentorTopicProgressByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -254,23 +285,24 @@ export const mentorTopicProgressByIdUpdate = {
 }
 export const mentorTopicProgressByIdDelete = {
     tags: ['Mentor topic progress'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete MentorTopic',
+    description: 'Delete single MentorTopic mentor_topic_progress_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'mentor_topic_progress_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

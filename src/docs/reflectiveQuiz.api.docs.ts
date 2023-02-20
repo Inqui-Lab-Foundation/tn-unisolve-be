@@ -1,59 +1,65 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createFaqRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const faqUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
 
 export const reflectiveQuizNextQuestion = {
     tags: ['Reflective quiz'],
-}
-export const reflectiveQuizResponse = {
-    tags: ['Reflective quiz'],
-}
-export const createReflectiveQuiz = {
-    tags: ['Reflective quiz'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Get Reflective quiz',
+    description: 'Authentication required to get Reflective quiz',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'reflective_quiz_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        quiz_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        quiz_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -92,9 +98,106 @@ export const createReflectiveQuiz = {
         '404': badRequestError
     }
 }
+export const reflectiveQuizResponse = {
+    tags: ['Reflective quiz'],
+    summary: 'Add reposes for reflective quiz',
+    description: 'Get single Reflective quiz reflective_quiz_id in params',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'reflective_quiz_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        quiz_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        quiz_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
+    },
+    responses: {
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
 export const reflectiveQuizList = {
     tags: ['Reflective quiz'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'Get list of Reflective quiz',
+    description: 'Get list Reflective quiz',
     security: [
         {
             bearerAuth: [],
@@ -138,7 +241,8 @@ export const reflectiveQuizList = {
 }
 export const reflectiveQuizById = {
     tags: ['Reflective quiz'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get reposes for reflective quiz',
+    description: 'Get single Reflective quiz reflective_quiz_id in params',
     security: [
         {
             bearerAuth: [],
@@ -147,13 +251,13 @@ export const reflectiveQuizById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'reflective_quiz_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -161,128 +265,6 @@ export const reflectiveQuizById = {
             description: 'Success',
             content: {
                 'applications/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const reflectiveQuizByIdUpdate = {
-    tags: ['Reflective quiz'],
-    description: 'Endpoint for updating the specific Worksheets',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
-                },
-            },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const reflectiveQuizByIdDelete = {
-    tags: ['Reflective quiz'],
-    description: 'Endpoint for removing a single Worksheet category',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
                     schema: {
                         properties: {
                             status: {

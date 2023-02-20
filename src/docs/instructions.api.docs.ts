@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createInstructionRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const InstructionUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createInstruction = {
     tags: ['Instructions'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Instructions',
+    description: 'Authentication required to add Instructions',
     security: [
         {
             bearerAuth: [],
@@ -44,10 +14,34 @@ export const createInstruction = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        slug: {
+                            type: 'string',
+                            example: 'Test_slug',
+                            describe: 'mandatory field'
+                        },
+                        instructions: {
+                            type: 'string',
+                            example: 'slug create while testing from the locale',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'badge name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +82,8 @@ export const createInstruction = {
 }
 export const InstructionList = {
     tags: ['Instructions'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of Instructions',
+    description: 'Gets list of Instructions created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +127,8 @@ export const InstructionList = {
 }
 export const InstructionById = {
     tags: ['Instructions'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get Instruction',
+    description: 'Get single Instruction Instruction_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +137,13 @@ export const InstructionById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'Instruction_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +184,54 @@ export const InstructionById = {
 }
 export const InstructionByIdUpdate = {
     tags: ['Instructions'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update Instruction',
+    description: 'Get single Instruction Instruction_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'Instruction_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +243,7 @@ export const InstructionByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -254,23 +270,24 @@ export const InstructionByIdUpdate = {
 }
 export const InstructionByIdDelete = {
     tags: ['Instructions'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete Instruction',
+    description: 'Delete single Instruction Instruction_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'Instruction_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createMentorCoursesRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const mentorCoursesUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createMentorCourses = {
     tags: ['Mentor course'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add MentorCourse',
+    description: 'Authentication required to add MentorCourse',
     security: [
         {
             bearerAuth: [],
@@ -44,10 +14,49 @@ export const createMentorCourses = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        title: {
+                            type: 'string',
+                            example: 'title name',
+                            describe: 'mandatory field'
+                        },
+                        description: {
+                            type: 'string',
+                            example: 'name',
+                            describe: 'mandatory field'
+                        },
+                        thumbnail: {
+                            type: 'string',
+                            example: 'link',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        title: {
+                            type: 'string',
+                            example: 'title name',
+                            describe: 'mandatory field'
+                        },
+                        description: {
+                            type: 'string',
+                            example: 'name',
+                            describe: 'mandatory field'
+                        },
+                        thumbnail: {
+                            type: 'string',
+                            example: 'link',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +97,8 @@ export const createMentorCourses = {
 }
 export const mentorCoursesList = {
     tags: ['Mentor course'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of MentorCourse',
+    description: 'Gets list of MentorCourse created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +142,8 @@ export const mentorCoursesList = {
 }
 export const mentorCoursesById = {
     tags: ['Mentor course'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get MentorCourse',
+    description: 'Get single MentorCourse mentor_course_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +152,13 @@ export const mentorCoursesById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'mentor_course_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +199,54 @@ export const mentorCoursesById = {
 }
 export const mentorCoursesByIdUpdate = {
     tags: ['Mentor course'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update MentorCourse',
+    description: 'Get MentorCourse mentor_course_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'mentor_course_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +258,7 @@ export const mentorCoursesByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -254,23 +285,24 @@ export const mentorCoursesByIdUpdate = {
 }
 export const mentorCoursesByIdDelete = {
     tags: ['Mentor course'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete MentorCourse',
+    description: 'Delete single MentorCourse mentor_course_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'mentor_course_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

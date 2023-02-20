@@ -1,121 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createChallengeRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const challengeUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const refreshMapStatsLive = {
     tags: ['Dashboard'],
-}
-export const mapStats = {
-    tags: ['Dashboard'],
-}
-export const refreshMapStats = {
-    tags: ['Dashboard'],
-}
-export const mentorStats = {
-    tags: ['Dashboard'],
-}
-export const studentStats = {
-    tags: ['Dashboard'],
-}
-export const studentStatsChallenges = {
-    tags: ['Dashboard'],
-}
-export const studentStatsTeamProgress = {
-    tags: ['Dashboard'],
-}
-export const teamStats = {
-    tags: ['Dashboard'],
-}
-export const evaluatorStats = {
-    tags: ['Dashboard'],
-}
-export const createDashboard = {
-    tags: ['Dashboard'],
-    description: 'Endpoint for creating new worksheet',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
-                },
-            },
-        },
-    },
-    responses: {
-        '201': {
-            description: 'Created',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const dashboardList = {
-    tags: ['Dashboard'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'Get live data ',
+    description: 'Get live information no of shool registered district wise',
     security: [
         {
             bearerAuth: [],
@@ -157,9 +45,100 @@ export const dashboardList = {
         '404': badRequestError
     }
 }
-export const dashboardById = {
+export const mapStats = {
     tags: ['Dashboard'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get data ',
+    description: 'Get information no of shool registered district wise',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const refreshMapStats = {
+    tags: ['Dashboard'],
+    summary: 'Refresh dashboard',
+    description: 'Refresh dashboard in the database',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const mentorStats = {
+    tags: ['Dashboard'],
+    summary: 'Get mentor data ',
+    description: 'Get mentor statistics',
     security: [
         {
             bearerAuth: [],
@@ -168,13 +147,13 @@ export const dashboardById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'mentor_user_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -213,41 +192,32 @@ export const dashboardById = {
         '404': badRequestError
     }
 }
-export const dashboardByIdUpdate = {
+export const studentStats = {
     tags: ['Dashboard'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Get student data ',
+    description: 'Get student statistics',
     security: [
         {
             bearerAuth: [],
         },
     ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
-                },
-            },
-        },
-    },
     parameters: [
         {
             in: 'path',
-            name: 'Worksheet_id',
+            name: 'student_user_id',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
+            description: "Required",
         }
     ],
     responses: {
         '200': {
-            description: 'success',
+            description: 'Success',
             content: {
-                'application/json': {
+                'applications/json': {
                     schema: {
                         properties: {
                             status: {
@@ -279,9 +249,10 @@ export const dashboardByIdUpdate = {
         '404': badRequestError
     }
 }
-export const dashboardByIdDelete = {
+export const studentStatsChallenges = {
     tags: ['Dashboard'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Get student data ',
+    description: 'Get student statistics challenge details included',
     security: [
         {
             bearerAuth: [],
@@ -290,20 +261,179 @@ export const dashboardByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'WorksheetsId',
+            name: 'student_user_id',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
-            description: "Add topicId to delete specify Topics",
+            description: "Required",
         }
     ],
     responses: {
         '200': {
-            description: 'success',
+            description: 'Success',
             content: {
-                'application/json': {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const studentStatsTeamProgress = {
+    tags: ['Dashboard'],
+    summary: 'Get student data',
+    description: 'Get student statistics team detail included',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'student_user_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const teamStats = {
+    tags: ['Dashboard'],
+    summary: 'Get team data ',
+    description: 'Get team statistics',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'team_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const evaluatorStats = {
+    tags: ['Dashboard'],
+    summary: 'Get evaluator data ',
+    description: 'Get evaluator statistics',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
                     schema: {
                         properties: {
                             status: {
