@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createTutorialVideosRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const tutorialVideosUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createTutorialVideos = {
     tags: ['Tutorial videos'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Tutorial videos',
+    description: 'Authentication required to add Tutorial videos',
     security: [
         {
             bearerAuth: [],
@@ -44,10 +14,29 @@ export const createTutorialVideos = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'badge name',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            example: 'badge name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +77,8 @@ export const createTutorialVideos = {
 }
 export const tutorialVideosList = {
     tags: ['Tutorial videos'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of Tutorial videos',
+    description: 'Gets list of Tutorial videos created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +122,8 @@ export const tutorialVideosList = {
 }
 export const tutorialVideosById = {
     tags: ['Tutorial videos'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get Tutorial videos',
+    description: 'Get single Tutorial videos tutorial_videos_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +132,13 @@ export const tutorialVideosById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'tutorial_videos_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +179,54 @@ export const tutorialVideosById = {
 }
 export const tutorialVideosByIdUpdate = {
     tags: ['Tutorial videos'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update  Tutorial videos ',
+    description: 'Get single Tutorial videos tutorial_videos_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'tutorial_videos_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +238,7 @@ export const tutorialVideosByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -254,23 +265,24 @@ export const tutorialVideosByIdUpdate = {
 }
 export const tutorialVideosByIdDelete = {
     tags: ['Tutorial videos'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete Tutorial videos',
+    description: 'Delete single Tutorial videos tutorial_videos_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'tutorial_videos_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

@@ -1,7 +1,61 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
 export const mobileCheck = {
-    tags: ['Reports'],
+    tags: ['Certificates download'],
+    summary: 'Get Certificate',
+    description: 'Get Single Certificate by mobile number in params',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'query',
+            name: 'mobile',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 
 export const createCertificate = {

@@ -57,6 +57,7 @@ export const notificationsWithPosterRequestBody = {
 
 export const notificationsTome = {
     tags: ['Notifications'],
+    summary: 'Get List of notifications',
     description: 'Endpoints for getting the list of the notifications',
     security: [
         {

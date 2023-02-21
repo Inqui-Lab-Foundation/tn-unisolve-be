@@ -3,11 +3,11 @@ import { version } from '../../package.json';
 import { courseList, createCourse, courseById, courseByIdUpdate, courseByIdDelete } from "./course.api.docs";
 import { courseTopicList, createCourseTopic, courseTopicById, courseTopicByIdUpdate, courseTopicByIdDelete, courseTopicProgress } from "./courseTopic.api.docs";
 import { moduleList, createModule, moduleById, moduleByIdUpdate, moduleByIdDelete } from "./module.api.docs";
-import { videosList, createVideos, videosById, videosByIdUpdate, videosByIdDelete, createVideosRequestBody, videosUpdatesRequestBody } from "./video.api.docs";
+import { videosList, createVideos, videosById, videosByIdUpdate, videosByIdDelete } from "./video.api.docs";
 import { create_dynamicSignupForm, get_dynamicSignupForm } from "./auth.api.docs";
-import { createTeam, teamByIdDelete, teamsById, teamsByIdUpdate, teamsList, createTeamRequestBody, teamUpdatesRequestBody, teamMembers } from "./team.api.docs";
+import { createTeam, teamByIdDelete, teamsById, teamsByIdUpdate, teamsList, teamMembers } from "./team.api.docs";
 import { notificationsTome, notificationWithPoster, notification, notificationsWithPosterRequestBody, notificationsRequestBody, notificationsAll, notificationsId } from "./notification.api.docs";
-import { createWorksheetRequestBody, worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete, worksheetResponse } from "./worksheets.api.docs";
+import { createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete, worksheetResponse } from "./worksheets.api.docs";
 import { organizationList, createOrganization, organizationSingle, organizationDelete, organizationUpdate, organizationBulkUpload, organizationDistricts, organizationCheckOrg, organizationCreateOrg } from "./organization.api.docs";
 import { adminId, admins, changePassword, login, logout, registration } from "./admin.api.docs";
 import { userSchema } from "../validations/user.validations";
@@ -27,7 +27,7 @@ import { createInstruction, InstructionById, InstructionByIdDelete, InstructionB
 import { createEvaluaterRating, evaluaterRatingById, evaluaterRatingByIdDelete, evaluaterRatingByIdUpdate, evaluaterRatingList } from "./evaluaterRating.api.docs";
 import { CertificateById, CertificateByIdDelete, CertificateByIdUpdate, CertificateList, createCertificate, mobileCheck } from "./certificatesDownload.api.docs";
 import { challengeById, challengeByIdDelete, challengeByIdUpdate, challengeList, createChallenge } from "./challenge.api.docs";
-import { createTranslations, translationsById, translationsByIdDelete, translationsByIdUpdate, translationsKey, translationsList, translationsRefresh, translationsTranslateRefresh } from "./translations.api.docs";
+import { createTranslations, translationsById, translationsByIdDelete, translationsByIdUpdate, translationsKey, translationsList, translationsRefresh } from "./translations.api.docs";
 import { badgesById, badgesByIdDelete, badgesByIdUpdate, badgesList, createBadges } from "./badges.api.docs";
 import { createTutorialVideos, tutorialVideosById, tutorialVideosByIdDelete, tutorialVideosByIdUpdate, tutorialVideosList } from "./tutorialVideos.api.docs";
 import { createSupportTickets, supportTicketsById, supportTicketsByIdDelete, supportTicketsByIdUpdate, supportTicketsList } from "./supportTickets.api.docs";
@@ -35,7 +35,7 @@ import { createMentorAttachments, mentorAttachmentsById, mentorAttachmentsByIdDe
 import { createMentorCourses, mentorCoursesById, mentorCoursesByIdDelete, mentorCoursesByIdUpdate, mentorCoursesList } from "./mentorCourse.api.docs";
 import { createUserTopicProgress, userTopicProgressById, userTopicProgressByIdDelete, userTopicProgressByIdUpdate, userTopicProgressList } from "./userTopicProgress.api.docs";
 import { reflectiveQuizById, reflectiveQuizList, reflectiveQuizNextQuestion, reflectiveQuizResponse } from "./reflectiveQuiz.api.docs";
-import { createQuizSurveys, quizSurveysById, quizSurveysByIdDelete, quizSurveysByIdUpdate, quizSurveysList, quizSurveysNextQuestion, quizSurveysResponse, quizSurveysResponses, quizSurveySurveyStatus } from "./surveryQuiz.api.docs";
+import { quizSurveysById, quizSurveysByIdDelete, quizSurveysList, quizSurveysNextQuestion, quizSurveysResponse, quizSurveysResponses, quizSurveySurveyStatus } from "./surveryQuiz.api.docs";
 import { createMentorTopicProgress, mentorTopicProgressById, mentorTopicProgressByIdDelete, mentorTopicProgressByIdUpdate, mentorTopicProgressList } from "./mentorTopicProgress.api.docs";
 import { createSupportTicketsReplies, supportTicketsRepliesById, supportTicketsRepliesList } from "./supportTicketsReplies.api.docs";
 import { challengeClearResponse, challengeCustomFilter, challengeDistrictWiseRating, challengeEvaluated, challengeEvaluationResult, challengeFetchRandom, challengeFileUpload, challengeFinalEvaluation, challengeInitiate, challengeResponseById, challengeResponseByIdDelete, challengeResponseByIdUpdate, challengeResponseList, challengeSubmittedDetails, challengeUpdateEntry, challengeUpdateSubmission, createChallengeResponse } from "./challengeResponse.api.docs";
@@ -298,10 +298,10 @@ const options = {
         '/api/v1/students/resetPassword': {
             put: studentResetPassword
         },
-        '/api/v1/students/{id}/studentCertificate': {
+        '/api/v1/students/{student_user_id}/studentCertificate': {
             get: studentCertificate
         },
-        '/api/v1/students/{id}/badges': {
+        '/api/v1/students/{student_user_id}/badges': {
             get: getBadges,
             post: addBadges
         },
@@ -320,12 +320,11 @@ const options = {
         '/api/v1/students/{id}/withfile': {
         },
         '/api/v1/users/updateMentorDetails': {
-
         },
         '/api/v1/users': {
             get: usersList
         },
-        '/api/v1/users/{id}': {
+        '/api/v1/users/{user_id}': {
             get: userById,
             put: userByIdUpdate,
             delete: userByIdDelete
@@ -381,7 +380,7 @@ const options = {
             post: createVideos,
             get: videosList
         },
-        '/api/v1/videos/{id}': {
+        '/api/v1/videos/{video_id}': {
             get: videosById,
             put: videosByIdUpdate,
             delete: videosByIdDelete
@@ -390,14 +389,14 @@ const options = {
         },
         '/api/v1/videos/{id}/withfile': {
         },
-        '/api/v1/teams/{id}/members': {
+        '/api/v1/teams/{team_id}/members': {
             get: teamMembers
         },
         '/api/v1/teams': {
             post: createTeam,
             get: teamsList
         },
-        '/api/v1/teams/{id}': {
+        '/api/v1/teams/{team_id}': {
             get: teamsById,
             put: teamsByIdUpdate,
             delete: teamByIdDelete
@@ -419,14 +418,14 @@ const options = {
         },
         '/api/v1/courseTopics/{id}/withfile': {
         },
-        '/api/v1/worksheets/{id}/response': {
+        '/api/v1/worksheets/{worksheet_id}/response': {
             post: worksheetResponse
         },
         '/api/v1/worksheets': {
             post: createWorksheet,
             get: worksheetList
         },
-        '/api/v1/worksheets/{id}': {
+        '/api/v1/worksheets/{worksheet_id}': {
             get: worksheetById,
             put: worksheetByIdUpdate,
             delete: WorksheetsByIdDelete
@@ -439,7 +438,7 @@ const options = {
             get: userTopicProgressList,
             post: createUserTopicProgress
         },
-        '/api/v1/userTopicProgress/{id}': {
+        '/api/v1/userTopicProgress/{user_topic_progress_id}': {
             get: userTopicProgressById,
             put: userTopicProgressByIdUpdate,
             delete: userTopicProgressByIdDelete
@@ -544,25 +543,23 @@ const options = {
         },
         '/api/v1/reflectiveQuiz/{id}/withfile': {
         },
-        '/api/v1/quizSurveys/{id}/nextQuestion/': {
+        '/api/v1/quizSurveys/{quiz_survey_id}/nextQuestion/': {
             get: quizSurveysNextQuestion
         },
-        '/api/v1/quizSurveys/{id}/response/': {
+        '/api/v1/quizSurveys/{quiz_survey_id}/response/': {
             post: quizSurveysResponse
         },
-        '/api/v1/quizSurveys/{id}/responses/': {
+        '/api/v1/quizSurveys/{quiz_survey_id}/responses/': {
             post: quizSurveysResponses
         },
-        '/api/v1/quizSurveys/:quiz_survey_id/surveyStatus': {
+        '/api/v1/quizSurveys/{quiz_survey_id}/surveyStatus': {
             get: quizSurveySurveyStatus
         },
         '/api/v1/quizSurveys': {
-            post: createQuizSurveys,
             get: quizSurveysList
         },
         '/api/v1/quizSurveys/{id}': {
             get: quizSurveysById,
-            put: quizSurveysByIdUpdate,
             delete: quizSurveysByIdDelete
         },
         '/api/v1/quizSurveys/withfile': {
@@ -614,7 +611,7 @@ const options = {
             post: createSupportTickets,
             get: supportTicketsList
         },
-        '/api/v1/supportTickets/{id}': {
+        '/api/v1/supportTickets/{support_ticket_id}': {
             get: supportTicketsById,
             put: supportTicketsByIdUpdate,
             delete: supportTicketsByIdDelete
@@ -627,7 +624,7 @@ const options = {
             post: createSupportTicketsReplies,
             get: supportTicketsRepliesList
         },
-        '/api/v1/supportTicketsReply/{id}': {
+        '/api/v1/supportTicketsReply/{support_tickets_reply_id}': {
             get: supportTicketsRepliesById,
             put: supportTicketsByIdUpdate,
             delete: supportTicketsByIdDelete
@@ -659,7 +656,7 @@ const options = {
             post: challengeSubmittedDetails
         },
         '/api/v1/challenge_response/updateSubmission': {
-            put: challengeUpdateSubmission
+            // put: challengeUpdateSubmission
         },
         '/api/v1/challenge_response/fetchRandomChallenge': {
             get: challengeFetchRandom
@@ -731,14 +728,11 @@ const options = {
         '/api/v1/translations/key': {
             get: translationsKey
         },
-        '/api/v1/translations/translate-refresh': {
-            post: translationsTranslateRefresh
-        },
         '/api/v1/translations': {
             post: createTranslations,
             get: translationsList
         },
-        '/api/v1/translations/{id}': {
+        '/api/v1/translations/{translation_id}': {
             get: translationsById,
             put: translationsByIdUpdate,
             delete: translationsByIdDelete
@@ -764,7 +758,7 @@ const options = {
             post: createTutorialVideos,
             get: tutorialVideosList
         },
-        '/api/v1/tutorialVideos/{id}': {
+        '/api/v1/tutorialVideos/{tutorial_videos_id}': {
             get: tutorialVideosById,
             put: tutorialVideosByIdUpdate,
             delete: tutorialVideosByIdDelete

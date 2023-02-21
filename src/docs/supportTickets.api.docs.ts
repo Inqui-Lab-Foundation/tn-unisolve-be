@@ -1,39 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createSupportTicketsRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const supportTicketsUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const createSupportTickets = {
     tags: ['Support tickets'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add tickets',
+    description: 'Authentication required to add tickets',
     security: [
         {
             bearerAuth: [],
@@ -44,10 +14,39 @@ export const createSupportTickets = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        query_category: {
+                            type: 'string',
+                            example: 'category name',
+                            describe: 'mandatory field'
+                        },
+                        query_details: {
+                            type: 'string',
+                            example: 'details',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        query_category: {
+                            type: 'string',
+                            example: 'category name',
+                            describe: 'mandatory field'
+                        },
+                        query_details: {
+                            type: 'string',
+                            example: 'details',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -88,7 +87,8 @@ export const createSupportTickets = {
 }
 export const supportTicketsList = {
     tags: ['Support tickets'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of tickets',
+    description: 'Gets list of tickets created',
     security: [
         {
             bearerAuth: [],
@@ -132,7 +132,8 @@ export const supportTicketsList = {
 }
 export const supportTicketsById = {
     tags: ['Support tickets'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get tickets',
+    description: 'Get single tickets support_ticket_id in params',
     security: [
         {
             bearerAuth: [],
@@ -141,13 +142,13 @@ export const supportTicketsById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'support_ticket_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -188,34 +189,54 @@ export const supportTicketsById = {
 }
 export const supportTicketsByIdUpdate = {
     tags: ['Support tickets'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update tickets',
+    description: 'Get single tickets support_ticket_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'support_ticket_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -227,7 +248,7 @@ export const supportTicketsByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -254,23 +275,24 @@ export const supportTicketsByIdUpdate = {
 }
 export const supportTicketsByIdDelete = {
     tags: ['Support tickets'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete tickets',
+    description: 'Delete single tickets support_ticket_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'support_ticket_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

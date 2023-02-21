@@ -1,45 +1,26 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createTeamRequestBody = {
-    type: 'object',
-    properties: {
-        mentor_id: {
-            type: 'string',
-            example: '12',
-        },
-        team_name: {
-            type: 'string',
-            example: 'fast_five',
-        }
-    }
-};
-export const teamUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
 export const teamMembers = {
     tags: ['Teams'],
-    description: 'Endpoint for creating new Team category',
+    summary: 'Get Team members',
+    description: 'Get Team members',
     security: [
         {
             bearerAuth: [],
         },
     ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/createTeamRequestBody'
-                },
+    parameters: [
+        {
+            in: 'path',
+            name: 'team_id',
+            schema: {
+                type: 'integer',
+                default: 1
             },
-        },
-    },
+            required: true,
+            description: "Required",
+        }
+    ],
     responses: {
         '200': {
             description: 'New Entry added successfully',
@@ -79,7 +60,8 @@ export const teamMembers = {
 }
 export const createTeam = {
     tags: ['Teams'],
-    description: 'Endpoint for creating new Team category',
+    summary: 'Add Teams',
+    description: 'Authentication required to add Teams',
     security: [
         {
             bearerAuth: [],
@@ -90,14 +72,39 @@ export const createTeam = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createTeamRequestBody'
+                    type: 'object',
+                    properties: {
+                        mentor_id: {
+                            type: 'string',
+                            example: '12',
+                        },
+                        team_name: {
+                            type: 'string',
+                            example: 'fast_five',
+                        }
+                    }
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        mentor_id: {
+                            type: 'string',
+                            example: '12',
+                        },
+                        team_name: {
+                            type: 'string',
+                            example: 'fast_five',
+                        }
+                    }
+                },
+            },
+        }
     },
     responses: {
-        '200': {
-            description: 'New Entry added successfully',
+        '201': {
+            description: 'Created',
             content: {
                 'application/json': {
                     schema: {
@@ -134,7 +141,8 @@ export const createTeam = {
 }
 export const teamsList = {
     tags: ['Teams'],
-    description: 'Endpoint for getting list of videos created',
+    summary: 'List of Teams',
+    description: 'Gets list of Teams created',
     security: [
         {
             bearerAuth: [],
@@ -178,7 +186,8 @@ export const teamsList = {
 }
 export const teamsById = {
     tags: ['Teams'],
-    description: 'Endpoint for getting single Team',
+    summary: 'Get Team',
+    description: 'Get single Team team_id in params',
     security: [
         {
             bearerAuth: [],
@@ -187,13 +196,13 @@ export const teamsById = {
     parameters: [
         {
             in: 'path',
-            name: 'teams_id',
+            name: 'team_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add teams_id to fetch specify videos ",
+            description: "Required",
         }
     ],
     responses: {
@@ -234,34 +243,54 @@ export const teamsById = {
 }
 export const teamsByIdUpdate = {
     tags: ['Teams'],
-    description: 'Endpoint for updating the specific team',
+    summary: 'Update Team',
+    description: 'Update single Team team_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'team_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/videosUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'teams_id',
-            schema: {
-                type: 'integer',
-                default: 1
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add teams_id to update specify videos",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -273,7 +302,7 @@ export const teamsByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -295,28 +324,29 @@ export const teamsByIdUpdate = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
+        '404': badRequestError
     }
 }
 export const teamByIdDelete = {
     tags: ['Teams'],
-    description: 'Endpoint for removing a single Team category',
+    summary: 'Delete Team',
+    description: 'Delete single Team team_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'team_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'Team_id',
-            schema: {
-                type: 'integer',
-                default: 1
-            },
-            required: true,
-            description: "Add videos_id to delete single team details"
-        }
     ],
     responses: {
         '200': {

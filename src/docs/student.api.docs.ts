@@ -20,6 +20,7 @@ export const studentChangePasswordRequestBody = {
 export const bulkCreateStudent = {
     tags: ['Students'],
     summary: 'student bulk add',
+    describe: 'student bulk add',
     security: [
         {
             bearerAuth: [],
@@ -215,7 +216,7 @@ export const studentResetPassword = {
 }
 export const getBadges = {
     tags: ['Students'],
-    summary: 'Get student by user_id',
+    summary: 'Get student badges by student_user_id',
     security: [
         {
             bearerAuth: [],
@@ -224,7 +225,7 @@ export const getBadges = {
     parameters: [
         {
             in: 'path',
-            name: 'id',
+            name: 'student_user_id',
             schema: {
                 type: 'integer',
                 default: 1
@@ -272,8 +273,8 @@ export const getBadges = {
 }
 export const addBadges = {
     tags: ['Students'],
-    description: 'create a new badge for student',
-    summary: 'add badge for student',
+    description: 'add Badges',
+    summary: 'Create badge for student',
     requestBody: {
         required: true,
         content: {
@@ -342,7 +343,8 @@ export const addBadges = {
 }
 export const studentCertificate = {
     tags: ['Students'],
-    summary: 'Get student certificate by user_id',
+    description : 'Get student certificate by user_id',
+    summary: 'Get certificate',
     security: [
         {
             bearerAuth: [],
@@ -351,7 +353,7 @@ export const studentCertificate = {
     parameters: [
         {
             in: 'path',
-            name: 'id',
+            name: 'student_user_id',
             schema: {
                 type: 'integer',
                 default: 1
@@ -398,7 +400,7 @@ export const studentCertificate = {
 }
 export const studentRegister = {
     tags: ['Students'],
-    description: 'Registration for student',
+    description: 'Register student',
     summary: 'Create user',
     requestBody: {
         required: true,
@@ -498,7 +500,8 @@ export const studentRegister = {
 }
 export const studentLogin = {
     tags: ['Students'],
-    summary: 'Logs student into the system',
+    description: 'Login student',
+    summary: 'Logs user into the system',
     requestBody: {
         required: true,
         content: {
@@ -662,7 +665,8 @@ export const studentChangePassword = {
 }
 export const studentLogout = {
     tags: ['Students'],
-    summary: 'Logs out current logged in user session',
+    description: 'Helps clear the session data',
+    summary: 'Clear user session',
     security: [
         {
             bearerAuth: [],
@@ -691,6 +695,7 @@ export const studentLogout = {
 export const students = {
     tags: ['Students'],
     summary: 'Get students',
+    describe: 'Get resisted students list',
     security: [
         {
             bearerAuth: [],
@@ -735,7 +740,8 @@ export const students = {
 }
 export const studentId = {
     tags: ['Students'],
-    summary: 'Get student by user_id',
+    summary: 'Get student',
+    describe: 'Get student by student_user_id',
     security: [
         {
             bearerAuth: [],
@@ -744,7 +750,7 @@ export const studentId = {
     parameters: [
         {
             in: 'path',
-            name: 'id',
+            name: 'student_user_id',
             schema: {
                 type: 'integer',
                 default: 1

@@ -1,130 +1,459 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createChallengeRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const challengeUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const allMentorReports = {
     tags: ['Reports'],
+    summary: 'Get mentor report ',
+    description: 'Get all registered mentors details reports',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const mentorRegList = {
     tags: ['Reports'],
-}
-export const refreshMapStats = {
-    tags: ['Reports'],
+    summary: 'Get mentor report ',
+    description: 'Get all registered mentors details reports', 
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const preSurvey = {
     tags: ['Reports'],
+    summary: 'Get preSurvey report',
+    description: 'Get preSurvey report for all users',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const courseComplete = {
     tags: ['Reports'],
+    summary: 'Get course report',
+    description: 'Get course report for all users',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const courseInComplete = {
     tags: ['Reports'],
+    summary: 'Get inProgress report',
+    description: 'Get inProgress report for all users',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const notRegistered = {
     tags: ['Reports'],
+    summary: 'Get Registered Mentor report',
+    description: 'Get Registered Mentor report district wise',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const notRegister = {
     tags: ['Reports'],
+    summary: 'Get Registered Mentor report',
+    description: 'Get Registered Mentor report district wise',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const userTopicProgress = {
     tags: ['Reports'],
+    summary: 'Get user progress',
+    description: 'Get Program completion status for users',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const mentorTeamsStudents = {
     tags: ['Reports'],
+    summary: 'Get mentor team details',
+    description: 'Get mentor details and includes teams in it',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const challengesCount = {
     tags: ['Reports'],
+    summary: 'Get challenges count',
+    description: 'Get total submitted challenges count',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const challengesDistrictCount = {
     tags: ['Reports'],
-}
-export const createReports = {
-    tags: ['Reports'],
-    description: 'Endpoint for creating new worksheet',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
-                },
-            },
-        },
-    },
-    responses: {
-        '201': {
-            description: 'Created',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const reportsList = {
-    tags: ['Reports'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'Get challenges count',
+    description: 'Get total submitted challenges district wise',
     security: [
         {
             bearerAuth: [],
@@ -135,184 +464,6 @@ export const reportsList = {
             description: 'Success',
             content: {
                 'applications/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const reportsById = {
-    tags: ['Reports'],
-    description: 'Endpoint for getting single Worksheets',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 1
-            },
-            required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'Success',
-            content: {
-                'applications/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const reportsByIdUpdate = {
-    tags: ['Reports'],
-    description: 'Endpoint for updating the specific Worksheets',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
-                },
-            },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const reportsByIdDelete = {
-    tags: ['Reports'],
-    description: 'Endpoint for removing a single Worksheet category',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
                     schema: {
                         properties: {
                             status: {

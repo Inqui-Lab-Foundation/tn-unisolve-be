@@ -320,3 +320,4 @@ export const badgesByIdDelete = {
         '404': badRequestError
     }
 }
+

@@ -1,47 +1,111 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createTranslationsRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const translationsUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
 export const translationsRefresh = {
-    tags: ['Translations']
+    tags: ['Translations'],
+    summary: 'Refresh Translations',
+    description: 'Refresh Translations in the database',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const translationsKey = {
-    tags: ['Translations']
-}
-export const translationsTranslateRefresh = {
-    tags: ['Translations']
+    tags: ['Translations'],
+    summary: 'Get the key translations',
+    description: 'Get the key translations from the database where the value provided in query parameters',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'query',
+            name: 'value',
+            schema: {
+                type: 'integer',
+                default: 'name'
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const createTranslations = {
     tags: ['Translations'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Translations',
+    description: 'Authentication required to add Translations',
     security: [
         {
             bearerAuth: [],
@@ -52,10 +116,59 @@ export const createTranslations = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        from_locale: {
+                            type: 'string',
+                            example: 'en',
+                            describe: 'mandatory field'
+                        },
+                        to_locale: {
+                            type: 'string',
+                            example: 'tn',
+                            describe: 'mandatory field'
+                        },
+                        key: {
+                            type: 'string',
+                            example: 'name',
+                            describe: 'mandatory field'
+                        },
+                        value: {
+                            type: 'string',
+                            example: 'பெயர்',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        from_locale: {
+                            type: 'string',
+                            example: 'en',
+                            describe: 'mandatory field'
+                        },
+                        to_locale: {
+                            type: 'string',
+                            example: 'tn',
+                            describe: 'mandatory field'
+                        },
+                        key: {
+                            type: 'string',
+                            example: 'name',
+                            describe: 'mandatory field'
+                        },
+                        value: {
+                            type: 'string',
+                            example: 'பெயர்',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -96,7 +209,8 @@ export const createTranslations = {
 }
 export const translationsList = {
     tags: ['Translations'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of Translations',
+    description: 'Gets list of Translations created',
     security: [
         {
             bearerAuth: [],
@@ -140,7 +254,8 @@ export const translationsList = {
 }
 export const translationsById = {
     tags: ['Translations'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get Translation',
+    description: 'Get single Translation translation_id in params',
     security: [
         {
             bearerAuth: [],
@@ -149,13 +264,13 @@ export const translationsById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'translation_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -196,34 +311,54 @@ export const translationsById = {
 }
 export const translationsByIdUpdate = {
     tags: ['Translations'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Update Translation',
+    description: 'Get single Translation translation_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'translation_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -235,7 +370,7 @@ export const translationsByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -262,23 +397,24 @@ export const translationsByIdUpdate = {
 }
 export const translationsByIdDelete = {
     tags: ['Translations'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Delete translation',
+    description: 'Delete single translation translation_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'translation_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'WorksheetsId',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add topicId to delete specify Topics",
-        }
     ],
     responses: {
         '200': {

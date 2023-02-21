@@ -1,65 +1,167 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createQuizSurveysRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const quizSurveysUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
-export const quizSurveysNextQuestion = {
-    tags: ['Quiz surveys'],
-}
-export const quizSurveysResponse = {
-    tags: ['Quiz surveys'],
-}
 export const quizSurveysResponses = {
     tags: ['Quiz surveys'],
-}
-export const quizSurveySurveyStatus = {
-    tags: ['Quiz surveys'],
-}
-export const createQuizSurveys = {
-    tags: ['Quiz surveys'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Quiz surveys response',
+    description: 'Authentication required to add Quiz surveys response ',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'quiz_survey_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        responses: {
+                            type: 'array',
+                            example: [
+                                {
+                                    "quiz_survey_question_id": 9,
+                                    "selected_option": "/assets/challenges\\responses_attachments/challenge_id_1_team_id_12_file_1669714486486_28G8cYLx7Defzszb_7giSem3.png"
+                                }
+                            ],
+                        },
+                        status: {
+                            type: 'string',
+                            example: 'SUBMITTED',
+                        }
+                    }
                 },
             },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        responses: {
+                            type: 'array',
+                            example: [
+                                {
+                                    "quiz_survey_question_id": 9,
+                                    "selected_option": "/assets/challenges\\responses_attachments/challenge_id_1_team_id_12_file_1669714486486_28G8cYLx7Defzszb_7giSem3.png"
+                                }
+                            ],
+                        },
+                        status: {
+                            type: 'string',
+                            example: 'SUBMITTED',
+                        }
+                    }
+                },
+            },
+        }
+    },
+    responses: {
+        '201': {
+            description: 'Created',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
         },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const quizSurveysResponse = {
+    tags: ['Quiz surveys'],
+    summary: 'Add Quiz surveys response',
+    description: 'Authentication required to add Quiz surveys response ',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'quiz_survey_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        quiz_survey_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        quiz_question_id: {
+                            type: 'string',
+                            example: '1',
+                            describe: 'mandatory field'
+                        },
+                        selected_option: {
+                            type: 'string',
+                            example: 'option name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -100,7 +202,8 @@ export const createQuizSurveys = {
 }
 export const quizSurveysList = {
     tags: ['Quiz surveys'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of Quiz surveys',
+    description: 'Gets list of Quiz surveys created',
     security: [
         {
             bearerAuth: [],
@@ -144,7 +247,8 @@ export const quizSurveysList = {
 }
 export const quizSurveysById = {
     tags: ['Quiz surveys'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get Quiz surveys',
+    description: 'Get single Quiz surveys quiz_survey_id in params',
     security: [
         {
             bearerAuth: [],
@@ -153,13 +257,13 @@ export const quizSurveysById = {
     parameters: [
         {
             in: 'path',
-            name: 'worksheet_id',
+            name: 'quiz_survey_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -198,35 +302,83 @@ export const quizSurveysById = {
         '404': badRequestError
     }
 }
-export const quizSurveysByIdUpdate = {
+export const quizSurveysNextQuestion = {
     tags: ['Quiz surveys'],
-    description: 'Endpoint for updating the specific Worksheets',
+    summary: 'Get Quiz surveys Next question',
+    description: 'Get single Quiz surveys quiz_survey_id in params',
     security: [
         {
             bearerAuth: [],
         },
     ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
-                },
-            },
-        },
-    },
     parameters: [
         {
             in: 'path',
-            name: 'Worksheet_id',
+            name: 'quiz_survey_id',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
+            description: "Required",
         }
+    ],
+    responses: {
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const quizSurveysByIdDelete = {
+    tags: ['Quiz surveys'],
+    summary: 'Delete Quiz surveys',
+    description: 'Delete single Quiz surveys quiz_survey_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'quiz_survey_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
+    security: [
+        {
+            bearerAuth: [],
+        },
     ],
     responses: {
         '200': {
@@ -264,9 +416,10 @@ export const quizSurveysByIdUpdate = {
         '404': badRequestError
     }
 }
-export const quizSurveysByIdDelete = {
+export const quizSurveySurveyStatus = {
     tags: ['Quiz surveys'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Get Quiz surveys status',
+    description: 'Get Quiz surveys status based on the role and survey status',
     security: [
         {
             bearerAuth: [],
@@ -275,20 +428,40 @@ export const quizSurveysByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'WorksheetsId',
+            name: 'quiz_survey_id',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
-            description: "Add topicId to delete specify Topics",
+            description: "Required",
+        },
+        {
+            in: 'query',
+            name: 'role',
+            schema: {
+                type: 'sting',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        },
+        {
+            in: 'query',
+            name: 'quizSurveyStatus',
+            schema: {
+                type: 'string',
+                default: 'ALL'
+            },
+            required: true,
+            description: "Required",
         }
     ],
     responses: {
         '200': {
-            description: 'success',
+            description: 'Success',
             content: {
-                'application/json': {
+                'applications/json': {
                     schema: {
                         properties: {
                             status: {

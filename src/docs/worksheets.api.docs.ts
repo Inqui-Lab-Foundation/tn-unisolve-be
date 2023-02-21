@@ -1,42 +1,66 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createWorksheetRequestBody = {
-    type: 'object',
-    properties: {
-        course_module_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type_id: {
-            type: 'string',
-            example: '1',
-        },
-        topic_type: {
-            type: 'string',
-            example: 'VIDEO',
-        },
-        title: {
-            type: 'string',
-            example: 'video 1',
-        }
-    }
-};
-export const worksheetUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
-
 export const worksheetResponse = {
-    tags: ['Worksheets']
+    tags: ['Worksheets'],
+    summary: 'Add Response',
+    description: 'Add Response to the particular worksheet',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'worksheet_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
 }
 export const createWorksheet = {
     tags: ['Worksheets'],
-    description: 'Endpoint for creating new worksheet',
+    summary: 'Add Worksheets',
+    description: 'Authentication required to add Worksheets',
     security: [
         {
             bearerAuth: [],
@@ -47,10 +71,29 @@ export const createWorksheet = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createWorksheetRequestBody'
+                    type: 'object',
+                    properties: {
+                        description: {
+                            type: 'string',
+                            example: 'Worksheet name',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        description: {
+                            type: 'string',
+                            example: 'Worksheet name',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '201': {
@@ -91,7 +134,8 @@ export const createWorksheet = {
 }
 export const worksheetList = {
     tags: ['Worksheets'],
-    description: 'Endpoint for getting list of Worksheets created',
+    summary: 'List of Worksheets',
+    description: 'Gets list of Worksheets created',
     security: [
         {
             bearerAuth: [],
@@ -135,7 +179,8 @@ export const worksheetList = {
 }
 export const worksheetById = {
     tags: ['Worksheets'],
-    description: 'Endpoint for getting single Worksheets',
+    summary: 'Get Worksheet',
+    description: 'Get single Worksheet worksheet_id in params',
     security: [
         {
             bearerAuth: [],
@@ -150,7 +195,7 @@ export const worksheetById = {
                 default: 1
             },
             required: true,
-            description: "Add WorksheetId to fetch specify Worksheet",
+            description: "Required",
         }
     ],
     responses: {
@@ -158,72 +203,6 @@ export const worksheetById = {
             description: 'Success',
             content: {
                 'applications/json': {
-                    schema: {
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'OK'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: ['object']
-                            } 
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': badRequestError
-    }
-}
-export const worksheetByIdUpdate = {
-    tags: ['Worksheets'],
-    description: 'Endpoint for updating the specific Worksheets',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/worksheetUpdatesRequestBody'
-                },
-            },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'Worksheet_id',
-            schema: {
-                type: 'integer',
-                default: 2
-            },
-            required: true,
-            description: "Add Worksheet_Id to update specify Worksheets",
-        }
-    ],
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
                     schema: {
                         properties: {
                             status: {
@@ -255,9 +234,10 @@ export const worksheetByIdUpdate = {
         '404': badRequestError
     }
 }
-export const WorksheetsByIdDelete = {
+export const worksheetByIdUpdate = {
     tags: ['Worksheets'],
-    description: 'Endpoint for removing a single Worksheet category',
+    summary: 'Update Worksheet',
+    description: 'Get single Worksheet worksheet_id in params',
     security: [
         {
             bearerAuth: [],
@@ -266,14 +246,100 @@ export const WorksheetsByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'WorksheetsId',
+            name: 'worksheet_id',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
-            description: "Add topicId to delete specify Topics",
+            description: "Required",
         }
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
+    },
+    responses: {
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const WorksheetsByIdDelete = {
+    tags: ['Worksheets'],
+    summary: 'Delete Worksheet',
+    description: 'Delete single Worksheet worksheet_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'worksheet_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
+    security: [
+        {
+            bearerAuth: [],
+        },
     ],
     responses: {
         '200': {
