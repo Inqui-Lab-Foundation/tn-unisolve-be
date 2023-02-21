@@ -1,30 +1,9 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createVideosRequestBody = {
-    type: 'object',
-    properties: {
-        module: {
-            type: 'string',
-            example: 'Health',
-        },
-        video_stream_id: {
-            type: 'string',
-            example: '126546654695',
-        }
-    }
-};
-export const videosUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'COMPLETED',
-        }
-    },
-};
 export const createVideos = {
     tags: ['Videos'],
-    description: 'Endpoint for creating new video category',
+    summary: 'Add Videos',
+    description: 'Authentication required to add Videos',
     security: [
         {
             bearerAuth: [],
@@ -35,14 +14,43 @@ export const createVideos = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createVideosRequestBody'
+                    type: 'object',
+                    properties: {
+                        module: {
+                            type: 'string',
+                            example: 'module name',
+                            describe: 'mandatory field'
+                        },
+                        video_stream_id: {
+                            type: 'string',
+                            example: 'BWO232ID',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        module: {
+                            type: 'string',
+                            example: 'module name',
+                            describe: 'mandatory field'
+                        },
+                        video_stream_id: {
+                            type: 'string',
+                            example: 'BWO232ID',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
-        '200': {
-            description: 'New Entry added successfully',
+        '201': {
+            description: 'Created',
             content: {
                 'application/json': {
                     schema: {
@@ -79,7 +87,8 @@ export const createVideos = {
 }
 export const videosList = {
     tags: ['Videos'],
-    description: 'Endpoint for getting list of videos created',
+    summary: 'List of Videos',
+    description: 'Gets list of Videos created',
     security: [
         {
             bearerAuth: [],
@@ -123,7 +132,8 @@ export const videosList = {
 }
 export const videosById = {
     tags: ['Videos'],
-    description: 'Endpoint for getting single videos',
+    summary: 'Get Video',
+    description: 'Get single Video video_id in params',
     security: [
         {
             bearerAuth: [],
@@ -132,13 +142,13 @@ export const videosById = {
     parameters: [
         {
             in: 'path',
-            name: 'videos_id',
+            name: 'video_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add videos_id to fetch specify videos ",
+            description: "Required",
         }
     ],
     responses: {
@@ -179,34 +189,54 @@ export const videosById = {
 }
 export const videosByIdUpdate = {
     tags: ['Videos'],
-    description: 'Endpoint for updating the specific video',
+    summary: 'Update Video',
+    description: 'Get single Video video_id in params',
     security: [
         {
             bearerAuth: [],
         },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'video_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
     ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/videosUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
-    },
-    parameters: [
-        {
-            in: 'path',
-            name: 'videos_id',
-            schema: {
-                type: 'integer',
-                default: 1
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
             },
-            required: true,
-            description: "Add videos_id to update specify videos",
         }
-    ],
+    },
     responses: {
         '200': {
             description: 'success',
@@ -218,7 +248,7 @@ export const videosByIdUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -240,28 +270,29 @@ export const videosByIdUpdate = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
+        '404': badRequestError
     }
 }
 export const videosByIdDelete = {
     tags: ['Videos'],
-    description: 'Endpoint for removing a single video category',
+    summary: 'Delete Video',
+    description: 'Delete single Video video_id in params',
+    parameters: [
+        {
+            in: 'path',
+            name: 'video_id',
+            schema: {
+                type: 'integer',
+                example: 1
+            },
+            required: false,
+            description: "Required",
+        }
+    ],
     security: [
         {
             bearerAuth: [],
         },
-    ],
-    parameters: [
-        {
-            in: 'path',
-            name: 'videos_id',
-            schema: {
-                type: 'integer',
-                default: 1
-            },
-            required: true,
-            description: "Add videos_id to delete single video details"
-        }
     ],
     responses: {
         '200': {

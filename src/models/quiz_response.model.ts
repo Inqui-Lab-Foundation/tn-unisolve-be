@@ -12,15 +12,6 @@ export class quiz_response extends Model<InferAttributes<quiz_response>, InferCr
     declare created_at: Date;
     declare updated_by: number;
     declare updated_at: Date;
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    // static associate(models: any) {
-    //     // define association here
-    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
-    // }
 }
 
 quiz_response.init(
@@ -77,5 +68,3 @@ quiz_response.init(
         updatedAt: 'updated_at'
     }
 );
-
-//todo: add associations.. here 

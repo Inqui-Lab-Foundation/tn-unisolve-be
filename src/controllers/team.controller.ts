@@ -37,35 +37,31 @@ export default class TeamController extends BaseController {
             if (model) {
                 this.model = model;
             };
-            const current_user = res.locals.user_id; 
-            if(!current_user){
+            const current_user = res.locals.user_id;
+            if (!current_user) {
                 throw forbidden()
             }
             // pagination
-            let mentor_id:any = null
-            const { page, size,  } = req.query;
-            mentor_id =  req.query.mentor_id
-            // let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-            let condition =  null;
-            if(mentor_id){
+            let mentor_id: any = null
+            const { page, size, } = req.query;
+            mentor_id = req.query.mentor_id
+            let condition = null;
+            if (mentor_id) {
                 const getUserIdFromMentorId = await mentor.findOne({
-                    attributes: ["user_id", "created_by"], 
+                    attributes: ["user_id", "created_by"],
                     where: {
-                         mentor_id: mentor_id 
-                        }
+                        mentor_id: mentor_id
+                    }
                 });
                 if (!getUserIdFromMentorId) throw badRequest(speeches.MENTOR_NOT_EXISTS);
                 if (getUserIdFromMentorId instanceof Error) throw getUserIdFromMentorId;
                 const providedMentorsUserId = getUserIdFromMentorId.getDataValue("user_id");
-                condition =  { 
-                    mentor_id:mentor_id,
-                    created_by:providedMentorsUserId
+                condition = {
+                    mentor_id: mentor_id,
+                    created_by: providedMentorsUserId
                 }
-                // if (current_user !== getUserIdFromMentorId.getDataValue("user_id")) {
-                //     throw forbidden();
-                // };
             }
-            
+
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
@@ -187,11 +183,7 @@ export default class TeamController extends BaseController {
                 } catch (error: any) {
                     return res.status(500).send(dispatcher(res, data, 'error'))
                 }
-
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -199,12 +191,6 @@ export default class TeamController extends BaseController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(res, null, "error", speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
-                (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
 
             return res.status(200).send(dispatcher(res, data, 'success'));
@@ -230,8 +216,6 @@ export default class TeamController extends BaseController {
         }
         const student_res = await this.crudService.findAll(student, {
             where: {
-                //TODO: replace the UUID with password name, and attach the username in a single object
-                // attributes: ['UUID', 'password'],
                 [Op.and]: [
                     whereClauseStatusPart,
                     where
@@ -242,42 +226,25 @@ export default class TeamController extends BaseController {
                 attributes: ["username"]
             }]
         });
-        // console.log(student_res[0].dataValues.UUID)
-        // student_res.dataValues['password'] = "";
         return res.status(200).send(dispatcher(res, student_res, 'success'));
     };
-    /**
-     * 
-     * Add check to see if team with same name and same mentor doesnt exits only then creeate a team 
-     * @param req 
-     * @param res 
-     * @param next 
-     * @returns 
-     */
     protected async createData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model } = req.params;
             if (model) {
                 this.model = model;
             };
-            const current_user = res.locals.user_id; 
+            const current_user = res.locals.user_id;
             const modelLoaded = await this.loadModel(model);
-            // console.log(req.body.team_name);
-            // req.body.team_name = req.body.team_name.trim();
-            // if (!req.body.team_name) {
-            //     throw badRequest(speeches.TEAM_NAME_REQUIRED);
-            // }
             const getUserIdFromMentorId = await mentor.findOne({
                 attributes: ["user_id", "created_by"], where: { mentor_id: req.body.mentor_id }
             });
-            // console.log(getUserIdFromMentorId);
             if (!getUserIdFromMentorId) throw badRequest(speeches.MENTOR_NOT_EXISTS);
             if (getUserIdFromMentorId instanceof Error) throw getUserIdFromMentorId;
             if (current_user !== getUserIdFromMentorId.getDataValue("user_id")) {
                 throw forbidden();
             };
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded);
-            // console.log(payload)
             const teamNameCheck: any = await team.findOne({
                 where: {
                     mentor_id: payload.mentor_id,
@@ -287,8 +254,6 @@ export default class TeamController extends BaseController {
             if (teamNameCheck) {
                 throw badRequest('code unique');
             }
-            // console.log("payload: ", payload)
-            // add check if teamNameCheck is not an error and has data then return and err
             const data = await this.crudService.create(modelLoaded, payload);
             if (!data) {
                 return res.status(404).send(dispatcher(res, data, 'error'));
@@ -300,7 +265,7 @@ export default class TeamController extends BaseController {
                 throw data;
             }
             return res.status(201).send(dispatcher(res, data, 'created'));
-            
+
         } catch (error) {
             next(error);
         }
@@ -322,7 +287,6 @@ export default class TeamController extends BaseController {
             });
             if (getTeamDetails instanceof Error) throw getTeamDetails;
             if (!getTeamDetails) throw notFound(speeches.TEAM_NOT_FOUND);
-            // console.log(getTeamDetails);
             const getStudentDetails = await this.crudService.findAll(student, {
                 attributes: ["student_id", "user_id"],
                 where: { team_id: getTeamDetails.dataValues.team_id }
@@ -332,7 +296,6 @@ export default class TeamController extends BaseController {
                 for (let student of getStudentDetails) {
                     const deleteUserStudentAndRemoveAllResponses = await this.authService.deleteStudentAndStudentResponse(student.dataValues.user_id);
                     deleteTeam++;
-                    // deletingTeamDetails = await this.crudService.delete(await this.loadModel(model), { where: where });
                 }
             };
             if (deleteTeam >= 1) {
@@ -340,20 +303,6 @@ export default class TeamController extends BaseController {
                 deletingTeamDetails = await this.crudService.delete(await this.loadModel(model), { where: where });
             }
             return res.status(200).send(dispatcher(res, deletingTeamDetails, 'deleted'));
-            //         if (exist(team_id))
-            //             if (check students)
-            // 		bulk delete
-            // Delete teams
-            // 	else
-            // 		Delete teams
-            // else
-            //    No action
-            // if (!data) {
-            //     throw badRequest()
-            // }
-            // if (data instanceof Error) {
-            //     throw data
-            // }
         } catch (error) {
             next(error);
         }

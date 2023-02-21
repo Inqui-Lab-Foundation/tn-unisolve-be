@@ -74,7 +74,6 @@ export default class QuizSurveyController extends BaseController {
             const userIdsWithQuizCompletedArr=userIdsObjWithQuizCompletedArr.map((element)=>{
                 return element.user_id
             });
-            // console.log("userIdsWithQuizCompletedArr",userIdsWithQuizCompletedArr)
             if(quizSurveyStatusParam == constents.quiz_survey_status_flags.list["COMPLETED"]){
                 condition = {
                     user_id:{
@@ -88,7 +87,6 @@ export default class QuizSurveyController extends BaseController {
                     }
                 }
             }
-            // console.log("condition",condition)
             let roleParam:any = req.query.role;
             if(!roleParam || !(roleParam in constents.user_role_flags.list)){
                 roleParam=constents.user_role_flags.list["MENTOR"]
@@ -106,8 +104,6 @@ export default class QuizSurveyController extends BaseController {
             }
 
             const { page, size, status } = req.query;
-            
-            // condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
 
             const paramStatus:any = req.query.status;
@@ -126,7 +122,6 @@ export default class QuizSurveyController extends BaseController {
                 whereClauseStatusPart = { "status": "ACTIVE" };
                 addWhereClauseStatusPart = true;
             }
-            // console.log("came here",roleBasedModelToBeUsed)
             const mentorsResult = await roleBasedModelToBeUsed.findAll({
                 attributes:{ 
                     include:[
@@ -157,8 +152,6 @@ export default class QuizSurveyController extends BaseController {
                 include:roleBasedIncludeArrToBeUsed,
                 limit,offset
             });
-            // console.log("mentorsResult",mentorsResult)
-
             if(!mentorsResult){
                 throw notFound(speeches.DATA_NOT_FOUND)
             }
@@ -302,9 +295,6 @@ export default class QuizSurveyController extends BaseController {
                 }
 
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -312,12 +302,6 @@ export default class QuizSurveyController extends BaseController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(res,null,"error",speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
-                (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
 
             //remove unneccesary data 
@@ -330,7 +314,6 @@ export default class QuizSurveyController extends BaseController {
                             delete quizSurvey.dataValues.quiz_survey_questions
                         }
                     }
-                    console.log(quizSurvey.dataValues)
                     return quizSurvey;
                 }))
             }else if(data && data.dataValues){
@@ -360,12 +343,6 @@ export default class QuizSurveyController extends BaseController {
         if(!user_id){
             throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
         }
-        //do not check for course topic in this case .... //check if the given quiz is a valid topic
-        // const curr_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":quiz_id,"topic_type":"QUIZ"}})
-        // if(!curr_topic || curr_topic instanceof Error){
-        //     throw badRequest("INVALID TOPIC");
-        // }
-
         const quizRes = await this.crudService.findOne(quiz_survey_response,{where: {quiz_survey_id:quiz_survey_id,user_id:user_id}});
         if(quizRes instanceof Error){
             throw internal(quizRes.message)
@@ -380,16 +357,13 @@ export default class QuizSurveyController extends BaseController {
         let level = "HARD"
         let question_no = 1
         let nextQuestion:any=null;
-        // console.log(quizRes)
         if(quizRes){
             //TOOO :: implement checking response and based on that change the 
             let user_response:any = {}
             user_response =  JSON.parse(quizRes.dataValues.response);
-            // console.log(user_response);
             let questionNosAsweredArray = Object.keys(user_response);
             questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (Number(a) > Number(b) ? -1 : 1));
             const noOfQuestionsAnswered = Object.keys(user_response).length
-            // console.log(noOfQuestionsAnswered)
             const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
             // if(lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer){
             //     question_no = lastQuestionAnsewered.question_no+1;
@@ -452,12 +426,6 @@ export default class QuizSurveyController extends BaseController {
 
             res.status(200).send(dispatcher(res,resultQuestion))
         }else{
-            //update worksheet topic progress for this user to completed..!!
-            // if(!boolStatusWhereClauseRequired || 
-            //     (boolStatusWhereClauseRequired && paramStatus == "ACTIVE")){
-            //     const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_topic.course_topic_id,"status":"COMPLETED"})
-            // }
-            
             //send response that quiz is completed..!!
             res.status(200).send(dispatcher(res,"Quiz has been completed no more questions to display"))
         }
@@ -497,13 +465,10 @@ export default class QuizSurveyController extends BaseController {
             if(!questionAnswered){
                 throw badData("Invalid Quiz question id")
             }
-    
-    
             const quizRes = await this.crudService.findOne(quiz_survey_response,{where: {quiz_survey_id:quiz_survey_id,user_id:user_id}});
             if(quizRes instanceof Error){
                 throw internal(quizRes.message)
             }          
-            // console.log(quizRes);
             let dataToUpsert:any = {}
             dataToUpsert = {quiz_survey_id:quiz_survey_id,user_id:user_id,updated_by:user_id}
     
@@ -512,15 +477,11 @@ export default class QuizSurveyController extends BaseController {
                 quiz_survey_id:quiz_survey_id,
                 selected_option:selected_option,
                 question:questionAnswered.dataValues.question,
-                // correct_answer:questionAnswered.dataValues.correct_ans,//there is no correct_ans collumn
-                // level:questionAnswered.dataValues.level,//there are no level collumn
                 question_no:questionAnswered.dataValues.question_no,
-                // is_correct:selected_option==questionAnswered.correct_ans//there is no correct_ans collumn
             }
             
             let user_response:any = {}
             if(quizRes){
-                // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(quizRes.dataValues.response);
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
 
@@ -532,13 +493,6 @@ export default class QuizSurveyController extends BaseController {
                 }
                 let result:any = {}
                 result = resultModel.dataValues
-                // result["is_correct"] = responseObjToAdd.is_correct;
-                // if(responseObjToAdd.is_correct){
-                //     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
-                // }else{
-                //     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
-                // }
-                // result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 return result;
             }else{
                 
@@ -553,13 +507,6 @@ export default class QuizSurveyController extends BaseController {
                 }
                 let result:any = {}
                 result = resultModel.dataValues
-                // result["is_correct"] = responseObjToAdd.is_correct;
-                // if(responseObjToAdd.is_correct){
-                //     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
-                // }else{
-                //     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
-                // }
-                // result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 return result;
             }
 
@@ -588,7 +535,6 @@ export default class QuizSurveyController extends BaseController {
             const results:any = []
             let result:any={}
             for(const element of responses){
-                // console.log(element);
                 result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
                 if(!result|| result instanceof Error){
                     throw badRequest();
@@ -596,18 +542,6 @@ export default class QuizSurveyController extends BaseController {
                     results.push(result);
                 }
             }
-            // await Promise.all(
-            //     responses.map( async (element:any) => {
-            //         // console.log(element)
-            //         result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
-            //         if(!result|| result instanceof Error){
-            //           throw badRequest();
-            //         }else{
-            //           results.push(result);
-            //         }
-            //       }
-            //     )
-            // );
             res.status(200).send(dispatcher(res,result))
 
         }catch(err){

@@ -621,11 +621,6 @@ export default class ChallengeResponsesController extends BaseController {
             if (challengeRes instanceof Error) {
                 throw internal(challengeRes.message)
             }
-            // const studentDetailsBasedOnTeam = await this.crudService.findAll(student, { where: { team_id } });
-            // if (studentDetailsBasedOnTeam instanceof Error) {
-            //     throw internal(studentDetailsBasedOnTeam.message)
-            // };
-            // console.log(studentDetailsBasedOnTeam.length);
             let dataToUpsert: any = {}
             dataToUpsert = { challenge_id, team_id, updated_by: user_id }
             let responseObjToAdd: any = {}
@@ -643,8 +638,6 @@ export default class ChallengeResponsesController extends BaseController {
                 user_response = JSON.parse(challengeRes.dataValues.response);
                 user_response[questionAnswered.dataValues.challenge_question_id] = responseObjToAdd;
                 dataToUpsert["response"] = JSON.stringify(user_response);
-                // if (user_id === ) {
-                //     one type need to be check if its student then fetch student details and then allow updating based on team_id if same case for teacher
                 const resultModel = await this.crudService.update(challengeRes, dataToUpsert, { where: { challenge_id, team_id } })
                 if (resultModel instanceof Error) {
                     throw internal(resultModel.message)
@@ -655,17 +648,6 @@ export default class ChallengeResponsesController extends BaseController {
                 return user_response;
             } else {
                 user_response[questionAnswered.dataValues.challenge_question_id] = responseObjToAdd;
-                // team_id  1, challenge_id = 1, responses = {
-                //     q_1: {
-                //         question:
-                //             selected_pption:
-                //     },
-                //     q_2: {
-                //         question:
-                //             selected_options:
-                //     }
-
-                // }
                 dataToUpsert["response"] = JSON.stringify(user_response);
                 dataToUpsert = { ...dataToUpsert }
                 const resultModel = await this.crudService.create(challenge_response, dataToUpsert)
@@ -674,13 +656,6 @@ export default class ChallengeResponsesController extends BaseController {
                 }
                 let result: any = {}
                 result = resultModel.dataValues
-                // result["is_correct"] = responseObjToAdd.is_correct;
-                // if(responseObjToAdd.is_correct){
-                //     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
-                // }else{
-                //     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
-                // }
-                // result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 return result;
             }
 
@@ -819,7 +794,6 @@ export default class ChallengeResponsesController extends BaseController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded);
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
-            // console.log(data);
             
             if (!data) {
                 throw badRequest()
@@ -949,7 +923,6 @@ export default class ChallengeResponsesController extends BaseController {
     }
     protected async getResponse(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            console.log(Date.now);
             let user_id = res.locals.user_id;
             let { team_id } = req.query;
             if (!user_id) {
@@ -976,7 +949,6 @@ export default class ChallengeResponsesController extends BaseController {
             const where: any = {};
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
-                console.log(where)
                 data = await this.crudService.findOne(challenge_response, {
                     attributes: [
                         [
@@ -1247,8 +1219,6 @@ export default class ChallengeResponsesController extends BaseController {
             if (sdg) {
                 whereClause['sdg'] = sdg && typeof sdg == 'string' ? sdg : {}
             }
-            // whereClauseOfSdg['sdg'] = { [Op.like]: sdg && typeof district == 'string' ? sdg : `%%` }
-            console.log(whereClause);
             const data = await this.crudService.findAll(challenge_response, {
                 attributes: [
                     "challenge_response_id",
@@ -1444,10 +1414,7 @@ export default class ChallengeResponsesController extends BaseController {
                         ],
                         [
                             db.literal(`(SELECT  JSON_ARRAYAGG(evaluator_id) FROM unisolve_db.evaluator_ratings as rating WHERE rating.challenge_response_id = \`challenge_response\`.\`challenge_response_id\`)`), 'evaluator_id'
-                        ],
-                        // [
-                        //     db.literal(`(SELECT full_name FROM users As s WHERE s.user_id = evaluator_ratings.created_by)`), 'rated_evaluated_name'
-                        // ]
+                        ]
                     ]
                 }], limit, offset, subQuery: false
             });
@@ -1549,10 +1516,7 @@ export default class ChallengeResponsesController extends BaseController {
                         ],
                         [
                             db.literal(`(SELECT  JSON_ARRAYAGG(evaluator_id) FROM unisolve_db.evaluator_ratings as rating WHERE rating.challenge_response_id = \`evaluator_ratings->challenge_response\`.\`challenge_response_id\`)`), 'evaluator_id'
-                        ],
-                        // [
-                        //     db.literal(`(SELECT full_name FROM users As s WHERE s.user_id = evaluator_ratings.created_by)`), 'rated_evaluated_name'
-                        // ]
+                        ]
                     ],
                     include: {
                         model: challenge_response,

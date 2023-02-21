@@ -25,19 +25,14 @@ async function seedTranslationData(
 		var whereClause:any = {};
 		
 		const item = data[i];
-		console.log(item)
 		whereClause[id_collumn]=item[id_collumn]
 		const parent = await modelToBeLoaded.findOne({
 			where:whereClause,
 			raw:true
 		})
-		// console.log("parent",parent.title)
-
 		var attrsToLoad:any = Object.keys(item);
 		for(var j =0;j<attrsToLoad.length;j++){
 			const attr = attrsToLoad[j]
-			console.log("attr",attr," i==",j)
-			console.log("parent[attr]",parent[attr])
 			const key = parent[attr];
 			const value = item[attr]
 			if(!key){
@@ -66,8 +61,6 @@ async function seedMentorQuizDataInTamil(sequelize:any){
 				topic_type:"QUIZ"
 			}
 		})
-		// console.log("module",module);
-		// console.log(course_topic_of_topic_type_quiz);
 		if(!course_topic_of_topic_type_quiz || course_topic_of_topic_type_quiz instanceof Error){
 			console.log("course_topic_of_topic_type_quiz",course_topic_of_topic_type_quiz);
 		}else{
@@ -82,8 +75,6 @@ async function seedMentorQuizDataInTamil(sequelize:any){
 						level:question.level
 					}
 				})
-				// console.log("module",module);
-				// console.log(course_topic_of_topic_type_quiz);
 				if(!parentQuestion || parentQuestion instanceof Error){
 					console.log("parentQuestion",parentQuestion);
 					continue;

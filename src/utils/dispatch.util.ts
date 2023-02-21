@@ -59,9 +59,7 @@ export default function dispatcher(res: Response, data: any, status: string = "s
         if (res.locals.translationService.currentLocale != constents.translations_flags.default_locale) {
             resObj = res.locals.translationService.translateEntireObj(resObj);
         }
-    }
-    //@deprecated: logging
-    // await logIt(flag, ((flag==constents.log_levels.list.INBOUND)? "Inbound request" : "Outbound responce"), req, res);
+    };
 
     return resObj;
 }

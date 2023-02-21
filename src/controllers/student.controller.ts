@@ -193,9 +193,6 @@ export default class StudentController extends BaseController {
                 }
 
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -203,12 +200,6 @@ export default class StudentController extends BaseController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(res, null, "error", speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
-                (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
 
             return res.status(200).send(dispatcher(res, data, 'success'));
@@ -259,8 +250,6 @@ export default class StudentController extends BaseController {
                     payload['qualification'] = cryptoEncryptedString
                     payload['UUID'] = studentPassword;
                     const studentDetails = await this.crudService.findOne(user, { where: { username: username } });
-                    // console.log(studentDetails);
-
                     if (studentDetails) {
                         if (studentDetails.dataValues.username == username) throw badRequest(speeches.USER_FULLNAME_EXISTED);
                         if (studentDetails instanceof Error) throw studentDetails;
@@ -310,7 +299,6 @@ export default class StudentController extends BaseController {
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            // const randomGeneratedSixDigitID = this.nanoid();
             const { team_id } = req.body;
             let trimmedTeamName: any;
             let trimmedStudentName: any;
@@ -347,9 +335,6 @@ export default class StudentController extends BaseController {
     }
     private async bulkCreateStudent(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            // if (req.body.length >= constents.TEAMS_MAX_STUDENTS_ALLOWED) {
-            //     throw badRequest(speeches.TEAM_MAX_MEMBES_EXCEEDED);
-            // }
             for (let student in req.body) {
                 if (!req.body[student].team_id) throw notFound(speeches.USER_TEAMID_REQUIRED);
                 const team_id = req.body[student].team_id
@@ -386,9 +371,7 @@ export default class StudentController extends BaseController {
                 req.body[student].created_by = res.locals.user_id
                 req.body[student].updated_by = res.locals.user_id
             }
-            // console.log(req.body);
             const responseFromService = await this.authService.bulkCreateStudentService(req.body);
-            // if (responseFromService.error) return res.status(406).send(dispatcher(res, responseFromService.error, 'error', speeches.STUDENT_EXISTS, 406));
             return res.status(201).send(dispatcher(res, responseFromService, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
         } catch (error) {
             next(error);
@@ -478,16 +461,6 @@ export default class StudentController extends BaseController {
         } catch (error) {
             next(error)
         }
-        // const generatedUUID = this.nanoid();
-        // req.body['generatedPassword'] = generatedUUID;
-        // const result = await this.authService.restPassword(req.body, res);
-        // if (!result) {
-        //     return res.status(404).send(dispatcher(res, result.user_res, 'error', speeches.USER_NOT_FOUND));
-        // } else if (result.match) {
-        //     return res.status(404).send(dispatcher(res, result.match, 'error', speeches.USER_PASSWORD));
-        // } else {
-        //     return res.status(202).send(dispatcher(res, result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-        // }
     }
     private async addBadgeToStudent(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
@@ -547,7 +520,6 @@ export default class StudentController extends BaseController {
                 if (!studentHasBadgeObjForId || !studentHasBadgeObjForId.completed_date) {
                     studentBadgesObj[badgeResultForId.dataValues.slug] = {
                         completed_date: (new Date())
-                        // completed_date: ("" + date.getFullYear() + "-" + "" + (date.getMonth() + 1) + "-" + "" + date.getDay())
                     }
                 }
             }
@@ -617,7 +589,6 @@ export default class StudentController extends BaseController {
             if (allBadgesResult instanceof Error) {
                 throw allBadgesResult;
             }
-            // console.log(studentBadgesObj);
             for (var i = 0; i < allBadgesResult.length; i++) {
                 const currBadge: any = allBadgesResult[i];
                 if (studentBadgesObj.hasOwnProperty("" + currBadge.slug)) {
@@ -627,7 +598,6 @@ export default class StudentController extends BaseController {
                 }
                 allBadgesResult[i] = currBadge
             }
-
             return res.status(200).send(dispatcher(res, allBadgesResult, 'success'));
         } catch (err) {
             next(err)
@@ -666,7 +636,6 @@ export default class StudentController extends BaseController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded);
             payload["certificate"] = new Date().toLocaleString();
-            console.log(payload);
             const updateCertificate = await this.crudService.updateAndFind(student, payload, {
                 where: { student_id: student_user_id }
             });
@@ -682,16 +651,3 @@ export default class StudentController extends BaseController {
         }
     }
 }
-        // private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        //     const result = await this.authService.updatePassword(req.body, res);
-        //     if (!result) {
-        //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
-        //     } else if (result.error) {
-        //         return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
-        //     }
-        //     else if (result.match) {
-        //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
-        //     } else {
-        //         return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-        //     }
-        // }

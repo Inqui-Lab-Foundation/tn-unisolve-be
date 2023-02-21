@@ -17,11 +17,9 @@ export default class DashboardService extends BaseService {
             let bulkCreateArray: any = [];
             uniqueDistricts = await this.crudService.findAll(organization, { group: ["district"] });
             if (!uniqueDistricts || uniqueDistricts.length <= 0) {
-                console.log("uniqueDistricts", uniqueDistricts)
                 return
             }
             if (uniqueDistricts instanceof Error) {
-                console.log("uniqueDistricts", uniqueDistricts)
                 return
             }
             for (const district of uniqueDistricts) {

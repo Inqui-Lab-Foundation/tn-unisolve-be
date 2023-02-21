@@ -29,10 +29,8 @@ export default class SupportTicketController extends BaseController {
     }
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            // console.log('came here..>! 31')
             let data: any;
             const { model, id } = req.params;
-            // const paramStatus: any = req.query.status;
             if (model) {
                 this.model = model;
             };
@@ -67,7 +65,6 @@ export default class SupportTicketController extends BaseController {
                     ],
                     where: {
                         [Op.and]: [
-                            // whereClauseStatusPart,
                             where
                         ]
                     },

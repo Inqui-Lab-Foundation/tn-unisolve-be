@@ -57,6 +57,7 @@ export const notificationsWithPosterRequestBody = {
 
 export const notificationsTome = {
     tags: ['Notifications'],
+    summary: 'Get List of notifications',
     description: 'Endpoints for getting the list of the notifications',
     security: [
         {
@@ -99,6 +100,14 @@ export const notificationsTome = {
         '404': badRequestError
     }
 };
+
+export const notificationsAll = {
+    tags: ['Notifications'],
+}
+
+export const notificationsId = {
+    tags: ['Notifications'],
+}
 
 export const notification = {
     tags: ['Notifications'],

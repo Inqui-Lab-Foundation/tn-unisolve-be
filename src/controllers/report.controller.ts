@@ -49,7 +49,6 @@ export default class ReportController extends BaseController {
             const { quiz_survey_id } = req.params
             const { page, size, status } = req.query;
             let condition = {}
-            // condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(this.model).catch(error => {
                 next(error)
@@ -233,7 +232,6 @@ export default class ReportController extends BaseController {
                 addWhereClauseStatusPart = true;
             }
             const mentorsResult = await db.query("SELECT mentors.organization_code, mentors.district, mentors.full_name,(SELECT COUNT(mentor_topic_progress_id)FROM mentor_topic_progress AS mentor_progress WHERE mentor_progress.user_id=mentors.user_id) AS 'count' FROM mentors LEFT OUTER JOIN mentor_topic_progress AS mentor_progress ON mentors.user_id=mentor_progress.user_id where (SELECT COUNT(mentor_topic_progress_id)FROM mentor_topic_progress AS mentor_progress WHERE mentor_progress.user_id=mentors.user_id) != 9 GROUP BY mentor_progress.user_id", { type: QueryTypes.SELECT });
-            console.log(mentorsResult);
             if (!mentorsResult) {
                 throw notFound(speeches.DATA_NOT_FOUND)
             }

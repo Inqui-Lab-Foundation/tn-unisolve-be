@@ -29,7 +29,6 @@ export default class CourseController extends BaseController {
 
     }
     protected testRoute(req: Request, res: Response, next: NextFunction) {
-        // console.log("came here");
         return res.status(200).json(dispatcher(res,"this was a success ....!!!"));
     }
 
@@ -51,7 +50,6 @@ export default class CourseController extends BaseController {
             
             
             const where: any = {};
-           
             let whereClauseStatusPart:any = {};
             let whereClauseStatusPartLiteral = "1=1";
             let addWhereClauseStatusPart = false
@@ -63,11 +61,8 @@ export default class CourseController extends BaseController {
 
             
             if (id) {
-                // where[`${this.model}_id`] = req.params.id;
                 data = await this.getDetailsData(req, res, modelClass)
             } else {
-                // where[`${this.model}_id`] = req.params.id;
-                // data = await this.crudService.findAll(modelClass);
                 data = await modelClass.findAll({
                     attributes: {
                         include: [
@@ -141,7 +136,6 @@ export default class CourseController extends BaseController {
         }
         let data = await this.crudService.findOne(modelClass, {
             where:whereClause,
-             
             attributes: {
                 include: [
                     [// Note the wrapping parentheses in the call below!
@@ -264,7 +258,6 @@ export default class CourseController extends BaseController {
             }
             ],
             order: [
-                // [{model: course_module, as: 'course_modules'},{model: course_topic, as: 'course_topics'},'topic_type_order', 'ASC'],
                 db.literal(`\`course_modules.course_topics.topic_type_order\` ASC`),
                 [course_module,course_topic,'course_topic_id', 'ASC'],
             ],

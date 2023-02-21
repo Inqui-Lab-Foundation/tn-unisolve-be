@@ -1,6 +1,9 @@
 import { CronJob } from "cron";
 import BaseJobs from "./base.job";
 
+/**
+ * default cron job
+ */
 export default class DefaultJob extends BaseJobs {
     
     callBackFunction:any;

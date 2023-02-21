@@ -1,47 +1,9 @@
 import { badRequestError, notAcceptableError, unauthorizedError } from "./errors";
 
-export const organizationRequestBody = {
-    type: 'object',
-    properties: {
-        organization_name: {
-            type: 'string',
-            example: 'Comcast',
-        },
-        organization_code: {
-            type: 'string',
-            example: '8034r91446',
-        },
-        details: {
-            type: 'string',
-            example: '1234567890'
-        },
-        created_by: {
-            type: 'number',
-            example: '234554335'
-        }
-    }
-};
-export const organizationRequestBodyWithFile = {
-    type: 'object',
-    properties: {
-        image: {
-            data: 'file'
-        },
-    }
-};
-export const organizationUpdatesRequestBody = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string',
-            example: 'Completed',
-        }
-    },
-};
-
-export const createOrganization = {
+export const organizationBulkUpload = {
     tags: ['Organization'],
-    description: 'Endpoint for organizations service => creating a new record in specific table name mentioned in the req.params',
+    summary: 'Organization bulk add',
+    description: 'Organization bulk add',
     security: [
         {
             bearerAuth: [],
@@ -50,24 +12,76 @@ export const createOrganization = {
     requestBody: {
         required: true,
         content: {
-            'application/json': {
+            'application/x-www-form-urlencoded': {
                 schema: {
-                    $ref: '#/components/schemas/organizationRequestBody'
-                },
-            },
-        },
+                    type: 'object',
+                    properties: {
+                        file: {
+                            type: 'file',
+                            describe: 'mandatory field'
+                        }
+                    }
+                }
+            }
+        }
     },
     responses: {
-        '201': {
-            description: 'Created',
+        '202': {
+            description: 'successful operation',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             status: {
+                                type: 'string',
+                                example: '202'
+                            },
+                            status_type: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'User password Updated'
+                            },
+                            count: {
+                                type: 'string',
+                                example: 'null'
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': notAcceptableError
+    }
+
+}
+export const organizationDistricts = {
+    tags: ['Organization'],
+    summary: 'Get districts list',
+    description: 'Get single districts list in params',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            status: {
                                 type: 'number',
-                                example: '201'
+                                example: '200'
                             },
                             status_typeL: {
                                 type: 'string',
@@ -75,7 +89,7 @@ export const createOrganization = {
                             },
                             message: {
                                 type: 'string',
-                                example: 'file found'
+                                example: 'OK'
                             },
                             count: {
                                 type: 'number',
@@ -94,43 +108,74 @@ export const createOrganization = {
         '404': badRequestError
     }
 }
-export const createOrganizationWithFile = {
+export const organizationCheckOrg = {
     tags: ['Organization'],
-    description: 'Endpoint for organization service => creating a new record in specific table name mentioned in the req.params with file upload service',
+    summary: 'Check Organization',
+    description: 'Check single Organization organization_id in params',
     security: [
         {
             bearerAuth: [],
         },
     ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'organization_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Required",
+        }
+    ],
     requestBody: {
         required: true,
         content: {
-            'multipart/form-data': {
+            'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/organizationRequestBodyWithFile'
+                    type: 'object',
+                    properties: {
+                        organization_code: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        organization_code: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
-        '201': {
-            description: 'Created',
+        '200': {
+            description: 'success',
             content: {
                 'application/json': {
                     schema: {
-                        type: 'object',
                         properties: {
                             status: {
                                 type: 'number',
-                                example: '201'
+                                example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
                             message: {
                                 type: 'string',
-                                example: 'file found'
+                                example: 'OK'
                             },
                             count: {
                                 type: 'number',
@@ -146,14 +191,207 @@ export const createOrganizationWithFile = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
-        '406': notAcceptableError,
+        '404': badRequestError
     }
 }
-
+export const organizationCreateOrg = {
+    tags: ['Organization'],
+    summary: 'Add Organization',
+    description: 'Authentication required to add Organization',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        organization_name: {
+                            type: 'string',
+                            example: 'Comcast',
+                        },
+                        organization_code: {
+                            type: 'string',
+                            example: '8034r91446',
+                        },
+                        details: {
+                            type: 'string',
+                            example: '1234567890'
+                        },
+                        created_by: {
+                            type: 'number',
+                            example: '234554335'
+                        }
+                    }
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        organization_name: {
+                            type: 'string',
+                            example: 'Comcast',
+                        },
+                        organization_code: {
+                            type: 'string',
+                            example: '8034r91446',
+                        },
+                        details: {
+                            type: 'string',
+                            example: '1234567890'
+                        },
+                        created_by: {
+                            type: 'number',
+                            example: '234554335'
+                        }
+                    }
+                },
+            },
+        }
+    },
+    responses: {
+        '201': {
+            description: 'Created',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const createOrganization = {
+    tags: ['Organization'],
+    summary: 'Add Organization',
+    description: 'Authentication required to add Organization',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        organization_name: {
+                            type: 'string',
+                            example: 'Comcast',
+                        },
+                        organization_code: {
+                            type: 'string',
+                            example: '8034r91446',
+                        },
+                        details: {
+                            type: 'string',
+                            example: '1234567890'
+                        },
+                        created_by: {
+                            type: 'number',
+                            example: '234554335'
+                        }
+                    }
+                },
+            },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        organization_name: {
+                            type: 'string',
+                            example: 'Comcast',
+                        },
+                        organization_code: {
+                            type: 'string',
+                            example: '8034r91446',
+                        },
+                        details: {
+                            type: 'string',
+                            example: '1234567890'
+                        },
+                        created_by: {
+                            type: 'number',
+                            example: '234554335'
+                        }
+                    }
+                },
+            },
+        }
+    },
+    responses: {
+        '201': {
+            description: 'Created',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
 export const organizationList = {
     tags: ['Organization'],
-    description: 'Endpoint for crud service => get the data from the specific table name mentioned in the req.params',
+    summary: 'List of Organization',
+    description: 'Gets list of Organization created',
     security: [
         {
             bearerAuth: [],
@@ -197,33 +435,24 @@ export const organizationList = {
 }
 export const organizationSingle = {
     tags: ['Organization'],
-    description: 'Endpoint for crud service => getting data with id specific from table name mentioned in the req.params',
+    summary: 'Get Organization',
+    description: 'Get single Organization organization_id in params',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
     parameters: [
         {
             in: 'path',
             name: 'organization_id',
             schema: {
-                type: 'string',
-                default: 'organization'
-            },
-            required: true,
-            description: "Add organization_id i.e table name here",
-        },
-        {
-            in: 'path',
-            name: 'id',
-            schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add id specific id in the model_name above",
+            description: "Required",
         }
-    ],
-    security: [
-        {
-            bearerAuth: [],
-        },
     ],
     responses: {
         '200': {
@@ -263,7 +492,8 @@ export const organizationSingle = {
 }
 export const organizationUpdate = {
     tags: ['Organization'],
-    description: 'Endpoint for Organization service => updating data with id specific from table name mentioned in the req.params',
+    summary: 'Update Organization',
+    description: 'Get single Organization organization_id in params',
     security: [
         {
             bearerAuth: [],
@@ -272,23 +502,13 @@ export const organizationUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'model_name',
-            schema: {
-                type: 'string',
-                default: 'Organization'
-            },
-            required: true,
-            description: "Add organization_name i.e table name here",
-        },
-        {
-            in: 'path',
             name: 'organization_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add id specific id in the model_name above",
+            description: "Required",
         }
     ],
     requestBody: {
@@ -296,10 +516,29 @@ export const organizationUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/organizationUpdatesRequestBody'
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
                 },
             },
-        },
+            'application/x-www-form-urlencoded': {
+                schema: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'ACTIVE',
+                            describe: 'mandatory field'
+                        },
+                    },
+                },
+            },
+        }
     },
     responses: {
         '200': {
@@ -312,7 +551,7 @@ export const organizationUpdate = {
                                 type: 'number',
                                 example: '200'
                             },
-                            status_typeL: {
+                            status_type: {
                                 type: 'string',
                                 example: 'success'
                             },
@@ -337,31 +576,20 @@ export const organizationUpdate = {
         '404': badRequestError
     }
 }
-
 export const organizationDelete = {
     tags: ['Organization'],
-    description: 'Endpoint for organization service => remove data with id specific from table name mentioned in the req.params',
-    operationId: 'courseByIdDelete',
+    summary: 'Delete Organization',
+    description: 'Delete single Organization organization_id  in params',
     parameters: [
-        {
-            in: 'path',
-            name: 'model_name',
-            schema: {
-                type: 'string',
-                default: 'organization'
-            },
-            required: true,
-            description: "Add model_name i.e table name here",
-        },
         {
             in: 'path',
             name: 'organization_id',
             schema: {
                 type: 'integer',
-                default: 1
+                example: 1
             },
-            required: true,
-            description: "Add id specific id in the model_name above",
+            required: false,
+            description: "Required",
         }
     ],
     security: [

@@ -136,17 +136,4 @@ export default class AdminController extends BaseController {
             return res.status(202).send(dispatcher(res, result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
-    // private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-    //     const result = await this.authService.updatePassword(req.body, res);
-    //     if (!result) {
-    //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
-    //     } else if (result.error) {
-    //         return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
-    //     }
-    //     else if (result.match) {
-    //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
-    //     } else {
-    //         return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-    //     }
-    // }
 };

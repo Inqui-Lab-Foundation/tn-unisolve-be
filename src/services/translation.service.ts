@@ -122,7 +122,6 @@ export default class TranslationService {
     getTranslationKey(selected_option: any) {
         try {
             const selected_optionArr = selected_option.split("{{}}"); //multiple answers submitted can be represented as singlestrign separated by {{}} 
-            // console.log(selected_optionArr)
             let resultArr = selected_optionArr.map((selectedOptionOne: any) => {
                 return TranslationsProvider.getTranslationKeyForValue(this.getCurrentLocale(), selectedOptionOne)
             });
