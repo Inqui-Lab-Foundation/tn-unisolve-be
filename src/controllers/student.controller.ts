@@ -827,7 +827,8 @@ export default class StudentController extends BaseController {
                                         }
                                     }
                                 }
-                            ]
+                            ],
+                            group: [`mentor.mentor_id`]
                         });
                         break;
                     default:
